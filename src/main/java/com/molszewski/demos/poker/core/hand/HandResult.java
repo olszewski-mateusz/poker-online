@@ -4,6 +4,7 @@ package com.molszewski.demos.poker.core.hand;
 import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.card.Rank;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,7 @@ class HandResult {
         boolean isStraight = true;
 
         for (int i = 0; i < 4; i++) {
-            if (sortedRanks.get(i).getValue() != sortedRanks.get(i + 1).getValue() + 1) {
+            if (sortedRanks.get(i).getValue() != sortedRanks.get(i + 1).getValue() - 1) {
                 isStraight = false;
                 break;
             }
@@ -97,9 +98,9 @@ class HandResult {
     }
 
     private List<Map.Entry<Rank, Long>> countRanks(List<Rank> sortedRanks) {
-        return sortedRanks.stream()
+        return new ArrayList<>(sortedRanks.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet().stream()
-                .sorted(Comparator.comparingLong(Map.Entry::getValue)).toList();
+                .sorted(Comparator.comparingLong(Map.Entry::getValue)).toList());
     }
 }

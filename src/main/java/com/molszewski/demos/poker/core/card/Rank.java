@@ -1,19 +1,19 @@
 package com.molszewski.demos.poker.core.card;
 
 public enum Rank {
-    ONE(1),
     TWO(1),
-    THREE(1),
-    FOUR(1),
-    FIVE(1),
-    SIX(1),
-    SEVEN(1),
-    EIGHT(1),
-    NINE(1),
-    TEN(1),
-    JACK(1),
-    QUEEN(1),
-    KING(1);
+    THREE(2),
+    FOUR(3),
+    FIVE(4),
+    SIX(5),
+    SEVEN(6),
+    EIGHT(7),
+    NINE(8),
+    TEN(9),
+    JACK(10),
+    QUEEN(11),
+    KING(12),
+    ACE(13);
 
     private int value;
 
