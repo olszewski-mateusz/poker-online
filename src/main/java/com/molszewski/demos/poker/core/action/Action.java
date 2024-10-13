@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.core.action;
 
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameContext;
 
 import java.util.UUID;
 
@@ -15,5 +15,5 @@ public abstract class Action {
         return playerId;
     }
 
-    public abstract void execute(Game game);
+    public abstract void execute(GameContext gameContext);
 }

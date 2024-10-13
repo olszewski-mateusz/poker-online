@@ -11,12 +11,13 @@ import java.util.UUID;
 public class Player {
     private final UUID id;
     boolean ready = false;
-    private int money = 0;
+    private int money;
     private int bid = 0;
     private Hand hand;
 
-    public Player(UUID id) {
+    public Player(UUID id, int startMoney) {
         this.id = id;
+        this.money = startMoney;
     }
 
 }

@@ -11,7 +11,7 @@ public enum HandType {
     FOUR_OF_A_KIND(8),
     STRAIGHT_FLUSH(9);
 
-    private int value;
+    private final int value;
 
     HandType(int value) {
         this.value = value;

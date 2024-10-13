@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.core.action;
 
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameContext;
 
 import java.util.UUID;
 
@@ -11,7 +11,7 @@ public class AddPlayer extends Action {
     }
 
     @Override
-    public void execute(Game game) {
-        game.addPlayer(playerId);
+    public void execute(GameContext gameContext) {
+        gameContext.addPlayer(playerId);
     }
 }
