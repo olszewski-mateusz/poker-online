@@ -1,12 +1,12 @@
 package com.molszewski.demos.poker.core.game;
 
-import com.molszewski.demos.poker.core.action.Action;
 import com.molszewski.demos.poker.core.deck.Deck;
 import com.molszewski.demos.poker.core.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 public class GameContext {
     private final Deck deck;
@@ -20,25 +20,20 @@ public class GameContext {
         this.configuration = configuration;
     }
 
-    public void applyAction(Action action) {
-        action.execute(this);
-    }
-
-    public Player getPlayerById(UUID id) {
+    public Player getPlayerById(UUID id) throws GameException {
         return players.stream().filter(player -> player.getId().equals(id))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("Player not found"));
+                .findFirst().orElseThrow(() -> new GameException("Player not found"));
     }
 
     public List<Player> getPlayers() {
         return players;
     }
 
-    public void addPlayer(UUID playerId) {
+    public void addPlayer(UUID playerId) throws GameException {
+        if (players.stream().anyMatch(player -> player.getId().equals(playerId))) {
+            throw new GameException("Player already in game");
+        }
         players.add(new Player(playerId, configuration.startMoney()));
-    }
-
-    public int playerCount() {
-        return players.size();
     }
 
     public void changeState(GameState newState) {
@@ -55,6 +50,10 @@ public class GameContext {
 
     public Deck getDeck() {
         return deck;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 
     public void nextCurrentPlayer() {

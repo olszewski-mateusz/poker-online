@@ -17,6 +17,10 @@ public class Hand implements Comparable<Hand> {
         return handResult.getHandType();
     }
 
+    public List<Card> getCards() {
+        return cards; // todo: add copy of
+    }
+
     @Override
     public int compareTo(Hand otherHand) {
         return handResult.compareTo(otherHand.handResult);
