@@ -1,4 +1,4 @@
-package com.molszewski.demos.poker.core.game;
+package com.molszewski.demos.poker.core.game.state;
 
 public enum GameState {
     NOT_STARTED,

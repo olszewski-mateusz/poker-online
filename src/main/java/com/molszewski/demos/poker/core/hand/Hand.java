@@ -2,14 +2,17 @@ package com.molszewski.demos.poker.core.hand;
 
 import com.molszewski.demos.poker.core.card.Card;
 
-import java.util.List;
+import java.util.Set;
 
 public class Hand implements Comparable<Hand> {
-    private final List<Card> cards;
+    private final Set<Card> cards;
     private final HandResult handResult;
 
-    public Hand(List<Card> handCards) {
-        cards = List.copyOf(handCards);
+    public Hand(Set<Card> handCards) {
+        if (handCards.size() != 5) {
+            throw new IllegalArgumentException("handCards must have size = 5");
+        }
+        cards = Set.copyOf(handCards);
         handResult = new HandResult(handCards);
     }
 
@@ -17,8 +20,8 @@ public class Hand implements Comparable<Hand> {
         return handResult.getHandType();
     }
 
-    public List<Card> getCards() {
-        return cards; // todo: add copy of
+    public Set<Card> getCards() {
+        return Set.copyOf(cards);
     }
 
     @Override

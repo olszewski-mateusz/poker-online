@@ -4,10 +4,7 @@ package com.molszewski.demos.poker.core.hand;
 import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.card.Rank;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -16,7 +13,7 @@ class HandResult {
     private final Rank highestScoringRank;
     private final Rank secondHighestScoringRank;
 
-    HandResult(List<Card> cards) {
+    HandResult(Set<Card> cards) {
         if (cards.size() != 5) {
             throw new IllegalArgumentException("Hand must have 5 Cards");
         }
@@ -73,11 +70,11 @@ class HandResult {
         return 0;
     }
 
-    private boolean isColor(List<Card> cards) {
+    private boolean isColor(Set<Card> cards) {
         return cards.stream().map(Card::suit).distinct().count() == 1;
     }
 
-    private List<Rank> sortByRank(List<Card> cards) {
+    private List<Rank> sortByRank(Set<Card> cards) {
         return cards.stream()
                 .map(Card::rank)
                 .sorted(Comparator.comparingInt(Rank::getValue))
@@ -85,16 +82,12 @@ class HandResult {
     }
 
     private boolean isStraight(List<Rank> sortedRanks) {
-        boolean isStraight = true;
-
         for (int i = 0; i < 4; i++) {
             if (sortedRanks.get(i).getValue() != sortedRanks.get(i + 1).getValue() - 1) {
-                isStraight = false;
-                break;
+                return false;
             }
         }
-
-        return isStraight;
+        return true;
     }
 
     private List<Map.Entry<Rank, Long>> countRanks(List<Rank> sortedRanks) {

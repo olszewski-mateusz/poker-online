@@ -1,53 +1,47 @@
 package com.molszewski.demos.poker.core.game;
 
-import com.molszewski.demos.poker.core.action.Action;
-import com.molszewski.demos.poker.core.deck.Deck;
+import com.molszewski.demos.poker.core.game.action.Action;
+import com.molszewski.demos.poker.core.game.action.ActionException;
+import com.molszewski.demos.poker.core.game.state.GameState;
+import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.player.Player;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Random;
 
+@Slf4j
 public class Game {
-    private final GameContext context;
+    private final Board board;
+    private final StateManager stateManager;
+    @Getter
+    private final GameConfiguration configuration;
 
-    public Game() {
-        this.context = new GameContext(new Deck(new Random()), GameConfiguration.defaultConfiguration());
-    }
-
-    public Game(Random random) {
-        this.context = new GameContext(new Deck(random), GameConfiguration.defaultConfiguration());
-    }
-
-    public Game(Random random, GameConfiguration gameConfiguration) {
-        this.context = new GameContext(new Deck(random), gameConfiguration);
-    }
-
-    public Game(Deck deck, GameConfiguration gameConfiguration) {
-        this.context = new GameContext(deck, gameConfiguration);
+    public Game(Board board, StateManager stateManager, GameConfiguration configuration) {
+        this.board = board;
+        this.stateManager = stateManager;
+        this.configuration = configuration;
     }
 
     public Player getCurrentPlayer() {
-        return context.getCurrentPlayer();
+        return stateManager.getCurrentPlayer();
     }
 
     public boolean applyAction(Action action) {
         try {
-            action.execute(this.context);
+            stateManager.executeAction(action, board, configuration);
             return true;
-        } catch (GameException e) {
+        } catch (ActionException e) {
+            log.warn(e.getMessage());
             return false;
         }
     }
 
-    public GameConfiguration getConfiguration() {
-        return this.context.getConfiguration();
-    }
-
     public GameState getGameState() {
-        return this.context.getGameState();
+        return this.stateManager.getState();
     }
 
     public List<Player> getPlayers() {
-        return List.copyOf(this.context.getPlayers()); // todo: add copy of players
+        return this.board.getPlayers().stream().map(Player::copy).toList();
     }
 }

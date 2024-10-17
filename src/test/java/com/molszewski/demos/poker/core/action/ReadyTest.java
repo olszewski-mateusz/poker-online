@@ -2,7 +2,9 @@ package com.molszewski.demos.poker.core.action;
 
 import com.molszewski.demos.poker.core.game.Game;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.GameState;
+import com.molszewski.demos.poker.core.game.action.Join;
+import com.molszewski.demos.poker.core.game.action.Ready;
+import com.molszewski.demos.poker.core.game.state.GameState;
 import com.molszewski.demos.poker.core.player.Player;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +13,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PlayerReadyTest {
+class ReadyTest {
     private final Random random = new Random(17L);
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();
 
@@ -23,11 +25,11 @@ class PlayerReadyTest {
         UUID playerC = UUID.randomUUID();
 
         Game game = new Game(random, configuration);
-        game.applyAction(new AddPlayer(playerA));
-        game.applyAction(new AddPlayer(playerB));
-        game.applyAction(new AddPlayer(playerC));
+        game.applyAction(new Join(playerA));
+        game.applyAction(new Join(playerB));
+        game.applyAction(new Join(playerC));
 
-        game.applyAction(new PlayerReady(playerB));
+        game.applyAction(new Ready(playerB));
 
         assertEquals(GameState.NOT_STARTED, game.getGameState());
         assertEquals(1, game.getPlayers().stream().filter(Player::isReady).count());
@@ -41,14 +43,14 @@ class PlayerReadyTest {
         UUID playerD = UUID.randomUUID();
 
         Game game = new Game(random, configuration);
-        game.applyAction(new AddPlayer(playerA));
-        game.applyAction(new AddPlayer(playerB));
-        game.applyAction(new AddPlayer(playerC));
-        game.applyAction(new AddPlayer(playerD));
+        game.applyAction(new Join(playerA));
+        game.applyAction(new Join(playerB));
+        game.applyAction(new Join(playerC));
+        game.applyAction(new Join(playerD));
 
-        game.applyAction(new PlayerReady(playerB));
-        game.applyAction(new PlayerReady(playerA));
-        game.applyAction(new PlayerReady(playerC));
+        game.applyAction(new Ready(playerB));
+        game.applyAction(new Ready(playerA));
+        game.applyAction(new Ready(playerC));
 
         assertEquals(GameState.NOT_STARTED, game.getGameState());
         assertEquals(3, game.getPlayers().stream().filter(Player::isReady).count());
@@ -63,15 +65,15 @@ class PlayerReadyTest {
         UUID playerD = UUID.randomUUID();
 
         Game game = new Game(random, configuration);
-        game.applyAction(new AddPlayer(playerA));
-        game.applyAction(new AddPlayer(playerB));
-        game.applyAction(new AddPlayer(playerC));
-        game.applyAction(new AddPlayer(playerD));
+        game.applyAction(new Join(playerA));
+        game.applyAction(new Join(playerB));
+        game.applyAction(new Join(playerC));
+        game.applyAction(new Join(playerD));
 
-        game.applyAction(new PlayerReady(playerB));
-        game.applyAction(new PlayerReady(playerA));
-        game.applyAction(new PlayerReady(playerC));
-        game.applyAction(new PlayerReady(playerD));
+        game.applyAction(new Ready(playerB));
+        game.applyAction(new Ready(playerA));
+        game.applyAction(new Ready(playerC));
+        game.applyAction(new Ready(playerD));
 
         assertEquals(GameState.FIRST_BETTING, game.getGameState());
         assertEquals(4, game.getPlayers().stream().filter(Player::isReady).count());
