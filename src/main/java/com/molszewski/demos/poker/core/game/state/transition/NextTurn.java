@@ -35,6 +35,7 @@ public final class NextTurn extends Transition {
                     stateManager.setState(GameState.FINISHED);
                     board.getPlayers().forEach(player -> player.setReady(false));
                 }
+                default -> throw new IllegalStateException("Unexpected state: " + stateManager.getState());
             }}
     }
 
@@ -51,8 +52,10 @@ public final class NextTurn extends Transition {
             throw new IllegalStateException("Current player is null");
         }
 
+        List<Player> playersInGame = players.stream()
+                .filter(player -> !player.isFolded() || player == currentPlayer)
+                .toList();
         
-        stateManager.setCurrentPlayer(players.get((players.indexOf(currentPlayer) + 1) % players.size()));
-        // todo: what if next player folded
+        stateManager.setCurrentPlayer(playersInGame.get((playersInGame.indexOf(currentPlayer) + 1) % playersInGame.size()));
     }
 }

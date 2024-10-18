@@ -5,10 +5,7 @@ import com.molszewski.demos.poker.core.card.Rank;
 import com.molszewski.demos.poker.core.card.Suit;
 import com.molszewski.demos.poker.core.hand.Hand;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Deck {
     private List<Card> cards = new ArrayList<>();
@@ -42,7 +39,7 @@ public class Deck {
     }
 
     public Hand getHand() {
-        List<Card> handCards = new ArrayList<>();
+        Set<Card> handCards = new HashSet<>();
         for (int i = 0; i < 5; i++) {
             handCards.add(pop());
         }

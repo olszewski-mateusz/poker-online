@@ -1,7 +1,7 @@
 package com.molszewski.demos.poker.core.game;
 
-import com.molszewski.demos.poker.core.game.action.Action;
-import com.molszewski.demos.poker.core.game.action.ActionException;
+import com.molszewski.demos.poker.core.game.state.action.Action;
+import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.GameState;
 import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.player.Player;
@@ -43,5 +43,13 @@ public class Game {
 
     public List<Player> getPlayers() {
         return this.board.getPlayers().stream().map(Player::copy).toList();
+    }
+
+    public int getCardsInDeck() {
+        return this.board.getDeck().cardsCount();
+    }
+
+    public int getDiscardedCards() {
+        return this.board.getDeck().discardsCount();
     }
 }

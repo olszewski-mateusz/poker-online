@@ -2,13 +2,12 @@ package com.molszewski.demos.poker.core.game.state;
 
 import com.molszewski.demos.poker.core.game.Board;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.action.ActionException;
-import com.molszewski.demos.poker.core.game.action.*;
+import com.molszewski.demos.poker.core.game.state.action.*;
+import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.transition.Transition;
 import com.molszewski.demos.poker.core.player.Player;
 
 import java.util.Set;
-import java.util.UUID;
 
 public class StateManagerImpl implements StateManager {
 
@@ -64,6 +63,14 @@ public class StateManagerImpl implements StateManager {
 
                 Transition.nextTurn(this, board, configuration);
             }
+            case AllIn allInAction -> {
+                this.checkIfLegalState(Set.of(GameState.FIRST_BETTING, GameState.SECOND_BETTING));
+                this.checkIfPlayersTurn(allInAction.getPlayerId());
+
+                allInAction.execute(board, configuration);
+
+                Transition.nextTurn(this, board, configuration);
+            }
             case Fold foldAction -> {
                 this.checkIfLegalState(Set.of(GameState.FIRST_BETTING, GameState.SECOND_BETTING));
                 this.checkIfPlayersTurn(foldAction.getPlayerId());
@@ -83,8 +90,15 @@ public class StateManagerImpl implements StateManager {
         }
     }
 
-    private void checkIfPlayersTurn(UUID playerId) throws ActionException {
-        if (!currentPlayer.getId().equals(playerId)) {
+    private void checkIfPlayersTurn(String playerId) throws ActionException {
+        if (currentPlayer.getId().equals(playerId)) {
+            if (currentPlayer.isReady()) {
+                throw new ActionException(String.format("Player %s is ready", currentPlayer.getId()));
+            }
+            if (currentPlayer.isFolded()) {
+                throw new ActionException(String.format("Player %s folded", currentPlayer.getId()));
+            }
+        } else {
             throw new ActionException("It's not player " + playerId + "turn");
         }
     }

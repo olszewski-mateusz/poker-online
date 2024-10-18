@@ -4,11 +4,9 @@ import com.molszewski.demos.poker.core.hand.Hand;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 public class Player {
-    private final UUID id;
+    private final String id;
     private int money = 0;
     private int bid = 0;
     @Setter
@@ -18,12 +16,12 @@ public class Player {
     @Setter
     private Hand hand;
 
-    public Player(UUID id, int startMoney) {
+    public Player(String id, int startMoney) {
         this.id = id;
         this.money = startMoney;
     }
 
-    private Player(UUID id, int money, int bid, boolean ready, boolean folded, Hand hand) {
+    private Player(String id, int money, int bid, boolean ready, boolean folded, Hand hand) {
         this.id = id;
         this.money = money;
         this.bid = bid;

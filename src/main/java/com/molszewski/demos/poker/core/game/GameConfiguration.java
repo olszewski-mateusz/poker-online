@@ -1,9 +1,9 @@
 package com.molszewski.demos.poker.core.game;
 
 public record GameConfiguration(
-        int minPlayersToStartGame,
+        int minPlayersToStart,
         int startMoney,
-        int minBet
+        int firstBet
 ) {
     public static GameConfiguration defaultConfiguration() {
         return new GameConfiguration(3, 1000, 5);

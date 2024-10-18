@@ -9,26 +9,36 @@ import java.util.*;
 @Getter
 public class Board {
     private final Deck deck;
-    private final List<Player> players = new ArrayList<>();
+    private final List<Player> players;
 
-    Board(Deck deck) {
+    public Board(Deck deck) {
         this.deck = deck;
+        this.players = new ArrayList<>();
     }
 
-    public Optional<Player> getPlayerById(UUID id) {
+    public Board(Deck deck, List<Player> players) {
+        this.deck = deck;
+        this.players = players;
+    }
+
+    public Optional<Player> getPlayerById(String id) {
         return players.stream().filter(player -> player.getId().equals(id)).findFirst();
     }
 
     public int getCurrentBid() {
-        return players.stream().map(Player::getBid).max(Comparator.naturalOrder()).orElse(0);
+        return players.stream().map(Player::getBid).max(Comparator.naturalOrder())
+                .orElseThrow(() -> new IllegalStateException("No player in game"));
     }
 
-    public Player addPlayer(UUID playerId, int startMoney) {
+    public Player getWinner() {
+        return players.stream().max(Comparator.comparing(Player::getHand))
+                .orElseThrow(() -> new IllegalStateException("No player in game"));
+    }
+
+    public void addPlayer(String playerId, int startMoney) {
         if (players.stream().anyMatch(player -> player.getId().equals(playerId))) {
             throw new IllegalStateException("Player already in game");
         }
-        Player newPlayer = new Player(playerId, startMoney);
-        players.add(newPlayer);
-        return newPlayer;
+        players.add(new Player(playerId, startMoney));
     }
 }
