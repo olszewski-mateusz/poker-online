@@ -6,6 +6,7 @@ import com.molszewski.demos.poker.core.card.Suit;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,7 +15,7 @@ class HandResultTest {
 
     @Test
     void highCardTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.CLUBS),
                 new Card(Rank.FOUR, Suit.DIAMONDS),
                 new Card(Rank.SEVEN, Suit.CLUBS),
@@ -27,7 +28,7 @@ class HandResultTest {
 
     @Test
     void pairTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.CLUBS),
                 new Card(Rank.FOUR, Suit.DIAMONDS),
                 new Card(Rank.FOUR, Suit.CLUBS),
@@ -40,7 +41,7 @@ class HandResultTest {
 
     @Test
     void twoPairTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.CLUBS),
                 new Card(Rank.FOUR, Suit.DIAMONDS),
                 new Card(Rank.FOUR, Suit.CLUBS),
@@ -53,7 +54,7 @@ class HandResultTest {
 
     @Test
     void threeOfAKindTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.CLUBS),
                 new Card(Rank.JACK, Suit.DIAMONDS),
                 new Card(Rank.SEVEN, Suit.CLUBS),
@@ -66,7 +67,7 @@ class HandResultTest {
 
     @Test
     void straightTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.FOUR, Suit.CLUBS),
                 new Card(Rank.SIX, Suit.DIAMONDS),
                 new Card(Rank.FIVE, Suit.CLUBS),
@@ -79,7 +80,7 @@ class HandResultTest {
 
     @Test
     void flushTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.DIAMONDS),
                 new Card(Rank.JACK, Suit.DIAMONDS),
                 new Card(Rank.SEVEN, Suit.DIAMONDS),
@@ -92,7 +93,7 @@ class HandResultTest {
 
     @Test
     void fullHouseTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.CLUBS),
                 new Card(Rank.FOUR, Suit.DIAMONDS),
                 new Card(Rank.FOUR, Suit.CLUBS),
@@ -105,7 +106,7 @@ class HandResultTest {
 
     @Test
     void fourOfAKindTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.JACK, Suit.CLUBS),
                 new Card(Rank.JACK, Suit.DIAMONDS),
                 new Card(Rank.SEVEN, Suit.CLUBS),
@@ -118,7 +119,7 @@ class HandResultTest {
 
     @Test
     void straightFlushTest() {
-        HandResult result = new HandResult(List.of(
+        HandResult result = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.HEARTS),
                 new Card(Rank.NINE, Suit.HEARTS),
                 new Card(Rank.TEN, Suit.HEARTS),
@@ -131,7 +132,7 @@ class HandResultTest {
 
     @Test
     void compareDifferentHandTypes() {
-        HandResult resultA = new HandResult(List.of(
+        HandResult resultA = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.HEARTS),
                 new Card(Rank.NINE, Suit.HEARTS),
                 new Card(Rank.TEN, Suit.DIAMONDS),
@@ -139,7 +140,7 @@ class HandResultTest {
                 new Card(Rank.QUEEN, Suit.HEARTS)
         ));
 
-        HandResult resultB = new HandResult(List.of(
+        HandResult resultB = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.HEARTS),
                 new Card(Rank.NINE, Suit.HEARTS),
                 new Card(Rank.JACK, Suit.HEARTS),
@@ -147,7 +148,7 @@ class HandResultTest {
                 new Card(Rank.QUEEN, Suit.HEARTS)
         ));
 
-        HandResult resultC = new HandResult(List.of(
+        HandResult resultC = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.HEARTS),
                 new Card(Rank.NINE, Suit.HEARTS),
                 new Card(Rank.TEN, Suit.HEARTS),
@@ -162,7 +163,7 @@ class HandResultTest {
 
     @Test
     void compareSameHandTypesSameScore() {
-        HandResult resultA = new HandResult(List.of(
+        HandResult resultA = new HandResult(Set.of(
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TWO, Suit.DIAMONDS),
@@ -170,7 +171,7 @@ class HandResultTest {
                 new Card(Rank.FIVE, Suit.HEARTS)
         ));
 
-        HandResult resultB = new HandResult(List.of(
+        HandResult resultB = new HandResult(Set.of(
                 new Card(Rank.FIVE, Suit.SPADES),
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TWO, Suit.CLUBS),
@@ -183,7 +184,7 @@ class HandResultTest {
 
     @Test
     void compareSameHandTypesDifferentScore() {
-        HandResult resultA = new HandResult(List.of(
+        HandResult resultA = new HandResult(Set.of(
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TEN, Suit.DIAMONDS),
@@ -191,7 +192,7 @@ class HandResultTest {
                 new Card(Rank.FIVE, Suit.HEARTS)
         ));
 
-        HandResult resultB = new HandResult(List.of(
+        HandResult resultB = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.SPADES),
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TWO, Suit.CLUBS),
@@ -199,7 +200,7 @@ class HandResultTest {
                 new Card(Rank.SIX, Suit.SPADES)
         ));
 
-        HandResult resultC = new HandResult(List.of(
+        HandResult resultC = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.SPADES),
                 new Card(Rank.THREE, Suit.HEARTS),
                 new Card(Rank.THREE, Suit.CLUBS),
