@@ -1,9 +1,9 @@
 package com.molszewski.demos.poker.core.game;
 
-import com.molszewski.demos.poker.core.game.state.action.Action;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.GameState;
 import com.molszewski.demos.poker.core.game.state.StateManager;
+import com.molszewski.demos.poker.core.game.state.action.Action;
+import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.player.Player;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,7 @@ import java.util.List;
 
 @Slf4j
 public class Game {
+    @Getter
     private final Board board;
     private final StateManager stateManager;
     @Getter

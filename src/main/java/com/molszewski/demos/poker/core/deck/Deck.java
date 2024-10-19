@@ -62,4 +62,12 @@ public class Deck {
     public int discardsCount() {
         return discards.size();
     }
+
+    public List<Card> getDiscards() {
+        return List.copyOf(discards);
+    }
+
+    public List<Card> getCards() {
+        return List.copyOf(cards);
+    }
 }

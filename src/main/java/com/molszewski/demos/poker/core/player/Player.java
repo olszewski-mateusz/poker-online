@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 public class Player {
     private final String id;
-    private int money = 0;
+    private int money;
     private int bid = 0;
     @Setter
     private boolean ready = false;
@@ -21,7 +21,7 @@ public class Player {
         this.money = startMoney;
     }
 
-    private Player(String id, int money, int bid, boolean ready, boolean folded, Hand hand) {
+    public Player(String id, int money, int bid, boolean ready, boolean folded, Hand hand) {
         this.id = id;
         this.money = money;
         this.bid = bid;

@@ -18,7 +18,7 @@ public class Board {
 
     public Board(Deck deck, List<Player> players) {
         this.deck = deck;
-        this.players = players;
+        this.players = new ArrayList<>(players);
     }
 
     public Optional<Player> getPlayerById(String id) {

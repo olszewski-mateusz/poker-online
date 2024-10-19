@@ -1,0 +1,85 @@
+package com.molszewski.demos.poker.web.service;
+
+import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.persistence.converter.CommandConverter;
+import com.molszewski.demos.poker.persistence.entity.GameSetup;
+import com.molszewski.demos.poker.persistence.entity.command.Command;
+import com.molszewski.demos.poker.persistence.repository.CommandRepository;
+import com.molszewski.demos.poker.persistence.repository.GameSetupRepository;
+import com.molszewski.demos.poker.web.model.response.GameResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.stream.Record;
+import org.springframework.data.redis.connection.stream.StreamOffset;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+
+@Service
+@RequiredArgsConstructor
+public class GameService {
+    private final GameSetupRepository gameSetupRepository;
+    private final CommandRepository commandRepository;
+    private final CommandConverter commandConverter;
+
+    public Mono<String> createGame() {
+        return gameSetupRepository.save(GameSetup.init(generateId(), new Random()));
+    }
+
+    public Mono<String> handleCommand(String gameId, Command newCommand) {
+        return gameSetupRepository.findById(gameId)
+                .flatMap(gameSetup -> commandRepository.readAllNonBlocking(gameId)
+                    .map(Record::getValue)
+                    .collectList()
+                    .flatMap(commands -> {
+                        Game game = gameSetup.toGame(new Random());
+                        for (Command command : commands) {
+                            boolean success = game.applyAction(commandConverter.toAction(command));
+                            if (!success) {
+                                return Mono.error(new IllegalStateException("ups"));
+                            }
+                        }
+                        boolean success = game.applyAction(commandConverter.toAction(newCommand));
+                        if (success) {
+                            return commandRepository.send(gameId, newCommand).thenReturn("success");
+                        }
+
+                        return Mono.just("failure");
+                    })
+                );
+    }
+
+    public Flux<GameResponse> subscribe(String gameId) {
+        final AtomicReference<StreamOffset<String>> currentOffset = new AtomicReference<>(StreamOffset.fromStart(commandRepository.getStreamKey(gameId)));
+
+        return gameSetupRepository.findById(gameId)
+                .map(gameSetup -> gameSetup.toGame(new Random()))
+                .flatMapMany(game -> Mono.defer(() -> commandRepository.readFromBlocking(currentOffset.get()).collectList().flatMap(objectRecords -> {
+                            Record<String, Command> lastRecord = null;
+                            for (Record<String, Command> commandRecord : objectRecords) {
+                                lastRecord = commandRecord;
+                                Command command = commandRecord.getValue();
+                                boolean success = game.applyAction(commandConverter.toAction(command));
+                                if (!success) {
+                                    return Mono.error(new IllegalStateException("ups"));
+                                }
+                            }
+                            if (lastRecord != null) {
+                                currentOffset.set(StreamOffset.from(lastRecord));
+                            }
+                            return Mono.just(GameResponse.fromGame(game));
+                        })).repeat()
+                );
+    }
+
+    public String generatePlayerId() {
+        return generateId();
+    }
+
+    private String generateId() {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+    }
+}
