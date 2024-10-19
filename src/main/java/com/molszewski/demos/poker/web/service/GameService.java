@@ -1,13 +1,14 @@
 package com.molszewski.demos.poker.web.service;
 
 import com.molszewski.demos.poker.core.game.Game;
-import com.molszewski.demos.poker.persistence.converter.CommandConverter;
 import com.molszewski.demos.poker.persistence.entity.GameSetup;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.persistence.repository.CommandRepository;
 import com.molszewski.demos.poker.persistence.repository.GameSetupRepository;
+import com.molszewski.demos.poker.web.model.response.CommandResponse;
 import com.molszewski.demos.poker.web.model.response.GameResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.stream.Record;
 import org.springframework.data.redis.connection.stream.StreamOffset;
 import org.springframework.stereotype.Service;
@@ -20,16 +21,16 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GameService {
     private final GameSetupRepository gameSetupRepository;
     private final CommandRepository commandRepository;
-    private final CommandConverter commandConverter;
 
     public Mono<String> createGame() {
         return gameSetupRepository.save(GameSetup.init(generateId(), new Random()));
     }
 
-    public Mono<String> handleCommand(String gameId, Command newCommand) {
+    public Mono<CommandResponse> handleCommand(String gameId, Command newCommand) {
         return gameSetupRepository.findById(gameId)
                 .flatMap(gameSetup -> commandRepository.readAllNonBlocking(gameId)
                     .map(Record::getValue)
@@ -37,17 +38,17 @@ public class GameService {
                     .flatMap(commands -> {
                         Game game = gameSetup.toGame(new Random());
                         for (Command command : commands) {
-                            boolean success = game.applyAction(commandConverter.toAction(command));
+                            boolean success = game.applyAction(command.toAction());
                             if (!success) {
-                                return Mono.error(new IllegalStateException("ups"));
+                                log.warn("Illegal command found in stream");
                             }
                         }
-                        boolean success = game.applyAction(commandConverter.toAction(newCommand));
+                        boolean success = game.applyAction(newCommand.toAction());
                         if (success) {
-                            return commandRepository.send(gameId, newCommand).thenReturn("success");
+                            return commandRepository.send(gameId, newCommand).thenReturn(new CommandResponse(newCommand.getPlayerId()));
                         }
 
-                        return Mono.just("failure");
+                        return Mono.error(new IllegalStateException("Illegal request"));
                     })
                 );
     }
@@ -62,9 +63,9 @@ public class GameService {
                             for (Record<String, Command> commandRecord : objectRecords) {
                                 lastRecord = commandRecord;
                                 Command command = commandRecord.getValue();
-                                boolean success = game.applyAction(commandConverter.toAction(command));
+                                boolean success = game.applyAction(command.toAction());
                                 if (!success) {
-                                    return Mono.error(new IllegalStateException("ups"));
+                                    log.warn("Illegal command found in stream");
                                 }
                             }
                             if (lastRecord != null) {
