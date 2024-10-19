@@ -2,6 +2,7 @@ package com.molszewski.demos.poker.persistence.repository;
 
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.Record;
 import org.springframework.data.redis.connection.stream.StreamOffset;
@@ -18,8 +19,13 @@ import java.time.Duration;
 public class CommandRepository {
     private final ReactiveRedisTemplate<String, Command> redisCommandTemplate;
 
+    @Value("${poker.redis.expire-minutes}")
+    int expireMinutes;
+
     public Mono<Void> send(final String gameId, final Command command) {
-        return redisCommandTemplate.opsForStream().add(Record.of(command).withStreamKey(getStreamKey(gameId))).then();
+        return redisCommandTemplate.opsForStream().add(Record.of(command).withStreamKey(getStreamKey(gameId)))
+                .then(redisCommandTemplate.expire(getStreamKey(gameId), Duration.ofMinutes(expireMinutes)))
+                .then();
     }
 
     public Flux<ObjectRecord<String, Command>> readAllNonBlocking(final String gameId) {

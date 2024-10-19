@@ -7,6 +7,7 @@ import com.molszewski.demos.poker.persistence.repository.CommandRepository;
 import com.molszewski.demos.poker.persistence.repository.GameSetupRepository;
 import com.molszewski.demos.poker.web.model.response.CommandResponse;
 import com.molszewski.demos.poker.web.model.response.GameResponse;
+import com.molszewski.demos.poker.web.model.response.NewGameResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.stream.Record;
@@ -26,8 +27,9 @@ public class GameService {
     private final GameSetupRepository gameSetupRepository;
     private final CommandRepository commandRepository;
 
-    public Mono<String> createGame() {
-        return gameSetupRepository.save(GameSetup.init(generateId(), new Random()));
+    public Mono<NewGameResponse> createGame() {
+        return gameSetupRepository.save(GameSetup.init(generateId(), new Random()))
+                .map(NewGameResponse::new);
     }
 
     public Mono<CommandResponse> handleCommand(String gameId, Command newCommand) {
@@ -53,7 +55,7 @@ public class GameService {
                 );
     }
 
-    public Flux<GameResponse> subscribe(String gameId) {
+    public Flux<GameResponse> subscribeToGameChanges(String gameId) {
         final AtomicReference<StreamOffset<String>> currentOffset = new AtomicReference<>(StreamOffset.fromStart(commandRepository.getStreamKey(gameId)));
 
         return gameSetupRepository.findById(gameId)
