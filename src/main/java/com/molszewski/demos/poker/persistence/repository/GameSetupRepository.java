@@ -18,8 +18,7 @@ public class GameSetupRepository {
     int expireMinutes;
 
     public Mono<String> save(final GameSetup gameSetup) {
-        return redisGameTemplate.opsForValue().set(getGameKey(gameSetup.id()), gameSetup)
-                .then(redisGameTemplate.expire(getGameKey(gameSetup.id()), Duration.ofMinutes(expireMinutes)))
+        return redisGameTemplate.opsForValue().set(getGameKey(gameSetup.id()), gameSetup, Duration.ofMinutes(expireMinutes))
                 .thenReturn(gameSetup.id());
     }
 
@@ -28,8 +27,7 @@ public class GameSetupRepository {
             if (Boolean.FALSE.equals(keyExists)) {
                 return Mono.error(new IllegalArgumentException("Game not found"));
             }
-            return redisGameTemplate.expire(getGameKey(gameId), Duration.ofMinutes(expireMinutes))
-                    .then(redisGameTemplate.opsForValue().get(getGameKey(gameId)));
+            return redisGameTemplate.opsForValue().getAndExpire(getGameKey(gameId), Duration.ofMinutes(expireMinutes));
         });
     }
 
