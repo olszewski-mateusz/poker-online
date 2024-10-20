@@ -1,6 +1,5 @@
 package com.molszewski.demos.poker.web;
 
-import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.web.model.request.*;
 import com.molszewski.demos.poker.web.model.response.CommandResponse;
 import com.molszewski.demos.poker.web.service.GameService;

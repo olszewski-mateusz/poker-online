@@ -4,7 +4,6 @@ import com.molszewski.demos.poker.web.model.response.GameResponse;
 import com.molszewski.demos.poker.web.model.response.NewGameResponse;
 import com.molszewski.demos.poker.web.service.GameService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +23,14 @@ public class GameController {
                 .onErrorReturn(ResponseEntity.badRequest().build());
     }
 
-    @GetMapping(value = "{gameId}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ResponseEntity<GameResponse>> subscribe(@PathVariable String gameId) {
-        return gameService.subscribeToGameChanges(gameId)
+    @GetMapping(value = "{gameId}/subscribe", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    public Flux<GameResponse> subscribe(@PathVariable String gameId) {
+        return gameService.subscribeToGameChanges(gameId);
+    }
+
+    @GetMapping(value = "{gameId}")
+    public Mono<ResponseEntity<GameResponse>> get(@PathVariable String gameId) {
+        return gameService.getCurrentGame(gameId)
                 .map(ResponseEntity::ok)
                 .onErrorReturn(ResponseEntity.badRequest().build());
     }
