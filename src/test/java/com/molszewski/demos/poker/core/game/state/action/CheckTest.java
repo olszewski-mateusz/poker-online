@@ -34,8 +34,8 @@ class CheckTest {
         assertEquals("1", player.getId());
         stateManager.executeAction(new Check("1"), board, configuration);
         assertTrue(player.isReady());
-        assertEquals(configuration.firstBet(), player.getBid());
-        assertEquals(configuration.startMoney() - configuration.firstBet(), player.getMoney());
+        assertEquals(configuration.ante(), player.getBet());
+        assertEquals(configuration.startMoney() - configuration.ante(), player.getMoney());
     }
 
     @Test
@@ -59,7 +59,7 @@ class CheckTest {
         assertEquals("2", player.getId());
         stateManager.executeAction(new Check("2"), board, configuration);
         assertTrue(player.isReady());
-        assertEquals(raiseMoney, player.getBid());
+        assertEquals(raiseMoney, player.getBet());
         assertEquals(configuration.startMoney() - raiseMoney, player.getMoney());
     }
 

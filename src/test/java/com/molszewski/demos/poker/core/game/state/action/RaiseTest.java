@@ -36,13 +36,13 @@ class RaiseTest {
         assertEquals("1", player.getId());
         stateManager.executeAction(new Raise("1", raiseMoney), board, configuration);
         assertTrue(player.isReady());
-        assertEquals(raiseMoney, player.getBid());
+        assertEquals(raiseMoney, player.getBet());
         assertEquals(configuration.startMoney() - raiseMoney, player.getMoney());
     }
 
     @Test
     void raiseTooLittle() throws ActionException {
-        int raiseMoney = configuration.firstBet() + 1;
+        int raiseMoney = configuration.ante() + 1;
 
         Board board = new Board(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -82,7 +82,7 @@ class RaiseTest {
 
     @Test
     void raiseChangesReadyStatus() throws ActionException {
-        int raiseMoney = 2 * configuration.firstBet();
+        int raiseMoney = 2 * configuration.ante();
 
         Board board = new Board(new Deck(random));
         StateManager stateManager = new StateManagerImpl();

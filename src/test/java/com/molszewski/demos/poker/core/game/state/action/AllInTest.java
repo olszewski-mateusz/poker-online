@@ -34,7 +34,7 @@ class AllInTest {
         assertEquals("1", player.getId());
         stateManager.executeAction(new AllIn("1"), board, configuration);
         assertTrue(player.isReady());
-        assertEquals(configuration.startMoney(), player.getBid());
+        assertEquals(configuration.startMoney(), player.getBet());
         assertEquals(0, player.getMoney());
     }
 

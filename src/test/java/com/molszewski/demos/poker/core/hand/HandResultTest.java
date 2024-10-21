@@ -5,7 +5,6 @@ import com.molszewski.demos.poker.core.card.Rank;
 import com.molszewski.demos.poker.core.card.Suit;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -94,7 +93,7 @@ class HandResultTest {
     @Test
     void fullHouseTest() {
         HandResult result = new HandResult(Set.of(
-                new Card(Rank.EIGHT, Suit.CLUBS),
+                new Card(Rank.EIGHT, Suit.DIAMONDS),
                 new Card(Rank.FOUR, Suit.DIAMONDS),
                 new Card(Rank.FOUR, Suit.CLUBS),
                 new Card(Rank.EIGHT, Suit.HEARTS),
@@ -111,7 +110,7 @@ class HandResultTest {
                 new Card(Rank.JACK, Suit.DIAMONDS),
                 new Card(Rank.SEVEN, Suit.CLUBS),
                 new Card(Rank.JACK, Suit.HEARTS),
-                new Card(Rank.JACK, Suit.CLUBS)
+                new Card(Rank.JACK, Suit.SPADES)
         ));
 
         assertEquals(HandType.FOUR_OF_A_KIND, result.getHandType());
@@ -144,7 +143,7 @@ class HandResultTest {
                 new Card(Rank.EIGHT, Suit.HEARTS),
                 new Card(Rank.NINE, Suit.HEARTS),
                 new Card(Rank.JACK, Suit.HEARTS),
-                new Card(Rank.JACK, Suit.HEARTS),
+                new Card(Rank.KING, Suit.HEARTS),
                 new Card(Rank.QUEEN, Suit.HEARTS)
         ));
 
@@ -164,7 +163,7 @@ class HandResultTest {
     @Test
     void compareSameHandTypesSameScore() {
         HandResult resultA = new HandResult(Set.of(
-                new Card(Rank.TWO, Suit.HEARTS),
+                new Card(Rank.TWO, Suit.SPADES),
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TWO, Suit.DIAMONDS),
                 new Card(Rank.FIVE, Suit.SPADES),
@@ -175,8 +174,8 @@ class HandResultTest {
                 new Card(Rank.FIVE, Suit.SPADES),
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TWO, Suit.CLUBS),
-                new Card(Rank.TWO, Suit.HEARTS),
-                new Card(Rank.FIVE, Suit.SPADES)
+                new Card(Rank.TWO, Suit.SPADES),
+                new Card(Rank.FIVE, Suit.HEARTS)
         ));
 
         assertEquals(0, resultA.compareTo(resultB));
@@ -186,7 +185,7 @@ class HandResultTest {
     void compareSameHandTypesDifferentScore() {
         HandResult resultA = new HandResult(Set.of(
                 new Card(Rank.TWO, Suit.HEARTS),
-                new Card(Rank.TWO, Suit.HEARTS),
+                new Card(Rank.TWO, Suit.SPADES),
                 new Card(Rank.TEN, Suit.DIAMONDS),
                 new Card(Rank.FIVE, Suit.SPADES),
                 new Card(Rank.FIVE, Suit.HEARTS)
@@ -197,11 +196,11 @@ class HandResultTest {
                 new Card(Rank.TWO, Suit.HEARTS),
                 new Card(Rank.TWO, Suit.CLUBS),
                 new Card(Rank.JACK, Suit.HEARTS),
-                new Card(Rank.SIX, Suit.SPADES)
+                new Card(Rank.SIX, Suit.HEARTS)
         ));
 
         HandResult resultC = new HandResult(Set.of(
-                new Card(Rank.SIX, Suit.SPADES),
+                new Card(Rank.SIX, Suit.HEARTS),
                 new Card(Rank.THREE, Suit.HEARTS),
                 new Card(Rank.THREE, Suit.CLUBS),
                 new Card(Rank.JACK, Suit.HEARTS),

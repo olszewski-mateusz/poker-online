@@ -55,8 +55,8 @@ class HandResult {
     }
 
     int compareTo(HandResult otherResult) {
-        if (handType.getValue() != otherResult.getHandType().getValue()) {
-            return handType.getValue() - otherResult.getHandType().getValue();
+        if (handType.getValue() != otherResult.handType.getValue()) {
+            return handType.getValue() - otherResult.handType.getValue();
         }
 
         if (highestScoringRank.getValue() != otherResult.highestScoringRank.getValue()) {
@@ -94,6 +94,12 @@ class HandResult {
         return new ArrayList<>(sortedRanks.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet().stream()
-                .sorted(Comparator.comparingLong(Map.Entry::getValue)).toList());
+                .sorted((o1, o2) -> {
+                    if (Objects.equals(o1.getValue(), o2.getValue())) {
+                        return o1.getKey().getValue() - o2.getKey().getValue();
+                    } else {
+                        return Math.toIntExact(o1.getValue() - o2.getValue());
+                    }
+                }).toList());
     }
 }

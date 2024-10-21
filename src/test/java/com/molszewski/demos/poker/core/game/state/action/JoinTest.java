@@ -28,7 +28,7 @@ class JoinTest {
         Player player = board.getPlayers().getFirst();
         assertEquals(configuration.startMoney(), player.getMoney());
         assertNull(player.getHand());
-        assertEquals(0, player.getBid());
+        assertEquals(0, player.getBet());
         assertEquals("1", player.getId());
         assertFalse(player.isReady());
         assertFalse(player.isFolded());

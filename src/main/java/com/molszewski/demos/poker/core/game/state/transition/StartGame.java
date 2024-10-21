@@ -22,17 +22,19 @@ public final class StartGame extends Transition {
     }
 
     private void applyStartGame(StateManager stateManager, Board board, GameConfiguration configuration) {
+        if (stateManager.getState().equals(GameState.SHOWDOWN)) {
+            reorderPlayers(board);
+            collectBet(board);
+            disablePlayersWithoutMoney(board);
+        }
         stateManager.setState(GameState.FIRST_BETTING);
-        reorderPlayers(board);
-        collectBid(board);
-        disablePlayersWithoutMoney(board);
         stateManager.setCurrentPlayer(board.getPlayers().getFirst());
         giveCardsToPlayers(board);
-        takeInitialMoney(board, configuration);
+        collectAnte(board, configuration);
         board.getPlayers().forEach(player -> player.setReady(false));
     }
 
-    private void collectBid(Board board) {
+    private void collectBet(Board board) {
         Player winner = board.getWinner();
         int collectedMoney = board.getPlayers().stream().map(Player::collectBet).reduce(0, Integer::sum);
         winner.addMoney(collectedMoney);
@@ -54,9 +56,9 @@ public final class StartGame extends Transition {
         }
     }
 
-    private void takeInitialMoney(Board board, GameConfiguration configuration) {
+    private void collectAnte(Board board, GameConfiguration configuration) {
         for (Player player : board.getPlayers()) {
-            player.moveMoneyToBet(configuration.firstBet());
+            player.moveMoneyToBet(configuration.ante());
         }
     }
 }
