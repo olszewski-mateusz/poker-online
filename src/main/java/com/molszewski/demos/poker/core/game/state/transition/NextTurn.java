@@ -24,15 +24,15 @@ public final class NextTurn extends Transition {
 
             switch (stateManager.getState()) {
                 case FIRST_BETTING -> {
-                    stateManager.setState(GameState.CARD_EXCHANGE);
+                    stateManager.setState(GameState.DRAWING);
                     board.getPlayers().forEach(player -> player.setReady(false));
                 }
-                case CARD_EXCHANGE -> {
+                case DRAWING -> {
                     stateManager.setState(GameState.SECOND_BETTING);
                     board.getPlayers().forEach(player -> player.setReady(false));
                 }
                 case SECOND_BETTING -> {
-                    stateManager.setState(GameState.FINISHED);
+                    stateManager.setState(GameState.SHOWDOWN);
                     board.getPlayers().forEach(player -> player.setReady(false));
                 }
                 default -> throw new IllegalStateException("Unexpected state: " + stateManager.getState());

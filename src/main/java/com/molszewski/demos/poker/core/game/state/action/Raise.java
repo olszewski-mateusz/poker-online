@@ -22,13 +22,13 @@ public final class Raise extends Action {
         board.getPlayers().stream().filter(p -> !p.isFolded()).forEach(p -> p.setReady(false));
         player.setReady(true);
 
-        int currentBid = board.getCurrentBid();
+        int currentBid = board.getCurrentBet();
         if (amount < 2 * currentBid) {
             throw new ActionException("Must raise at least double of the current bid");
         }
-        if (amount - player.getBid() > player.getMoney()) {
+        if (amount - player.getBet() > player.getMoney()) {
             throw new ActionException("Must have money for raise.");
         }
-        player.moveMoneyToBid(amount - player.getBid());
+        player.moveMoneyToBet(amount - player.getBet());
     }
 }

@@ -42,7 +42,7 @@ public class StateManagerImpl implements StateManager {
                 joinAction.execute(board, configuration);
             }
             case Ready readyAction -> {
-                this.checkIfLegalState(Set.of(GameState.NOT_STARTED, GameState.FINISHED));
+                this.checkIfLegalState(Set.of(GameState.NOT_STARTED, GameState.SHOWDOWN));
 
                 readyAction.execute(board, configuration);
                 Transition.startGame(this, board, configuration);
@@ -80,7 +80,7 @@ public class StateManagerImpl implements StateManager {
                 Transition.nextTurn(this, board, configuration);
             }
             case Replace replaceAction -> {
-                this.checkIfLegalState(Set.of(GameState.CARD_EXCHANGE));
+                this.checkIfLegalState(Set.of(GameState.DRAWING));
                 this.checkIfPlayersTurn(replaceAction.getPlayerId());
 
                 replaceAction.execute(board, configuration);

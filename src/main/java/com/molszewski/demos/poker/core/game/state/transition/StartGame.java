@@ -34,7 +34,7 @@ public final class StartGame extends Transition {
 
     private void collectBid(Board board) {
         Player winner = board.getWinner();
-        int collectedMoney = board.getPlayers().stream().map(Player::collectBid).reduce(0, Integer::sum);
+        int collectedMoney = board.getPlayers().stream().map(Player::collectBet).reduce(0, Integer::sum);
         winner.addMoney(collectedMoney);
     }
 
@@ -56,7 +56,7 @@ public final class StartGame extends Transition {
 
     private void takeInitialMoney(Board board, GameConfiguration configuration) {
         for (Player player : board.getPlayers()) {
-            player.moveMoneyToBid(configuration.firstBet());
+            player.moveMoneyToBet(configuration.firstBet());
         }
     }
 }

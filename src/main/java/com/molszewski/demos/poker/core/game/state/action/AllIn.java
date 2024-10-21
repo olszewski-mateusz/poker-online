@@ -16,11 +16,11 @@ public final class AllIn extends Action {
         Player player = board.getPlayerById(this.getPlayerId())
                 .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
 
-        int oldBid = board.getCurrentBid();
+        int oldBid = board.getCurrentBet();
 
-        player.moveMoneyToBid(player.getMoney());
+        player.moveMoneyToBet(player.getMoney());
 
-        int newBid = board.getCurrentBid();
+        int newBid = board.getCurrentBet();
         if (newBid > oldBid) {
             board.getPlayers().stream().filter(p -> !p.isFolded()).forEach(p -> p.setReady(false));
         }

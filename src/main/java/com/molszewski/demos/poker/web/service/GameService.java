@@ -6,6 +6,7 @@ import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.persistence.metadata.MetadataCollector;
 import com.molszewski.demos.poker.persistence.repository.CommandRepository;
 import com.molszewski.demos.poker.persistence.repository.GameSetupRepository;
+import com.molszewski.demos.poker.web.model.response.ActionResponse;
 import com.molszewski.demos.poker.web.model.response.CommandResponse;
 import com.molszewski.demos.poker.web.model.response.GameResponse;
 import com.molszewski.demos.poker.web.model.response.NewGameResponse;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,9 +36,9 @@ public class GameService {
                 .map(NewGameResponse::new);
     }
 
-    public Mono<CommandResponse> handleCommand(String gameId, Command newCommand) {
+    public Mono<ActionResponse> handleCommand(String gameId, Command newCommand) {
         return gameSetupRepository.findById(gameId)
-                .flatMap(gameSetup -> commandRepository.readAllNonBlocking(gameId)
+                .flatMap(gameSetup -> commandRepository.readAll(gameId)
                         .map(Record::getValue)
                         .collectList()
                         .flatMap(commands -> {
@@ -48,7 +51,7 @@ public class GameService {
                             }
                             boolean success = game.applyAction(newCommand.toAction());
                             if (success) {
-                                return commandRepository.send(gameId, newCommand).thenReturn(new CommandResponse(newCommand.getPlayerId()));
+                                return commandRepository.send(gameId, newCommand).thenReturn(new ActionResponse(newCommand.getPlayerId()));
                             }
 
                             return Mono.error(new IllegalStateException("Illegal request"));
@@ -63,7 +66,8 @@ public class GameService {
                 .map(gameSetup -> gameSetup.toGame(new Random()))
                 .flatMapMany(game -> {
                     MetadataCollector metadataCollector = MetadataCollector.newInstance();
-                    return Mono.defer(() -> commandRepository.readFromBlocking(currentOffset.get()).collectList().flatMap(objectRecords -> {
+                    List<CommandResponse> history = new ArrayList<>();
+                    return Mono.defer(() -> commandRepository.readFromOffsetWithBlock(currentOffset.get()).collectList().flatMap(objectRecords -> {
                         Record<String, Command> lastRecord = null;
                         for (Record<String, Command> commandRecord : objectRecords) {
                             lastRecord = commandRecord;
@@ -73,12 +77,13 @@ public class GameService {
                                 log.warn("Illegal command found in stream");
                             } else {
                                 metadataCollector.includeCommand(command);
+                                history.add(CommandResponse.from(command, metadataCollector));
                             }
                         }
                         if (lastRecord != null) {
                             currentOffset.set(StreamOffset.from(lastRecord));
                         }
-                        return Mono.just(GameResponse.fromGame(game, metadataCollector));
+                        return Mono.just(GameResponse.fromGame(game, metadataCollector, history));
                     })).repeat();
                 });
     }
@@ -88,7 +93,8 @@ public class GameService {
                 .map(gameSetup -> gameSetup.toGame(new Random()))
                 .flatMap(game -> {
                     MetadataCollector metadataCollector = MetadataCollector.newInstance();
-                    return Mono.defer(() -> commandRepository.readAllNonBlocking(gameId).
+                    List<CommandResponse> history = new ArrayList<>();
+                    return Mono.defer(() -> commandRepository.readAll(gameId).
                             map(Record::getValue)
                             .collectList()
                             .flatMap(commands -> {
@@ -98,9 +104,10 @@ public class GameService {
                                         log.warn("Illegal command found in stream");
                                     } else {
                                         metadataCollector.includeCommand(command);
+                                        history.add(CommandResponse.from(command, metadataCollector));
                                     }
                                 }
-                                return Mono.just(GameResponse.fromGame(game, metadataCollector));
+                                return Mono.just(GameResponse.fromGame(game, metadataCollector, history));
                             })
                     );
                 });

@@ -25,8 +25,8 @@ public class Board {
         return players.stream().filter(player -> player.getId().equals(id)).findFirst();
     }
 
-    public int getCurrentBid() {
-        return players.stream().map(Player::getBid).max(Comparator.naturalOrder())
+    public int getCurrentBet() {
+        return players.stream().map(Player::getBet).max(Comparator.naturalOrder())
                 .orElseThrow(() -> new IllegalStateException("No player in game"));
     }
 

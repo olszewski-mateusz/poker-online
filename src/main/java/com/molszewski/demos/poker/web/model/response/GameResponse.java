@@ -13,16 +13,18 @@ import java.util.Optional;
 @Builder
 public record GameResponse(
         List<PlayerResponse> players,
+        List<CommandResponse> history,
         GameConfiguration configuration,
         GameState state,
         String currentPlayerId,
         int cardsInDeck,
         int discardedCards
 ) {
-    public static GameResponse fromGame(Game game, MetadataCollector metadataCollector) {
+    public static GameResponse fromGame(Game game, MetadataCollector metadataCollector, List<CommandResponse> history) {
         return GameResponse.builder()
                 .state(game.getGameState())
                 .configuration(game.getConfiguration())
+                .history(history)
                 .cardsInDeck(game.getCardsInDeck())
                 .discardedCards(game.getDiscardedCards())
                 .currentPlayerId(Optional.ofNullable(game.getCurrentPlayer()).map(Player::getId).orElse(null))

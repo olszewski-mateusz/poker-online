@@ -28,12 +28,12 @@ public class CommandRepository {
                 .then();
     }
 
-    public Flux<ObjectRecord<String, Command>> readAllNonBlocking(final String gameId) {
+    public Flux<ObjectRecord<String, Command>> readAll(final String gameId) {
         return redisCommandTemplate.opsForStream()
                 .read(Command.class, StreamOffset.fromStart(getStreamKey(gameId)));
     }
 
-    public Flux<ObjectRecord<String, Command>> readFromBlocking(final StreamOffset<String> stream) {
+    public Flux<ObjectRecord<String, Command>> readFromOffsetWithBlock(final StreamOffset<String> stream) {
         return redisCommandTemplate.opsForStream().read(Command.class, StreamReadOptions.empty().block(Duration.ZERO), stream);
     }
 

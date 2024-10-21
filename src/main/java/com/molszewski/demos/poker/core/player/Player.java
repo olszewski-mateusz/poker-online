@@ -7,8 +7,9 @@ import lombok.Setter;
 @Getter
 public class Player {
     private final String id;
+
     private int money;
-    private int bid = 0;
+    private int bet = 0;
     @Setter
     private boolean ready = false;
     @Setter
@@ -21,16 +22,16 @@ public class Player {
         this.money = startMoney;
     }
 
-    public Player(String id, int money, int bid, boolean ready, boolean folded, Hand hand) {
+    public Player(String id, int money, int bet, boolean ready, boolean folded, Hand hand) {
         this.id = id;
         this.money = money;
-        this.bid = bid;
+        this.bet = bet;
         this.ready = ready;
         this.folded = folded;
         this.hand = hand;
     }
 
-    public void moveMoneyToBid(int amount) {
+    public void moveMoneyToBet(int amount) {
         if (amount < 0) {
             throw new IllegalStateException("Amount can't be negative");
         }
@@ -38,7 +39,7 @@ public class Player {
             throw new IllegalStateException("Can't have less than 0 money");
         }
         this.money -= amount;
-        this.bid += amount;
+        this.bet += amount;
     }
 
     public void addMoney(int amount) {
@@ -48,14 +49,14 @@ public class Player {
         this.money += amount;
     }
 
-    public int collectBid() {
-        int amount = bid;
-        bid = 0;
+    public int collectBet() {
+        int amount = bet;
+        bet = 0;
         return amount;
     }
 
     public Player copy() {
-        return new Player(id, money, bid, ready, folded, hand);
+        return new Player(id, money, bet, ready, folded, hand);
     }
 
 }

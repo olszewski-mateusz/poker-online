@@ -1,4 +1,4 @@
-package com.molszewski.demos.poker.web;
+package com.molszewski.demos.poker.web.controller;
 
 import com.molszewski.demos.poker.web.model.response.GameResponse;
 import com.molszewski.demos.poker.web.model.response.NewGameResponse;

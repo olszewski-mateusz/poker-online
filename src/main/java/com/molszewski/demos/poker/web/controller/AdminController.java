@@ -1,4 +1,4 @@
-package com.molszewski.demos.poker.web;
+package com.molszewski.demos.poker.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

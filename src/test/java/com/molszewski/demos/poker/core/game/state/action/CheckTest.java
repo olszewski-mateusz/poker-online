@@ -99,7 +99,7 @@ class CheckTest {
 
         Player player = stateManager.getCurrentPlayer();
         assertEquals("2", player.getId());
-        assertEquals(raiseMoney, board.getCurrentBid());
+        assertEquals(raiseMoney, board.getCurrentBet());
         assertThrows(ActionException.class, () -> stateManager.executeAction(new Check("2"), board, configuration));
     }
 }

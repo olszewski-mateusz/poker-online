@@ -16,10 +16,10 @@ public final class Check extends Action{
         Player player = board.getPlayerById(this.getPlayerId())
                 .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
         player.setReady(true);
-        int currentBid = board.getCurrentBid();
-        if (currentBid - player.getBid() > player.getMoney()) {
+        int currentBid = board.getCurrentBet();
+        if (currentBid - player.getBet() > player.getMoney()) {
             throw new ActionException("Not having money for check. Use all in or fold.");
         }
-        player.moveMoneyToBid(currentBid - player.getBid());
+        player.moveMoneyToBet(currentBid - player.getBet());
     }
 }

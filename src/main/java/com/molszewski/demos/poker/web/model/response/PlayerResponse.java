@@ -26,7 +26,7 @@ public record PlayerResponse(
                 .id(player.getId())
                 .name(metadata.name())
                 .money(player.getMoney())
-                .bid(player.getBid())
+                .bid(player.getBet())
                 .ready(player.isReady())
                 .folded(player.isFolded())
                 .cards(Optional.ofNullable(player.getHand()).map(Hand::getCards).orElse(null))
