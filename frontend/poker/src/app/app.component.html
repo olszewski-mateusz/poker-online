@@ -1,0 +1,13 @@
+<div class="wrapper">
+  @for (suit of Object.values(Suit); track suit) {
+    @for (rank of Object.values(Rank); track rank) {
+      <card [rank]="rank" [suit]="suit" [size]="CardSize.SMALL" [interactive]="true"/>
+    }
+  }
+
+</div>
+
+
+
+
+<router-outlet />

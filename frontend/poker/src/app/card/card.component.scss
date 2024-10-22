@@ -1,0 +1,77 @@
+.card {
+  background-color: #f1f1f1;
+  font-family: "Segoe UI Semibold", system-ui;
+
+  div {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .rank {
+    text-align: center;
+  }
+}
+.red {
+  color: #af0000;
+}
+
+.interactive:hover {
+  background-color: #dcdcdc;
+  cursor: pointer;
+}
+
+.size-big {
+  width: 100px;
+  height: 140px;
+  border-radius: 10px;
+  font-size: 50px;
+
+  .rank {
+    width: 45px;
+    transform: translate(6%, 40%);
+  }
+  .suit {
+    transform: translate(8%, 120%);
+  }
+
+  .big-suit {
+    font-size: 85px;
+    transform: translate(38%, 165%);
+  }
+}
+
+.size-medium {
+  width: 80px;
+  height: 110px;
+  border-radius: 10px;
+  font-size: 40px;
+
+  .rank {
+    width: 38px;
+    transform: translate(4%, 30%);
+  }
+  .suit {
+    transform: translate(9%, 70%);
+  }
+
+  .big-suit {
+    font-size: 65px;
+    transform: translate(42%, 78%);
+  }
+}
+
+.size-small {
+  width: 50px;
+  height: 75px;
+  border-radius: 10px;
+  font-size: 38px;
+
+  .rank {
+    width: 36px;
+    transform: translate(14%, 30%);
+  }
+  .suit {
+    transform: translate(20%, 70%);
+  }
+}
+

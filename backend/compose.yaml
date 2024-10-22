@@ -1,3 +1,4 @@
+name: "poker"
 services:
   redis:
     image: 'redis:latest'
