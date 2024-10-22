@@ -1,4 +1,12 @@
-import {Component, computed, input, InputSignal, output, Output, OutputEmitterRef, OutputRef} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  InputSignal,
+  output,
+  OutputEmitterRef
+} from '@angular/core';
 import {MatIcon} from '@angular/material/icon';
 import {Rank} from '../model/rank';
 import {Suit} from '../model/suit';
@@ -10,7 +18,8 @@ import {Suit} from '../model/suit';
     MatIcon
   ],
   templateUrl: './card.component.html',
-  styleUrl: './card.component.scss'
+  styleUrl: './card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent {
   rank: InputSignal<Rank> = input.required<Rank>();
