@@ -8,8 +8,8 @@ import {
   OutputEmitterRef
 } from '@angular/core';
 import {MatIcon} from '@angular/material/icon';
-import {Rank} from '../model/rank';
-import {Suit} from '../model/suit';
+import {Rank} from '../../../model/rank';
+import {Suit} from '../../../model/suit';
 
 @Component({
   selector: 'card',

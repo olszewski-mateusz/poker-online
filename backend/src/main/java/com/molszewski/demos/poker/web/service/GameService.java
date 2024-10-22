@@ -120,4 +120,8 @@ public class GameService {
     private String generateId() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 8);
     }
+
+    public Mono<Boolean> exists(String gameId) {
+        return this.gameSetupRepository.exists(gameId);
+    }
 }

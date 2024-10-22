@@ -20,7 +20,7 @@
 
     <button (click)="joinGame()" [disabled]="gameIdInput.invalid" class="join-btn" mat-button>Join</button>
     <div class="separator"></div>
-    <button (click)="createGame()" class="create-btn" mat-button>
+    <button [color]="'secondary'" (click)="createGame()" class="create-btn" mat-button>
       Create new game
     </button>
   </div>

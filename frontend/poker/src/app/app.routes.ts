@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import {StartPageComponent} from './start-page/start-page.component';
-import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
-import {GamePageComponent} from './game-page/game-page.component';
+import {StartPageComponent} from './components/start-page/start-page.component';
+import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
+import {GamePageComponent} from './components/game-page/game-page.component';
 
 export const routes: Routes = [
   { path: 'start', component: StartPageComponent, title: 'First component',},

@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Provide your name</h2>
+<mat-dialog-content class="mat-typography">
+  <mat-form-field>
+    <input
+      [(ngModel)]="playerName"
+      matInput
+      required
+      placeholder="name"
+      #playerNameInput="ngModel"
+    />
+    @if (playerNameInput.invalid && (playerNameInput.dirty || playerNameInput.touched)) {
+      <mat-error>Name is required</mat-error>
+    }
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
+  <button [disabled]="playerNameInput.invalid" mat-button [mat-dialog-close]="playerName()">Submit</button>
+</mat-dialog-actions>

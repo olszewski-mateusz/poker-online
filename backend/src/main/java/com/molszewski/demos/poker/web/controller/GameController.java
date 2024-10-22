@@ -28,6 +28,13 @@ public class GameController {
         return gameService.subscribeToGameChanges(gameId);
     }
 
+    @GetMapping(value = "{gameId}/exists")
+    public Mono<ResponseEntity<Boolean>> exists(@PathVariable String gameId) {
+        return gameService.exists(gameId)
+                .map(ResponseEntity::ok)
+                .onErrorReturn(ResponseEntity.badRequest().build());
+    }
+
     @GetMapping(value = "{gameId}")
     public Mono<ResponseEntity<GameResponse>> get(@PathVariable String gameId) {
         return gameService.getCurrentGame(gameId)

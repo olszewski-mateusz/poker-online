@@ -31,6 +31,10 @@ public class GameSetupRepository {
         });
     }
 
+    public Mono<Boolean> exists(final String gameId) {
+        return redisGameTemplate.hasKey(getGameKey(gameId));
+    }
+
     public String getGameKey(final String gameId) {
         return String.format("game:%s", gameId);
     }

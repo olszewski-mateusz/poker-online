@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {CardComponent, CardSize} from "../card/card.component";
-import {Suit} from '../model/suit';
-import {Rank} from '../model/rank';
+import {CardComponent, CardSize} from "./card/card.component";
+import {Suit} from '../../model/suit';
+import {Rank} from '../../model/rank';
 
 @Component({
   selector: 'app-game-page',

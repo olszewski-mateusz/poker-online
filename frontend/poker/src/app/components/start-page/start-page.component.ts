@@ -3,10 +3,9 @@ import {MatButton} from '@angular/material/button';
 import {MatFormField, MatFormFieldModule} from '@angular/material/form-field';
 import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
-import {HttpClient, provideHttpClient} from '@angular/common/http';
-import {ConnectionService} from '../connection.service';
 import {Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
+import {GameService} from '../../services/game.service';
 
 @Component({
   selector: 'app-start-page',
@@ -26,18 +25,18 @@ import {FormsModule} from '@angular/forms';
 })
 export class StartPageComponent {
 
-  private readonly connectionService: ConnectionService = inject(ConnectionService);
+  private readonly gameService: GameService = inject(GameService);
   private readonly router: Router = inject(Router);
   gameId = model<string|null>(null);
 
   createGame() {
-    this.connectionService.createGame().subscribe(value => {
-      console.log(value);
-      this.router.navigate(['game', value.gameId]);
-    })
+    this.gameService.createAndJoinGame().subscribe();
   }
 
   joinGame() {
-    this.router.navigate(['game', this.gameId()]);
+    const gameId: string|null = this.gameId();
+    if (gameId) {
+      this.gameService.joinGame(gameId).subscribe();
+    }
   }
 }
