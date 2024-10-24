@@ -1,7 +1,5 @@
 @use '@angular/material' as mat;
 
-$theme: mat.define-theme();
-
 .column {
   width: 100%;
   height: 100%;
@@ -41,7 +39,6 @@ $theme: mat.define-theme();
       font-size: 30px;
       height: 56px;
       margin-bottom: 16px;
-      @include mat.button-color($theme, $color-variant: secondary);
     }
 
     .join-btn {

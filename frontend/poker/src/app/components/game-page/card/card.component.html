@@ -5,8 +5,8 @@
      [class.size-big]="isBig()"
      [class.interactive]="interactive()"
      (touchstart)="onCardClick()">
-  <div class="rank">{{ rank() }}</div>
-  <div class="suit">{{ suit() }}</div>
+  <div class="rank">{{ rankValue() }}</div>
+  <div class="suit">{{ suitValue() }}</div>
   @if (!isSmall()) {
     <div class="big-suit">{{ suit() }}</div>
   }

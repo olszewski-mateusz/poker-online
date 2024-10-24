@@ -24,7 +24,7 @@ public final class Raise extends Action {
 
         int currentBid = board.getCurrentBet();
         if (amount < 2 * currentBid) {
-            throw new ActionException("Must raise at least double of the current bid");
+            throw new ActionException("Must raise at least double of the current bet");
         }
         if (amount - player.getBet() > player.getMoney()) {
             throw new ActionException("Must have money for raise.");

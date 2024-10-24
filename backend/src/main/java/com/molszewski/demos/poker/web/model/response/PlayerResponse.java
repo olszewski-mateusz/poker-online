@@ -15,7 +15,7 @@ public record PlayerResponse(
         String id,
         String name,
         int money,
-        int bid,
+        int bet,
         boolean ready,
         boolean folded,
         Set<Card> cards,
@@ -26,7 +26,7 @@ public record PlayerResponse(
                 .id(player.getId())
                 .name(metadata.name())
                 .money(player.getMoney())
-                .bid(player.getBet())
+                .bet(player.getBet())
                 .ready(player.isReady())
                 .folded(player.isFolded())
                 .cards(Optional.ofNullable(player.getHand()).map(Hand::getCards).orElse(null))
