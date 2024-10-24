@@ -6,7 +6,9 @@ export type Game = {
   history: Command[]
   configuration: Configuration
   state: GameState
-  currentPlayerId: string
+  currentPlayerId?: string
+  myId: string
+  gameId: string
   cardsInDeck: number
   discardedCards: number
 }
@@ -18,8 +20,8 @@ export type Player = {
   bet: number
   ready: boolean
   folded: boolean
-  cards: Card[]
-  handType: HandType
+  cards?: Card[]
+  handType?: HandType
 }
 
 export type Card = {
@@ -42,7 +44,7 @@ export enum HandType {
 export type Command = {
   playerName: string
   actionType: ActionType
-  amount: number
+  amount?: number
 }
 
 export type Configuration = {

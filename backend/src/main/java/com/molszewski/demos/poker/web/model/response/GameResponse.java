@@ -12,25 +12,39 @@ import java.util.Optional;
 
 @Builder
 public record GameResponse(
-        List<PlayerResponse> players,
-        List<CommandResponse> history,
-        GameConfiguration configuration,
+        String gameId,
+        String myId,
         GameState state,
         String currentPlayerId,
+        List<PlayerResponse> players,
+        List<CommandResponse> history,
         int cardsInDeck,
-        int discardedCards
-) {
-    public static GameResponse fromGame(Game game, MetadataCollector metadataCollector, List<CommandResponse> history) {
+        int discardedCards,
+        GameConfiguration configuration
+        ) {
+    public static GameResponse fromParams(Params params) {
         return GameResponse.builder()
-                .state(game.getGameState())
-                .configuration(game.getConfiguration())
-                .history(history)
-                .cardsInDeck(game.getCardsInDeck())
-                .discardedCards(game.getDiscardedCards())
-                .currentPlayerId(Optional.ofNullable(game.getCurrentPlayer()).map(Player::getId).orElse(null))
-                .players(game.getPlayers().stream()
-                        .map(player -> PlayerResponse.fromPlayer(player, metadataCollector.getPlayerMetadata(player.getId())))
+                .gameId(params.gameId)
+                .myId(params.myId)
+                .state(params.game.getGameState())
+                .currentPlayerId(Optional.ofNullable(params.game.getCurrentPlayer()).map(Player::getId).orElse(null))
+                .players(params.game.getPlayers().stream()
+                        .map(player -> PlayerResponse.fromPlayer(player, params.metadataCollector.getPlayerMetadata(player.getId())))
                         .toList())
+                .cardsInDeck(params.game.getCardsInDeck())
+                .discardedCards(params.game.getDiscardedCards())
+                .history(params.history)
+                .configuration(params.game.getConfiguration())
                 .build();
+    }
+
+    @Builder
+    public record Params(
+            String gameId,
+            String myId,
+            Game game,
+            MetadataCollector metadataCollector,
+            List<CommandResponse> history
+    ) {
     }
 }

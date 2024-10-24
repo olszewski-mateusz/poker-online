@@ -59,7 +59,7 @@ public class GameService {
                 ).doOnError(e -> log.warn(e.getMessage()));
     }
 
-    public Flux<GameResponse> subscribeToGameChanges(String gameId) {
+    public Flux<GameResponse> subscribeToGameChanges(String gameId, String myId) {
         final AtomicReference<StreamOffset<String>> currentOffset = new AtomicReference<>(StreamOffset.fromStart(commandRepository.getStreamKey(gameId)));
 
         return gameSetupRepository.findById(gameId)
@@ -83,12 +83,20 @@ public class GameService {
                         if (lastRecord != null) {
                             currentOffset.set(StreamOffset.from(lastRecord));
                         }
-                        return Mono.just(GameResponse.fromGame(game, metadataCollector, history));
+                        return Mono.just(GameResponse.fromParams(
+                                GameResponse.Params.builder()
+                                        .gameId(gameId)
+                                        .myId(myId)
+                                        .game(game)
+                                        .history(history)
+                                        .metadataCollector(metadataCollector)
+                                        .build()
+                        ));
                     })).repeat();
                 });
     }
 
-    public Mono<GameResponse> getCurrentGame(String gameId) {
+    public Mono<GameResponse> getCurrentGame(String gameId, String myId) {
         return gameSetupRepository.findById(gameId)
                 .map(gameSetup -> gameSetup.toGame(new Random()))
                 .flatMap(game -> {
@@ -107,7 +115,15 @@ public class GameService {
                                         history.add(CommandResponse.from(command, metadataCollector));
                                     }
                                 }
-                                return Mono.just(GameResponse.fromGame(game, metadataCollector, history));
+                                return Mono.just(GameResponse.fromParams(
+                                        GameResponse.Params.builder()
+                                                .gameId(gameId)
+                                                .myId(myId)
+                                                .game(game)
+                                                .history(history)
+                                                .metadataCollector(metadataCollector)
+                                                .build()
+                                ));
                             })
                     );
                 });
