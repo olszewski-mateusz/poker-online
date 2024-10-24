@@ -24,7 +24,7 @@ export class GameService {
       mergeMap(playerName => this.apiService.createGame().pipe(
         mergeMap((gameId) =>
           this.apiService.joinGame(gameId, playerName).pipe(
-            tap(myId => sessionStorage.setItem(gameId, myId)),
+            tap(myId => localStorage.setItem(gameId, myId)),
             map(() => gameId))
         ))),
       mergeMap((gameId) => this.router.navigate(['game', gameId]))
@@ -41,7 +41,7 @@ export class GameService {
       filter(value => value === true),
       mergeMap(() => this.dialog.open(PlayerNamePromptComponent, {hasBackdrop: false}).afterClosed()),
       mergeMap(playerName => this.apiService.joinGame(gameId, playerName).pipe(
-        tap(myId => sessionStorage.setItem(gameId, myId)),
+        tap(myId => localStorage.setItem(gameId, myId)),
         map(() => gameId))
       ),
       mergeMap((gameId) => this.router.navigate(['game', gameId]))
@@ -58,13 +58,13 @@ export class GameService {
       }),
       filter(value => value === true),
       mergeMap(() => {
-        const myId = sessionStorage.getItem(gameId);
+        const myId = localStorage.getItem(gameId);
         if (myId) {
           return this.apiService.getGame(gameId, myId);
         }
         return this.dialog.open(PlayerNamePromptComponent, {hasBackdrop: false}).afterClosed().pipe(
           mergeMap(playerName => this.apiService.joinGame(gameId, playerName)),
-          tap(myId => sessionStorage.setItem(gameId, myId)),
+          tap(myId => localStorage.setItem(gameId, myId)),
           mergeMap(myId => this.apiService.getGame(gameId, myId))
         )
       })
