@@ -26,8 +26,8 @@ public abstract sealed class Command permits AllInCommand, CheckCommand, FoldCom
         return new AllInCommand(playerId);
     }
 
-    public static Command ready(String playerId) {
-        return new ReadyCommand(playerId);
+    public static Command ready(String playerId, boolean ready) {
+        return new ReadyCommand(playerId, ready);
     }
 
     public static Command join(String playerId, String displayName) {

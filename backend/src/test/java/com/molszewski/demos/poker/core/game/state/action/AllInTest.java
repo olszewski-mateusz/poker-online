@@ -26,9 +26,9 @@ class AllInTest {
         stateManager.executeAction(new Join("2"), board, configuration);
         stateManager.executeAction(new Join("3"), board, configuration);
 
-        stateManager.executeAction(new Ready("1"), board, configuration);
-        stateManager.executeAction(new Ready("2"), board, configuration);
-        stateManager.executeAction(new Ready("3"), board, configuration);
+        stateManager.executeAction(new Ready("1", true), board, configuration);
+        stateManager.executeAction(new Ready("2", true), board, configuration);
+        stateManager.executeAction(new Ready("3", true), board, configuration);
 
         Player player = stateManager.getCurrentPlayer();
         assertEquals("1", player.getId());
@@ -47,9 +47,9 @@ class AllInTest {
         stateManager.executeAction(new Join("2"), board, configuration);
         stateManager.executeAction(new Join("3"), board, configuration);
 
-        stateManager.executeAction(new Ready("1"), board, configuration);
-        stateManager.executeAction(new Ready("2"), board, configuration);
-        stateManager.executeAction(new Ready("3"), board, configuration);
+        stateManager.executeAction(new Ready("1",true), board, configuration);
+        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), board, configuration);
 
         Player player = stateManager.getCurrentPlayer();
         assertEquals("1", player.getId());
@@ -68,9 +68,9 @@ class AllInTest {
         stateManager.executeAction(new Join("2"), board, configuration);
         stateManager.executeAction(new Join("3"), board, configuration);
 
-        stateManager.executeAction(new Ready("1"), board, configuration);
-        stateManager.executeAction(new Ready("2"), board, configuration);
-        stateManager.executeAction(new Ready("3"), board, configuration);
+        stateManager.executeAction(new Ready("1",true), board, configuration);
+        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), board, configuration);
 
         Player player = stateManager.getCurrentPlayer();
         assertEquals("1", player.getId());

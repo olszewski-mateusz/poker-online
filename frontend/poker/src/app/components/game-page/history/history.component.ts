@@ -33,7 +33,7 @@ export class HistoryComponent {
         case ActionType.RAISE:
           break;
         case ActionType.READY:
-          return `Player ${command.playerName} is ready.`;
+          return `Player ${command.playerName} is ${command.amount === 1 ? '' : 'not'} ready.`;
         case ActionType.REPLACE:
           break;
       }

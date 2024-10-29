@@ -56,8 +56,4 @@ export class GamePageComponent {
       console.log(gama)
     });
   }
-
-  sendReady(game: Game) {
-    this.apiService.readyAction(game.gameId, game.myId).subscribe();
-  }
 }

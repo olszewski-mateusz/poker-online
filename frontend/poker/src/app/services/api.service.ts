@@ -32,9 +32,10 @@ export class ApiService {
     );
   }
 
-  readyAction(gameId: string, playerId: string): Observable<never> {
+  readyAction(gameId: string, playerId: string, ready: boolean): Observable<never> {
     return <Observable<never>> this.httpClient.post<{myId: string}>(`${API_HOST}/game/${gameId}/action/ready`,{
-      playerId: playerId
+      playerId: playerId,
+      ready: ready
     });
   }
 

@@ -1,3 +1,5 @@
 <div class="wrapper">
-  <button mat-button (click)="sendReady(game())">Ready</button>
+  <button mat-button (click)="sendReady(game())">
+    {{myPlayer()?.ready ? 'Not ready' : 'Ready'}}
+  </button>
 </div>

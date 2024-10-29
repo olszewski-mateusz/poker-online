@@ -12,12 +12,15 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @NoArgsConstructor
 public final class ReadyCommand extends Command {
+    private boolean ready;
+
     @Override
     public Action toAction() {
-        return new Ready(this.getPlayerId());
+        return new Ready(this.getPlayerId(), ready);
     }
 
-    ReadyCommand(final String playerId) {
+    ReadyCommand(final String playerId, final boolean ready) {
         super(playerId);
+        this.ready = ready;
     }
 }

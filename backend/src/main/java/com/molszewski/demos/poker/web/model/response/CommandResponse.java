@@ -16,7 +16,7 @@ public record CommandResponse(
             case CheckCommand ignored -> new CommandResponse(playerName, Type.CHECK, null);
             case FoldCommand ignored -> new CommandResponse(playerName, Type.FOLD, null);
             case RaiseCommand raiseCommand -> new CommandResponse(playerName, Type.RAISE, raiseCommand.getAmount());
-            case ReadyCommand ignored -> new CommandResponse(playerName, Type.READY, null);
+            case ReadyCommand readyCommand -> new CommandResponse(playerName, Type.READY, readyCommand.isReady() ? 1 : 0);
             case ReplaceCommand replaceCommand -> new CommandResponse(playerName, Type.REPLACE, replaceCommand.getCardsToReplace().size());
         };
     }

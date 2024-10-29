@@ -30,9 +30,9 @@ class ReplaceTest {
         stateManager.executeAction(new Join("2"), board, configuration);
         stateManager.executeAction(new Join("3"), board, configuration);
 
-        stateManager.executeAction(new Ready("1"), board, configuration);
-        stateManager.executeAction(new Ready("2"), board, configuration);
-        stateManager.executeAction(new Ready("3"), board, configuration);
+        stateManager.executeAction(new Ready("1",true), board, configuration);
+        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), board, configuration);
 
         stateManager.executeAction(new Check("1"), board, configuration);
         stateManager.executeAction(new Check("2"), board, configuration);
@@ -60,9 +60,9 @@ class ReplaceTest {
         stateManager.executeAction(new Join("2"), board, configuration);
         stateManager.executeAction(new Join("3"), board, configuration);
 
-        stateManager.executeAction(new Ready("1"), board, configuration);
-        stateManager.executeAction(new Ready("2"), board, configuration);
-        stateManager.executeAction(new Ready("3"), board, configuration);
+        stateManager.executeAction(new Ready("1",true), board, configuration);
+        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), board, configuration);
 
         stateManager.executeAction(new Check("1"), board, configuration);
         stateManager.executeAction(new Check("2"), board, configuration);
@@ -86,9 +86,9 @@ class ReplaceTest {
         stateManager.executeAction(new Join("2"), board, configuration);
         stateManager.executeAction(new Join("3"), board, configuration);
 
-        stateManager.executeAction(new Ready("1"), board, configuration);
-        stateManager.executeAction(new Ready("2"), board, configuration);
-        stateManager.executeAction(new Ready("3"), board, configuration);
+        stateManager.executeAction(new Ready("1",true), board, configuration);
+        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), board, configuration);
 
         stateManager.executeAction(new Check("1"), board, configuration);
         stateManager.executeAction(new Check("2"), board, configuration);
@@ -118,9 +118,9 @@ class ReplaceTest {
         stateManager.executeAction(new Join("2"), board, configuration);
         stateManager.executeAction(new Join("3"), board, configuration);
 
-        stateManager.executeAction(new Ready("1"), board, configuration);
-        stateManager.executeAction(new Ready("2"), board, configuration);
-        stateManager.executeAction(new Ready("3"), board, configuration);
+        stateManager.executeAction(new Ready("1",true), board, configuration);
+        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), board, configuration);
 
         stateManager.executeAction(new Check("1"), board, configuration);
         stateManager.executeAction(new Check("2"), board, configuration);
