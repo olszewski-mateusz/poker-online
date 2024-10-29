@@ -6,7 +6,23 @@
 <!--  }-->
 
 <!--</div>-->
+<div class="wrapper">
+  @if (game(); as game) {
 
-@if (game(); as game) {
-  <button mat-button (click)="sendReady(game)">Ready</button>
-}
+    <app-toolbar [game]="game"></app-toolbar>
+
+    <mat-list>
+      @for (player of game.players; track player.id) {
+        <mat-list-item>
+          <span matListItemTitle>{{player.name}}</span>
+          <span matListItemLine>Ready: {{player.ready}}</span>
+          <span matListItemLine>Money: {{player.money}}</span>
+          <span matListItemLine>Bet: {{player.bet}}</span>
+          <span matListItemLine>Folded: {{player.folded}}</span>
+        </mat-list-item>
+      }
+    </mat-list>
+    <button mat-button (click)="sendReady(game)">Ready</button>
+  }
+</div>
+

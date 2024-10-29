@@ -9,13 +9,19 @@ import {map, mergeMap} from 'rxjs';
 import {ApiService} from '../../services/api.service';
 import {GameService} from '../../services/game.service';
 import {MatButton} from '@angular/material/button';
+import {MatList, MatListItem, MatListModule} from '@angular/material/list';
+import {ToolbarComponent} from './toolbar/toolbar.component';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
   imports: [
     CardComponent,
-    MatButton
+    MatButton,
+    MatList,
+    MatListItem,
+    MatListModule,
+    ToolbarComponent
   ],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.scss',

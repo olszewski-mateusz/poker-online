@@ -1,0 +1,22 @@
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+
+  .player-info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    mat-icon {
+      transform: translateY(4px);
+      margin-right: 5px;
+    }
+  }
+
+  .menu {
+    flex-grow: 3;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+
