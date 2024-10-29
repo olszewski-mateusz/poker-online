@@ -11,6 +11,9 @@ import {GameService} from '../../services/game.service';
 import {MatButton} from '@angular/material/button';
 import {MatList, MatListItem, MatListModule} from '@angular/material/list';
 import {ToolbarComponent} from './toolbar/toolbar.component';
+import {ActionsComponent} from './actions/actions.component';
+import {HandComponent} from './hand/hand.component';
+import {HistoryComponent} from './history/history.component';
 
 @Component({
   selector: 'app-game-page',
@@ -21,7 +24,10 @@ import {ToolbarComponent} from './toolbar/toolbar.component';
     MatList,
     MatListItem,
     MatListModule,
-    ToolbarComponent
+    ToolbarComponent,
+    ActionsComponent,
+    HandComponent,
+    HistoryComponent
   ],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.scss',

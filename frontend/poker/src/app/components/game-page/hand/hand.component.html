@@ -1,0 +1,5 @@
+<div class="wrapper">
+  @for (card of myPlayer()?.cards ?? []; track card) {
+    <card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.BIG" [interactive]="true"/>
+  }
+</div>

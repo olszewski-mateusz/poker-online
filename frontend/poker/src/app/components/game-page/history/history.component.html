@@ -1,0 +1,7 @@
+<mat-list>
+  @for (entry of historyEntries(); track entry) {
+    <mat-list-item>
+      <span matListItemTitle>{{entry}}</span>
+    </mat-list-item>
+  }
+</mat-list>

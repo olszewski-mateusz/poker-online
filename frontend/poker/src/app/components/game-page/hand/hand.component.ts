@@ -1,26 +1,23 @@
 import {ChangeDetectionStrategy, Component, computed, input, InputSignal} from '@angular/core';
-import {MatToolbar} from '@angular/material/toolbar';
-import {MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
 import {Game} from '../../../model/game';
+import {CardComponent, CardSize} from '../card/card.component';
 
 @Component({
-  selector: 'app-toolbar',
+  selector: 'app-hand',
   standalone: true,
   imports: [
-    MatToolbar,
-    MatIconButton,
-    MatIcon
+    CardComponent
   ],
-  templateUrl: './toolbar.component.html',
-  styleUrl: './toolbar.component.scss',
+  templateUrl: './hand.component.html',
+  styleUrl: './hand.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ToolbarComponent {
+export class HandComponent {
   game: InputSignal<Game> = input.required<Game>();
 
   myPlayer = computed(() => {
     const game: Game = this.game();
     return game.players.find(value => value.id === game.myId);
   });
+  protected readonly CardSize = CardSize;
 }
