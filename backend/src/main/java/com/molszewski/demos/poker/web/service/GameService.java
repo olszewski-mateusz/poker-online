@@ -67,32 +67,34 @@ public class GameService {
                 .flatMapMany(game -> {
                     MetadataCollector metadataCollector = MetadataCollector.newInstance();
                     List<CommandResponse> history = new ArrayList<>();
-                    return Mono.defer(() -> commandRepository.readFromOffsetWithBlock(currentOffset.get()).collectList().flatMap(objectRecords -> {
-                        Record<String, Command> lastRecord = null;
-                        for (Record<String, Command> commandRecord : objectRecords) {
-                            lastRecord = commandRecord;
-                            Command command = commandRecord.getValue();
-                            boolean success = game.applyAction(command.toAction());
-                            if (!success) {
-                                log.warn("Illegal command found in stream");
-                            } else {
-                                metadataCollector.includeCommand(command);
-                                history.add(CommandResponse.from(command, metadataCollector));
-                            }
-                        }
-                        if (lastRecord != null) {
-                            currentOffset.set(StreamOffset.from(lastRecord));
-                        }
-                        return Mono.just(GameResponse.fromParams(
-                                GameResponse.Params.builder()
-                                        .gameId(gameId)
-                                        .myId(myId)
-                                        .game(game)
-                                        .history(history)
-                                        .metadataCollector(metadataCollector)
-                                        .build()
-                        ));
-                    })).repeat();
+                    return Mono.defer(() -> commandRepository.readFromOffsetWithBlock(currentOffset.get()).collectList()
+                            .filter(objectRecords -> !objectRecords.isEmpty())
+                            .flatMap(objectRecords -> {
+                                Record<String, Command> lastRecord = null;
+                                for (Record<String, Command> commandRecord : objectRecords) {
+                                    lastRecord = commandRecord;
+                                    Command command = commandRecord.getValue();
+                                    boolean success = game.applyAction(command.toAction());
+                                    if (!success) {
+                                        log.warn("Illegal command found in stream");
+                                    } else {
+                                        metadataCollector.includeCommand(command);
+                                        history.add(CommandResponse.from(command, metadataCollector));
+                                    }
+                                }
+                                if (lastRecord != null) {
+                                    currentOffset.set(StreamOffset.from(lastRecord));
+                                }
+                                return Mono.just(GameResponse.fromParams(
+                                        GameResponse.Params.builder()
+                                                .gameId(gameId)
+                                                .myId(myId)
+                                                .game(game)
+                                                .history(history)
+                                                .metadataCollector(metadataCollector)
+                                                .build()
+                                ));
+                            })).repeat();
                 });
     }
 

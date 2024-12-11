@@ -34,7 +34,7 @@ public class CommandRepository {
     }
 
     public Flux<ObjectRecord<String, Command>> readFromOffsetWithBlock(final StreamOffset<String> stream) {
-        return redisCommandTemplate.opsForStream().read(Command.class, StreamReadOptions.empty().block(Duration.ZERO), stream);
+        return redisCommandTemplate.opsForStream().read(Command.class, StreamReadOptions.empty().block(Duration.ofSeconds(1)), stream);
     }
 
     public String getStreamKey(final String gameId) {

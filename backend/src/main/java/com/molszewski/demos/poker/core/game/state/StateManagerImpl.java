@@ -105,7 +105,7 @@ public class StateManagerImpl implements StateManager {
 
     private void checkIfLegalState(Set<GameState> legalStates) throws ActionException {
         if (!legalStates.contains(gameState)) {
-            throw new ActionException("Action " + gameState.getClass().getSimpleName() + " not legal in state " + gameState);
+            throw new ActionException("Action not legal in state " + gameState);
         }
     }
 }
