@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, Component, computed, input, InputSignal} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed, effect,
+  ElementRef,
+  input,
+  InputSignal,
+  Signal,
+  viewChild
+} from '@angular/core';
 import {MatList, MatListItem, MatListItemLine, MatListItemTitle, MatListModule} from '@angular/material/list';
 import {ActionType, Game} from '../../../model/game';
 
@@ -19,7 +28,28 @@ import {ActionType, Game} from '../../../model/game';
 export class HistoryComponent {
   game: InputSignal<Game> = input.required<Game>()
 
-  historyEntries = computed(() => {
+  private historyContainer = viewChild.required<MatList, ElementRef>(MatList, {read: ElementRef});
+
+  constructor() {
+    effect(() => {
+      const historyEntries = this.historyEntries();
+      this.scrollToBottom();
+    });
+  }
+
+  scrollToBottom(): void {
+    const historyContainer = this.historyContainer();
+    console.log(historyContainer)
+    if (historyContainer) {
+      historyContainer.nativeElement.scroll({
+        top: historyContainer.nativeElement.scrollHeight,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  historyEntries: Signal<string[]> = computed(() => {
     return this.game().history.map(command => {
       switch (command.actionType) {
         case ActionType.JOIN:

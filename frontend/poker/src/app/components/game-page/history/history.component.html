@@ -1,5 +1,5 @@
 <mat-list>
-  @for (entry of historyEntries(); track entry) {
+  @for (entry of historyEntries(); track $index) {
     <mat-list-item>
       <span matListItemTitle>{{entry}}</span>
     </mat-list-item>
