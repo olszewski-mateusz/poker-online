@@ -6,19 +6,28 @@
     <div class="middle-panel">
       <app-history [game]="game"></app-history>
 
-      <app-hand [game]="game"></app-hand>
+      <div class="middle-column">
+        <app-game-state [game]="game"></app-game-state>
+        <app-hand [game]="game"></app-hand>
+      </div>
 
-      <mat-list>
-        @for (player of game.players; track player.id) {
-          <mat-list-item>
-            <span matListItemTitle>{{player.name}}</span>
-            <span matListItemLine>Ready: {{player.ready}}</span>
-            <span matListItemLine>Money: {{player.money}}</span>
-            <span matListItemLine>Bet: {{player.bet}}</span>
-            <span matListItemLine>Folded: {{player.folded}}</span>
-          </mat-list-item>
-        }
-      </mat-list>
+      <div class="right-panel">
+        <app-player-selection [game]="game"></app-player-selection>
+        <app-player-properties [game]="game"></app-player-properties>
+      </div>
+
+
+<!--      <mat-list>-->
+<!--        @for (player of game.players; track player.id) {-->
+<!--          <mat-list-item>-->
+<!--            <span matListItemTitle>{{player.name}}</span>-->
+<!--            <span matListItemLine>Ready: {{player.ready}}</span>-->
+<!--            <span matListItemLine>Money: {{player.money}}</span>-->
+<!--            <span matListItemLine>Bet: {{player.bet}}</span>-->
+<!--            <span matListItemLine>Folded: {{player.folded}}</span>-->
+<!--          </mat-list-item>-->
+<!--        }-->
+<!--      </mat-list>-->
     </div>
 
     <app-actions [game]="game"></app-actions>

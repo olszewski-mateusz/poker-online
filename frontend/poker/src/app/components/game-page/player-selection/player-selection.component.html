@@ -1,0 +1,7 @@
+<mat-selection-list [multiple]="false">
+  @for (player of game().players; track player.id) {
+    <mat-list-option [selected]="selectedPlayerId() === player.id" (selectedChange)="onPlayerChange(player)">
+      <span matListItemTitle>{{player.name}}</span>
+    </mat-list-option>
+  }
+</mat-selection-list>

@@ -14,6 +14,9 @@ import {ToolbarComponent} from './toolbar/toolbar.component';
 import {ActionsComponent} from './actions/actions.component';
 import {HandComponent} from './hand/hand.component';
 import {HistoryComponent} from './history/history.component';
+import {GameStateComponent} from './game-state/game-state.component';
+import {PlayerSelectionComponent} from './player-selection/player-selection.component';
+import {PlayerPropertiesComponent} from './player-properties/player-properties.component';
 
 @Component({
   selector: 'app-game-page',
@@ -27,7 +30,10 @@ import {HistoryComponent} from './history/history.component';
     ToolbarComponent,
     ActionsComponent,
     HandComponent,
-    HistoryComponent
+    HistoryComponent,
+    GameStateComponent,
+    PlayerSelectionComponent,
+    PlayerPropertiesComponent
   ],
   templateUrl: './game-page.component.html',
   styleUrl: './game-page.component.scss',

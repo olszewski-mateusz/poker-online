@@ -1,0 +1,9 @@
+.wrapper {
+  color: var(--mat-app-text-color);
+  background-color: #151515;
+  padding: 10px;
+
+  mat-icon {
+    transform: translateY(4px);
+  }
+}

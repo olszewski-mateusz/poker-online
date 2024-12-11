@@ -13,5 +13,28 @@
   .middle-panel {
     display: flex;
     justify-content: space-between;
+
+    .middle-column {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+    }
+
+    .right-panel {
+      display: flex;
+
+      app-player-selection {
+        flex-basis: 40%;
+      }
+
+      app-player-properties {
+        flex-basis: 60%;
+      }
+    }
+
+    app-history, middle-column, .right-panel {
+      flex-basis: calc(100% / 3);
+    }
+
   }
 }

@@ -1,0 +1,15 @@
+<div class="wrapper">
+  <div>
+    {{game().state}}
+    <mat-icon>poker_chip</mat-icon>
+    {{collectedBet()}}
+    <mat-icon>playing_cards</mat-icon>
+    {{game().cardsInDeck}}
+  </div>
+  @if (currentPlayer()) {
+    <div>
+      Turn: {{currentPlayer()?.name}}
+    </div>
+  }
+</div>
+

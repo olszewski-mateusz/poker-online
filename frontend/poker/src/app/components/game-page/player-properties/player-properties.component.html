@@ -1,0 +1,16 @@
+<div class="wrapper">
+  @if (selectedPlayer(); as selectedPlayer) {
+    <div>
+      <mat-icon>account_circle</mat-icon>
+      {{selectedPlayer.name}}
+    </div>
+    <div>
+      <mat-icon>paid</mat-icon>
+      {{selectedPlayer.money}}
+    </div>
+    <div>
+      <mat-icon>poker_chip</mat-icon>
+      {{selectedPlayer.bet}}
+    </div>
+  }
+</div>
