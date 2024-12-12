@@ -60,12 +60,12 @@ export class GameService {
       mergeMap(() => {
         const myId = localStorage.getItem(gameId);
         if (myId) {
-          return this.apiService.getGame(gameId, myId);
+          return this.apiService.fetchGameStream(gameId, myId);
         }
         return this.dialog.open(PlayerNamePromptComponent, {hasBackdrop: false}).afterClosed().pipe(
           mergeMap(playerName => this.apiService.joinGame(gameId, playerName)),
           tap(myId => localStorage.setItem(gameId, myId)),
-          mergeMap(myId => this.apiService.getGame(gameId, myId))
+          mergeMap(myId => this.apiService.fetchGameStream(gameId, myId))
         )
       })
     )
