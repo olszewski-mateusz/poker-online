@@ -104,4 +104,12 @@ export class ActionsComponent {
     const game: Game = this.game();
     this.apiService.sendFold(game.gameId, game.myId).subscribe();
   }
+
+  addToAmount(number: number) {
+    const min: number = this.minBet();
+    const max: number = this.maxBet();
+    let amount: number = this.amount() + number;
+    amount = Math.max(min, (Math.min(max, amount)));
+    this.amount.set(amount);
+  }
 }

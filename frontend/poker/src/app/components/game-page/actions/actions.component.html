@@ -6,15 +6,19 @@
   } @else if (game().state === GameState.FIRST_BETTING || game().state === GameState.SECOND_BETTING) {
     @if (raiseSelected()) {
       <div class="column-wrapper">
+
+        <div class="row-wrapper amount-label">Raise amount: {{amount()}}</div>
+
         <div class="row-wrapper">
-          <mat-slider [min]="minBet()" [max]="maxBet()">
+          <button mat-button (click)="addToAmount(-50)">-50</button>
+          <button mat-button (click)="addToAmount(-5)">-5</button>
+
+          <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
             <input [(value)]="amount" matSliderThumb>
           </mat-slider>
 
-          <mat-form-field>
-            <mat-label>Raise amount</mat-label>
-            <input type="number" matInput [value]="amount()">
-          </mat-form-field>
+          <button mat-button (click)="addToAmount(5)">+5</button>
+          <button mat-button (click)="addToAmount(50)">+50</button>
         </div>
 
         <div class="row-wrapper">

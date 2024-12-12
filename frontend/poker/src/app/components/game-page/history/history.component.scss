@@ -3,6 +3,10 @@ mat-list {
   width: 300px;
   overflow-y: scroll;
   background-color: #151515;
+
+  mat-list-item {
+    height: 34px;
+  }
 }
 
 /* width */
