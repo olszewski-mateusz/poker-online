@@ -1,5 +1,65 @@
 <div class="wrapper">
-  <button mat-button (click)="sendReady(game())">
-    {{myPlayer()?.ready ? 'Not ready' : 'Ready'}}
-  </button>
+  @if (game().state === GameState.NOT_STARTED) {
+    <button mat-button (click)="sendReady()">
+      {{ myPlayer()?.ready ? 'Not ready' : 'Ready' }}
+    </button>
+  } @else if (game().state === GameState.FIRST_BETTING || game().state === GameState.SECOND_BETTING) {
+    @if (raiseSelected()) {
+      <div class="column-wrapper">
+        <div class="row-wrapper">
+          <mat-slider [min]="minBet()" [max]="maxBet()">
+            <input [(value)]="amount" matSliderThumb>
+          </mat-slider>
+
+          <mat-form-field>
+            <mat-label>Raise amount</mat-label>
+            <input type="number" matInput [value]="amount()">
+          </mat-form-field>
+        </div>
+
+        <div class="row-wrapper">
+          <button mat-button [disabled]="!myTurn()" (click)="sendAllIn()">
+            All in
+          </button>
+
+          <button mat-button [disabled]="!myTurn()" (click)="sendBetOrRaise()">
+            Raise
+          </button>
+
+          <button mat-button [disabled]="!myTurn()" (click)="raiseSelected.set(false)">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    } @else if (isBet()) {
+      <button mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
+        Call
+      </button>
+
+      <button mat-button [disabled]="!myTurn()" (click)="raiseSelected.set(true)">
+        Raise
+      </button>
+
+      <button mat-button [disabled]="!myTurn()" (click)="sendFold()">
+        Fold
+      </button>
+    } @else {
+      <button mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
+        Check
+      </button>
+
+      <button mat-button [disabled]="!myTurn()" (click)="raiseSelected.set(true)">
+        Bet
+      </button>
+    }
+  } @else if (game().state === GameState.DRAWING) {
+    <button mat-button [disabled]="!myTurn()" (click)="sendReady()">
+      Replace cards
+    </button>
+  } @else if (game().state === GameState.SHOWDOWN) {
+    <button mat-button (click)="sendReady()">
+      {{ myPlayer()?.ready ? 'Not ready' : 'Ready for next round' }}
+    </button>
+  }
 </div>
