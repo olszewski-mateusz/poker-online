@@ -31,12 +31,14 @@
     transform: translate(6%, 40%);
   }
   .suit {
-    transform: translate(8%, 120%);
+    width: 30px;
+    transform: translate(28%, 120%);
   }
 
   .big-suit {
     font-size: 85px;
-    transform: translate(38%, 165%);
+    width: 50px;
+    transform: translate(75%, 165%);
   }
 }
 

@@ -5,7 +5,7 @@ import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
-import {GameService} from '../../services/game.service';
+import {GameConnectorService} from '../../services/game-connector.service';
 
 @Component({
   selector: 'app-start-page',
@@ -25,7 +25,7 @@ import {GameService} from '../../services/game.service';
 })
 export class StartPageComponent {
 
-  private readonly gameService: GameService = inject(GameService);
+  private readonly gameService: GameConnectorService = inject(GameConnectorService);
   private readonly router: Router = inject(Router);
   gameId = model<string|null>(null);
 

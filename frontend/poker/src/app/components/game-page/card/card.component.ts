@@ -88,7 +88,7 @@ export class CardComponent {
     return this.size() === CardSize.BIG;
   })
 
-  onCardClick() {
+  onCardClick(): void {
     if (this.interactive()) {
       this.clicked.emit();
     }

@@ -1,13 +1,10 @@
-import {ChangeDetectionStrategy, Component, effect, inject, OnInit, Signal} from '@angular/core';
-import {CardComponent, CardSize} from "./card/card.component";
-import {Suit} from '../../model/suit';
-import {Rank} from '../../model/rank';
+import {ChangeDetectionStrategy, Component, effect, inject, Signal} from '@angular/core';
+import {CardComponent} from "./card/card.component";
 import {ActivatedRoute} from '@angular/router';
 import {Game} from '../../model/game';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {map, mergeMap} from 'rxjs';
-import {ApiService} from '../../services/api.service';
-import {GameService} from '../../services/game.service';
+import {GameConnectorService} from '../../services/game-connector.service';
 import {MatButton} from '@angular/material/button';
 import {MatList, MatListItem, MatListModule} from '@angular/material/list';
 import {ToolbarComponent} from './toolbar/toolbar.component';
@@ -40,26 +37,18 @@ import {PlayerPropertiesComponent} from './player-properties/player-properties.c
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GamePageComponent {
-  protected readonly Object = Object;
-  protected readonly Suit = Suit;
-  protected readonly Rank = Rank;
-  protected readonly CardSize = CardSize;
-
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
-  private readonly gameService: GameService = inject(GameService);
-  private readonly apiService: ApiService = inject(ApiService);
+  private readonly gameService: GameConnectorService = inject(GameConnectorService);
 
   game: Signal<Game | undefined> = toSignal(this.route.params.pipe(
     map(value => value['gameId']),
-    mergeMap(value => this.gameService.getGame(value))
+    mergeMap(gameId => this.gameService.connectToGameStream(gameId))
   ));
 
   constructor() {
-    this.route.params.subscribe(value => console.log(value))
-
     effect(() => {
-      const gama = this.game();
-      console.log(gama)
+      const game = this.game();
+      console.log(game)
     });
   }
 }

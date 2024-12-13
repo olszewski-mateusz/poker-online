@@ -1,17 +1,16 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
-import {Card, Game} from '../model/game';
-import {GameStreamService} from './game-stream.service';
+import {Card, Game} from '../../model/game';
+import {ApiStreamService} from './api-stream.service';
 
 export const API_HOST: string = 'http://localhost:8080';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class ApiRestService {
   private readonly httpClient: HttpClient = inject(HttpClient);
-  private readonly gameStreamService: GameStreamService = inject(GameStreamService);
 
   createGame(): Observable<string> {
     return this.httpClient.post<{gameId: string}>(`${API_HOST}/game`, undefined)
@@ -69,9 +68,5 @@ export class ApiService {
       playerId: playerId,
       cardsToReplace: cardsToReplace
     });
-  }
-
-  fetchGameStream(gameId: string, myId: string): Observable<Game> {
-    return this.gameStreamService.createEventSource(gameId, myId);
   }
 }

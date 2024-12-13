@@ -58,8 +58,8 @@
       </button>
     }
   } @else if (game().state === GameState.DRAWING) {
-    <button mat-button [disabled]="!myTurn()" (click)="sendReady()">
-      Replace cards
+    <button mat-button [disabled]="!myTurn()" (click)="sendReplace()">
+      Replace cards ({{cardsToReplaceCount()}})
     </button>
   } @else if (game().state === GameState.SHOWDOWN) {
     <button mat-button (click)="sendReady()">

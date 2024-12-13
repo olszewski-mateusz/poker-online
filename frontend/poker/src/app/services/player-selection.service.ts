@@ -8,7 +8,7 @@ export class PlayerSelectionService {
   private readonly _selectedPlayerId: WritableSignal<string|undefined> = signal<string|undefined>(undefined);
   readonly selectedPlayerId: Signal<string|undefined> = this._selectedPlayerId.asReadonly();
 
-  setSelectedPlayer(playerId: string) {
+  setSelectedPlayer(playerId: string): void {
     this._selectedPlayerId.set(playerId);
   }
 }

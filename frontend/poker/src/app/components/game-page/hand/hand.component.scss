@@ -5,4 +5,17 @@
   card {
     margin: 4px
   }
+
+  .card-column {
+    display: flex;
+    flex-direction: column;
+
+    .replace-label {
+      text-align: center;
+      color: var(--mat-app-text-color);
+      font-size: 30px;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+  }
 }

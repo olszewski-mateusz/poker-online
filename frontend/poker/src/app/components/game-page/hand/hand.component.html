@@ -1,5 +1,10 @@
 <div class="wrapper">
-  @for (card of myPlayer()?.cards ?? []; track card) {
-    <card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.BIG" [interactive]="true"/>
+  @for (card of myPlayer()?.cards ?? []; track (card.suit + card.rank)) {
+    <div class="card-column">
+      <card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.BIG" [interactive]="isCardInteractive()" (clicked)="cardClicked(card)"/>
+      @if (isCardSelected(card)) {
+        <div class="replace-label">x</div>
+      }
+    </div>
   }
 </div>
