@@ -4,7 +4,8 @@ import com.molszewski.demos.poker.core.game.Game;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
-import com.molszewski.demos.poker.persistence.metadata.MetadataCollector;
+import com.molszewski.demos.poker.web.collector.metadata.MetadataCollector;
+import com.molszewski.demos.poker.web.collector.history.entry.HistoryEntry;
 import lombok.Builder;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public record GameResponse(
         return GameResponse.builder()
                 .gameId(params.gameId)
                 .myId(params.myId)
-                .state(params.game.getGameState())
+                .state(params.game.getPhase())
                 .currentPlayerId(Optional.ofNullable(params.game.getCurrentPlayer()).map(Player::getId).orElse(null))
                 .players(params.game.getPlayers().stream()
                         .map(player -> PlayerResponse.fromPlayer(player, params.metadataCollector.getPlayerMetadata(player.getId())))

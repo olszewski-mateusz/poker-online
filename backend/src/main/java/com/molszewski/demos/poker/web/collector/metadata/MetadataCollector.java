@@ -1,4 +1,4 @@
-package com.molszewski.demos.poker.persistence.metadata;
+package com.molszewski.demos.poker.web.collector.metadata;
 
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.persistence.entity.command.JoinCommand;

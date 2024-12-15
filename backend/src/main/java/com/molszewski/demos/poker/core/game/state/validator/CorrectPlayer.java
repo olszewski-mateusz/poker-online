@@ -5,7 +5,7 @@ import com.molszewski.demos.poker.core.game.state.action.Action;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.player.Player;
 
-class CorrectPlayer implements Validator {
+public class CorrectPlayer implements Validator {
 
     private CorrectPlayer() {
     }

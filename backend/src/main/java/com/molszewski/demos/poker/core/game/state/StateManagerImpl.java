@@ -1,15 +1,12 @@
 package com.molszewski.demos.poker.core.game.state;
 
-import com.molszewski.demos.poker.core.game.GameState;
-import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.action.*;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.transition.NextTurn;
 import com.molszewski.demos.poker.core.game.state.transition.StartRound;
 import com.molszewski.demos.poker.core.game.state.transition.Transition;
 import com.molszewski.demos.poker.core.game.state.validator.CorrectPhase;
+import com.molszewski.demos.poker.core.game.state.validator.CorrectPlayer;
 import com.molszewski.demos.poker.core.game.state.validator.Validator;
-import com.molszewski.demos.poker.core.player.Player;
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 
@@ -43,31 +40,31 @@ public class StateManagerImpl implements StateManager {
             }
             case Check ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
                         .transition(NextTurn.of())
                         .build();
             }
             case Raise ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
                         .transition(NextTurn.of())
                         .build();
             }
-            case AllIn ignored1 -> {
+            case AllIn ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
                         .transition(NextTurn.of())
                         .build();
             }
             case Fold ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
                         .transition(NextTurn.of())
                         .build();
             }
             case Replace ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPhase.of(Set.of(GamePhase.DRAWING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.DRAWING))))
                         .transition(NextTurn.of())
                         .build();
             }
@@ -75,6 +72,8 @@ public class StateManagerImpl implements StateManager {
     }
 
     @Builder
-    private record ActionContext(List<Validator> validators, @Nullable Transition transition) {
+    private record ActionContext(
+            List<Validator> validators,
+            @Nullable Transition transition) {
     }
 }

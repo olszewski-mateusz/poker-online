@@ -3,12 +3,12 @@ package com.molszewski.demos.poker.web.service;
 import com.molszewski.demos.poker.core.game.Game;
 import com.molszewski.demos.poker.persistence.entity.GameSetup;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
-import com.molszewski.demos.poker.persistence.metadata.MetadataCollector;
 import com.molszewski.demos.poker.persistence.repository.CommandRepository;
 import com.molszewski.demos.poker.persistence.repository.GameSetupRepository;
+import com.molszewski.demos.poker.web.collector.CommandCollector;
+import com.molszewski.demos.poker.web.collector.history.entry.HistoryEntry;
 import com.molszewski.demos.poker.web.model.response.ActionResponse;
 import com.molszewski.demos.poker.web.model.response.GameResponse;
-import com.molszewski.demos.poker.web.model.response.HistoryEntry;
 import com.molszewski.demos.poker.web.model.response.NewGameResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,13 +65,12 @@ public class GameService {
         return gameSetupRepository.findById(gameId)
                 .map(gameSetup -> gameSetup.toGame(new Random()))
                 .flatMapMany(game -> {
-                    MetadataCollector metadataCollector = MetadataCollector.newInstance();
-                    List<HistoryEntry> history = new ArrayList<>();
+                    CommandCollector commandCollector = CommandCollector.newInstance();
                     return Mono.defer(() -> commandRepository.readFromOffsetWithBlock(currentOffset.get()).collectList()
                             .filter(objectRecords -> !objectRecords.isEmpty())
                             .flatMap(objectRecords -> {
                                 List<Command> commands = objectRecords.stream().map(Record::getValue).toList();
-                                history.addAll(this.processCommands(game, commands, metadataCollector));
+                                this.processCommands(game, commands, commandCollector);
                                 if (!objectRecords.isEmpty()) {
                                     currentOffset.set(StreamOffset.from(objectRecords.getLast()));
                                 }
@@ -80,8 +79,8 @@ public class GameService {
                                                 .gameId(gameId)
                                                 .myId(myId)
                                                 .game(game)
-                                                .history(history)
-                                                .metadataCollector(metadataCollector)
+                                                .history(commandCollector.getHistory())
+                                                .metadataCollector(commandCollector.getMetadataCollector())
                                                 .build()
                                 ));
                             })).repeat();
@@ -95,15 +94,15 @@ public class GameService {
                         .map(Record::getValue)
                         .collectList()
                         .flatMap(commands -> {
-                                    MetadataCollector metadataCollector = MetadataCollector.newInstance();
-                                    List<HistoryEntry> history = this.processCommands(game, commands, metadataCollector);
+                                    CommandCollector commandCollector = CommandCollector.newInstance();
+                                    List<HistoryEntry> history = this.processCommands(game, commands, commandCollector);
                                     return Mono.just(GameResponse.fromParams(
                                             GameResponse.Params.builder()
                                                     .gameId(gameId)
                                                     .myId(myId)
                                                     .game(game)
                                                     .history(history)
-                                                    .metadataCollector(metadataCollector)
+                                                    .metadataCollector(commandCollector.getMetadataCollector())
                                                     .build()
                                     ));
                                 }
@@ -111,15 +110,14 @@ public class GameService {
                 );
     }
 
-    private List<HistoryEntry> processCommands(Game game, List<Command> commands, MetadataCollector metadataCollector) {
+    private List<HistoryEntry> processCommands(Game game, List<Command> commands, CommandCollector commandCollector) {
         List<HistoryEntry> history = new ArrayList<>();
         for (Command command : commands) {
             boolean success = game.applyAction(command.toAction());
             if (!success) {
                 log.warn("Illegal command found in stream");
             } else {
-                metadataCollector.includeCommand(command);
-                history.add(HistoryEntry.fromCommand(command, metadataCollector));
+                commandCollector.processCommand(command, game);
             }
         }
         return history;

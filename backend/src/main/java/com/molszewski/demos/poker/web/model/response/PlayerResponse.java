@@ -4,7 +4,7 @@ import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.hand.Hand;
 import com.molszewski.demos.poker.core.hand.HandType;
 import com.molszewski.demos.poker.core.player.Player;
-import com.molszewski.demos.poker.persistence.metadata.PlayerMetadata;
+import com.molszewski.demos.poker.web.collector.metadata.PlayerMetadata;
 import lombok.Builder;
 
 import java.util.Optional;

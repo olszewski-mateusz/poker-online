@@ -25,7 +25,7 @@ public class Game {
     }
 
     public Player getCurrentPlayer() {
-        return stateManager.getCurrentPlayer();
+        return gameState.getCurrentPlayer();
     }
 
     public boolean applyAction(Action action) {
@@ -38,8 +38,8 @@ public class Game {
         }
     }
 
-    public GamePhase getGameState() {
-        return this.stateManager.getState();
+    public GamePhase getPhase() {
+        return this.gameState.getGamePhase();
     }
 
     public List<Player> getPlayers() {

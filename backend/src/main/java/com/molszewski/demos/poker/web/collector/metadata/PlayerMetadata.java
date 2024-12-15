@@ -1,4 +1,4 @@
-package com.molszewski.demos.poker.persistence.metadata;
+package com.molszewski.demos.poker.web.collector.metadata;
 
 public record PlayerMetadata(
         String id,
