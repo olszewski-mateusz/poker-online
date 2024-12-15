@@ -7,8 +7,8 @@ import com.molszewski.demos.poker.persistence.metadata.MetadataCollector;
 import com.molszewski.demos.poker.persistence.repository.CommandRepository;
 import com.molszewski.demos.poker.persistence.repository.GameSetupRepository;
 import com.molszewski.demos.poker.web.model.response.ActionResponse;
-import com.molszewski.demos.poker.web.model.response.CommandResponse;
 import com.molszewski.demos.poker.web.model.response.GameResponse;
+import com.molszewski.demos.poker.web.model.response.HistoryEntry;
 import com.molszewski.demos.poker.web.model.response.NewGameResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,24 +66,14 @@ public class GameService {
                 .map(gameSetup -> gameSetup.toGame(new Random()))
                 .flatMapMany(game -> {
                     MetadataCollector metadataCollector = MetadataCollector.newInstance();
-                    List<CommandResponse> history = new ArrayList<>();
+                    List<HistoryEntry> history = new ArrayList<>();
                     return Mono.defer(() -> commandRepository.readFromOffsetWithBlock(currentOffset.get()).collectList()
                             .filter(objectRecords -> !objectRecords.isEmpty())
                             .flatMap(objectRecords -> {
-                                Record<String, Command> lastRecord = null;
-                                for (Record<String, Command> commandRecord : objectRecords) {
-                                    lastRecord = commandRecord;
-                                    Command command = commandRecord.getValue();
-                                    boolean success = game.applyAction(command.toAction());
-                                    if (!success) {
-                                        log.warn("Illegal command found in stream");
-                                    } else {
-                                        metadataCollector.includeCommand(command);
-                                        history.add(CommandResponse.from(command, metadataCollector));
-                                    }
-                                }
-                                if (lastRecord != null) {
-                                    currentOffset.set(StreamOffset.from(lastRecord));
+                                List<Command> commands = objectRecords.stream().map(Record::getValue).toList();
+                                history.addAll(this.processCommands(game, commands, metadataCollector));
+                                if (!objectRecords.isEmpty()) {
+                                    currentOffset.set(StreamOffset.from(objectRecords.getLast()));
                                 }
                                 return Mono.just(GameResponse.fromParams(
                                         GameResponse.Params.builder()
@@ -101,34 +91,38 @@ public class GameService {
     public Mono<GameResponse> getCurrentGame(String gameId, String myId) {
         return gameSetupRepository.findById(gameId)
                 .map(gameSetup -> gameSetup.toGame(new Random()))
-                .flatMap(game -> {
-                    MetadataCollector metadataCollector = MetadataCollector.newInstance();
-                    List<CommandResponse> history = new ArrayList<>();
-                    return Mono.defer(() -> commandRepository.readAll(gameId).
-                            map(Record::getValue)
-                            .collectList()
-                            .flatMap(commands -> {
-                                for (Command command : commands) {
-                                    boolean success = game.applyAction(command.toAction());
-                                    if (!success) {
-                                        log.warn("Illegal command found in stream");
-                                    } else {
-                                        metadataCollector.includeCommand(command);
-                                        history.add(CommandResponse.from(command, metadataCollector));
-                                    }
+                .flatMap(game -> commandRepository.readAll(gameId)
+                        .map(Record::getValue)
+                        .collectList()
+                        .flatMap(commands -> {
+                                    MetadataCollector metadataCollector = MetadataCollector.newInstance();
+                                    List<HistoryEntry> history = this.processCommands(game, commands, metadataCollector);
+                                    return Mono.just(GameResponse.fromParams(
+                                            GameResponse.Params.builder()
+                                                    .gameId(gameId)
+                                                    .myId(myId)
+                                                    .game(game)
+                                                    .history(history)
+                                                    .metadataCollector(metadataCollector)
+                                                    .build()
+                                    ));
                                 }
-                                return Mono.just(GameResponse.fromParams(
-                                        GameResponse.Params.builder()
-                                                .gameId(gameId)
-                                                .myId(myId)
-                                                .game(game)
-                                                .history(history)
-                                                .metadataCollector(metadataCollector)
-                                                .build()
-                                ));
-                            })
-                    );
-                });
+                        )
+                );
+    }
+
+    private List<HistoryEntry> processCommands(Game game, List<Command> commands, MetadataCollector metadataCollector) {
+        List<HistoryEntry> history = new ArrayList<>();
+        for (Command command : commands) {
+            boolean success = game.applyAction(command.toAction());
+            if (!success) {
+                log.warn("Illegal command found in stream");
+            } else {
+                metadataCollector.includeCommand(command);
+                history.add(HistoryEntry.fromCommand(command, metadataCollector));
+            }
+        }
+        return history;
     }
 
     public String generatePlayerId() {

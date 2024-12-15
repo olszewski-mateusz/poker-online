@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.core.game.state.action;
 
-import com.molszewski.demos.poker.core.game.Board;
+import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import lombok.Getter;
@@ -13,5 +13,5 @@ public abstract sealed class Action permits Join, Ready, Check, Raise, Fold, Rep
         this.playerId = playerId;
     }
 
-    public abstract void execute(Board board, GameConfiguration configuration) throws ActionException;
+    public abstract void execute(GameState gameState, GameConfiguration configuration) throws ActionException;
 }

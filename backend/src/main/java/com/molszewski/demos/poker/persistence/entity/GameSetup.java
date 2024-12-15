@@ -4,7 +4,7 @@ import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.card.Rank;
 import com.molszewski.demos.poker.core.card.Suit;
 import com.molszewski.demos.poker.core.deck.Deck;
-import com.molszewski.demos.poker.core.game.Board;
+import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.Game;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.StateManager;
@@ -38,8 +38,8 @@ public record GameSetup(
     }
 
     public Game toGame(Random random) {
-        Board board = new Board(new Deck(deck, List.of(), random));
+        GameState gameState = new GameState(new Deck(deck, List.of(), random));
         StateManager stateManager = new StateManagerImpl();
-        return new Game(board, stateManager, configuration);
+        return new Game(gameState, stateManager, configuration);
     }
 }

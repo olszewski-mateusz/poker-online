@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.core.game.state.action;
 
-import com.molszewski.demos.poker.core.game.Board;
+import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.exception.PlayerNotFound;
@@ -13,10 +13,9 @@ public final class Fold extends Action {
     }
 
     @Override
-    public void execute(Board board, GameConfiguration configuration) throws ActionException {
-        Player player = board.getPlayerById(this.getPlayerId())
+    public void execute(GameState gameState, GameConfiguration configuration) throws ActionException {
+        Player player = gameState.getPlayerById(this.getPlayerId())
                 .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
-        player.setReady(true);
         player.setFolded(true);
     }
 }

@@ -1,7 +1,7 @@
 package com.molszewski.demos.poker.core.game.state.action;
 
 import com.molszewski.demos.poker.core.deck.Deck;
-import com.molszewski.demos.poker.core.game.Board;
+import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
@@ -19,20 +19,20 @@ class FoldTest {
 
     @Test
     void simpleRaise() throws ActionException {
-        Board board = new Board(new Deck(random));
+        GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), board, configuration);
-        stateManager.executeAction(new Join("2"), board, configuration);
-        stateManager.executeAction(new Join("3"), board, configuration);
+        stateManager.executeAction(new Join("1"), gameState, configuration);
+        stateManager.executeAction(new Join("2"), gameState, configuration);
+        stateManager.executeAction(new Join("3"), gameState, configuration);
 
-        stateManager.executeAction(new Ready("1",true), board, configuration);
-        stateManager.executeAction(new Ready("2",true), board, configuration);
-        stateManager.executeAction(new Ready("3",true), board, configuration);
+        stateManager.executeAction(new Ready("1",true), gameState, configuration);
+        stateManager.executeAction(new Ready("2",true), gameState, configuration);
+        stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
         Player player = stateManager.getCurrentPlayer();
         assertEquals("1", player.getId());
-        stateManager.executeAction(new Fold("1"), board, configuration);
+        stateManager.executeAction(new Fold("1"), gameState, configuration);
         assertTrue(player.isReady());
         assertTrue(player.isFolded());
     }

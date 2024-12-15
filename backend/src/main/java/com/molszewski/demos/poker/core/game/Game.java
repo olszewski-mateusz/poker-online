@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.core.game;
 
-import com.molszewski.demos.poker.core.game.state.GameState;
+import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.action.Action;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
@@ -13,13 +13,13 @@ import java.util.List;
 @Slf4j
 public class Game {
     @Getter
-    private final Board board;
+    private final GameState gameState;
     private final StateManager stateManager;
     @Getter
     private final GameConfiguration configuration;
 
-    public Game(Board board, StateManager stateManager, GameConfiguration configuration) {
-        this.board = board;
+    public Game(GameState gameState, StateManager stateManager, GameConfiguration configuration) {
+        this.gameState = gameState;
         this.stateManager = stateManager;
         this.configuration = configuration;
     }
@@ -30,7 +30,7 @@ public class Game {
 
     public boolean applyAction(Action action) {
         try {
-            stateManager.executeAction(action, board, configuration);
+            stateManager.executeAction(action, gameState, configuration);
             return true;
         } catch (ActionException e) {
             log.warn(e.getMessage());
@@ -38,19 +38,19 @@ public class Game {
         }
     }
 
-    public GameState getGameState() {
+    public GamePhase getGameState() {
         return this.stateManager.getState();
     }
 
     public List<Player> getPlayers() {
-        return this.board.getPlayers().stream().map(Player::copy).toList();
+        return this.gameState.getPlayers().stream().map(Player::copy).toList();
     }
 
     public int getCardsInDeck() {
-        return this.board.getDeck().cardsCount();
+        return this.gameState.getDeck().cardsCount();
     }
 
     public int getDiscardedCards() {
-        return this.board.getDeck().discardsCount();
+        return this.gameState.getDeck().discardsCount();
     }
 }

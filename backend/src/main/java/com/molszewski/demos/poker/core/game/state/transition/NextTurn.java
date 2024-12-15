@@ -1,48 +1,58 @@
 package com.molszewski.demos.poker.core.game.state.transition;
 
-import com.molszewski.demos.poker.core.game.Board;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.GameState;
-import com.molszewski.demos.poker.core.game.state.StateManager;
+import com.molszewski.demos.poker.core.game.GameState;
+import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
 
 import java.util.List;
 
-public final class NextTurn extends Transition {
+public final class NextTurn implements Transition {
 
-    NextTurn() {
+    private NextTurn() {
+    }
+
+    public static NextTurn of() {
+        return new NextTurn();
     }
 
     @Override
-    protected void applyLogic(StateManager stateManager, Board board, GameConfiguration configuration) {
-        nextTurn(stateManager, board);
+    public void apply(GameState gameState, GameConfiguration configuration) {
+        nextTurn(gameState);
     }
 
-    private void nextTurn(StateManager stateManager, Board board) {
-        nextPlayer(stateManager, board);
-        if (board.getPlayers().stream().allMatch(Player::isReady)) {
+    private void nextTurn(GameState state) {
+        nextPlayer(state);
+        if (state.getPlayers().stream().allMatch(player -> player.isReady() || player.isFolded())) {
 
-            switch (stateManager.getState()) {
+            if (state.getPlayers().stream().filter(player -> !player.isFolded()).count() == 1) {
+                state.setGamePhase(GamePhase.SHOWDOWN);
+                state.getPlayers().forEach(player -> player.setReady(false));
+                return;
+            }
+
+            switch (state.getGamePhase()) {
                 case FIRST_BETTING -> {
-                    stateManager.setState(GameState.DRAWING);
-                    board.getPlayers().forEach(player -> player.setReady(false));
+                    state.setGamePhase(GamePhase.DRAWING);
+                    state.getPlayers().forEach(player -> player.setReady(false));
                 }
                 case DRAWING -> {
-                    stateManager.setState(GameState.SECOND_BETTING);
-                    board.getPlayers().forEach(player -> player.setReady(false));
+                    state.setGamePhase(GamePhase.SECOND_BETTING);
+                    state.getPlayers().forEach(player -> player.setReady(false));
                 }
                 case SECOND_BETTING -> {
-                    stateManager.setState(GameState.SHOWDOWN);
-                    board.getPlayers().forEach(player -> player.setReady(false));
+                    state.setGamePhase(GamePhase.SHOWDOWN);
+                    state.getPlayers().forEach(player -> player.setReady(false));
                 }
-                default -> throw new IllegalStateException("Unexpected state: " + stateManager.getState());
-            }}
+                default -> throw new IllegalStateException("Unexpected state: " + state.getGamePhase());
+            }
+        }
     }
 
 
-    private void nextPlayer(StateManager stateManager, Board board) {
-        List<Player> players = board.getPlayers();
-        Player currentPlayer = stateManager.getCurrentPlayer();
+    private void nextPlayer(GameState state) {
+        List<Player> players = state.getPlayers();
+        Player currentPlayer = state.getCurrentPlayer();
 
         if (players.isEmpty()) {
             throw new IllegalStateException("No players in game");
@@ -55,7 +65,7 @@ public final class NextTurn extends Transition {
         List<Player> playersInGame = players.stream()
                 .filter(player -> !player.isFolded() || player == currentPlayer)
                 .toList();
-        
-        stateManager.setCurrentPlayer(playersInGame.get((playersInGame.indexOf(currentPlayer) + 1) % playersInGame.size()));
+
+        state.setCurrentPlayer(playersInGame.get((playersInGame.indexOf(currentPlayer) + 1) % playersInGame.size()));
     }
 }

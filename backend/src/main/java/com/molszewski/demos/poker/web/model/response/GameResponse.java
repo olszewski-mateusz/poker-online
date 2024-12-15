@@ -2,7 +2,7 @@ package com.molszewski.demos.poker.web.model.response;
 
 import com.molszewski.demos.poker.core.game.Game;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.GameState;
+import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.persistence.metadata.MetadataCollector;
 import lombok.Builder;
@@ -14,10 +14,10 @@ import java.util.Optional;
 public record GameResponse(
         String gameId,
         String myId,
-        GameState state,
+        GamePhase state,
         String currentPlayerId,
         List<PlayerResponse> players,
-        List<CommandResponse> history,
+        List<HistoryEntry> history,
         int cardsInDeck,
         int discardedCards,
         GameConfiguration configuration
@@ -44,7 +44,7 @@ public record GameResponse(
             String myId,
             Game game,
             MetadataCollector metadataCollector,
-            List<CommandResponse> history
+            List<HistoryEntry> history
     ) {
     }
 }

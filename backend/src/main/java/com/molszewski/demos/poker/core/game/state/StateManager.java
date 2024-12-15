@@ -1,19 +1,27 @@
 package com.molszewski.demos.poker.core.game.state;
 
-import com.molszewski.demos.poker.core.game.Board;
+import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.action.Action;
+import com.molszewski.demos.poker.core.game.state.transition.Transition;
+import com.molszewski.demos.poker.core.game.state.validator.Validator;
 import com.molszewski.demos.poker.core.player.Player;
 
+import java.util.List;
+
 public interface StateManager {
-    GameState getState();
+    default void executeAction(Action action, GameState gameState, GameConfiguration configuration) throws ActionException {
+        for (Validator validator : this.getValidators(action)) {
+            validator.validate(action, gameState);
+        }
 
-    void setState(GameState newState);
+        action.execute(gameState, configuration);
 
-    Player getCurrentPlayer();
+        this.getTransition(action).apply(gameState, configuration);
+    }
 
-    void setCurrentPlayer(Player newCurrentPlayer);
+    List<Validator> getValidators(Action action);
 
-    void executeAction(Action action, Board board, GameConfiguration configuration) throws ActionException;
+    Transition getTransition(Action action);
 }

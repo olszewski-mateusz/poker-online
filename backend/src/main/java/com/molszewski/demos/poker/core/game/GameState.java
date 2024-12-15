@@ -1,22 +1,28 @@
 package com.molszewski.demos.poker.core.game;
 
 import com.molszewski.demos.poker.core.deck.Deck;
+import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 
 @Getter
-public class Board {
+public class GameState {
     private final Deck deck;
     private final List<Player> players;
+    @Setter
+    private Player currentPlayer;
+    @Setter
+    private GamePhase gamePhase = GamePhase.NOT_STARTED;
 
-    public Board(Deck deck) {
+    public GameState(Deck deck) {
         this.deck = deck;
         this.players = new ArrayList<>();
     }
 
-    public Board(Deck deck, List<Player> players) {
+    public GameState(Deck deck, List<Player> players) {
         this.deck = deck;
         this.players = new ArrayList<>(players);
     }

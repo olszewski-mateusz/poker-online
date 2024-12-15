@@ -1,7 +1,7 @@
 package com.molszewski.demos.poker.core.game.state.action;
 
 import com.molszewski.demos.poker.core.card.Card;
-import com.molszewski.demos.poker.core.game.Board;
+import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.exception.PlayerNotFound;
@@ -21,8 +21,8 @@ public final class Replace extends Action{
     }
 
     @Override
-    public void execute(Board board, GameConfiguration configuration) throws ActionException {
-        Player player = board.getPlayerById(this.getPlayerId())
+    public void execute(GameState gameState, GameConfiguration configuration) throws ActionException {
+        Player player = gameState.getPlayerById(this.getPlayerId())
                 .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
         player.setReady(true);
         Set<Card> cardsInHand = new HashSet<>(player.getHand().getCards());
@@ -33,7 +33,7 @@ public final class Replace extends Action{
         cardsInHand.removeAll(cardsToReplace);
 
         for (int i = 0; i < cardsToReplace.size(); i++) {
-            cardsInHand.add(board.getDeck().pop());
+            cardsInHand.add(gameState.getDeck().pop());
         }
 
         player.setHand(new Hand(cardsInHand));

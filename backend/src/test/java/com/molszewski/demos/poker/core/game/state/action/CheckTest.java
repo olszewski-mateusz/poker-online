@@ -1,7 +1,7 @@
 package com.molszewski.demos.poker.core.game.state.action;
 
 import com.molszewski.demos.poker.core.deck.Deck;
-import com.molszewski.demos.poker.core.game.Board;
+import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
@@ -19,20 +19,20 @@ class CheckTest {
 
     @Test
     void simpleCheck() throws ActionException {
-        Board board = new Board(new Deck(random));
+        GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), board, configuration);
-        stateManager.executeAction(new Join("2"), board, configuration);
-        stateManager.executeAction(new Join("3"), board, configuration);
+        stateManager.executeAction(new Join("1"), gameState, configuration);
+        stateManager.executeAction(new Join("2"), gameState, configuration);
+        stateManager.executeAction(new Join("3"), gameState, configuration);
 
-        stateManager.executeAction(new Ready("1",true), board, configuration);
-        stateManager.executeAction(new Ready("2",true), board, configuration);
-        stateManager.executeAction(new Ready("3",true), board, configuration);
+        stateManager.executeAction(new Ready("1",true), gameState, configuration);
+        stateManager.executeAction(new Ready("2",true), gameState, configuration);
+        stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
         Player player = stateManager.getCurrentPlayer();
         assertEquals("1", player.getId());
-        stateManager.executeAction(new Check("1"), board, configuration);
+        stateManager.executeAction(new Check("1"), gameState, configuration);
         assertTrue(player.isReady());
         assertEquals(configuration.ante(), player.getBet());
         assertEquals(configuration.startMoney() - configuration.ante(), player.getMoney());
@@ -42,22 +42,22 @@ class CheckTest {
     void raiseAndCheck() throws ActionException {
         int raiseMoney = 100;
 
-        Board board = new Board(new Deck(random));
+        GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), board, configuration);
-        stateManager.executeAction(new Join("2"), board, configuration);
-        stateManager.executeAction(new Join("3"), board, configuration);
+        stateManager.executeAction(new Join("1"), gameState, configuration);
+        stateManager.executeAction(new Join("2"), gameState, configuration);
+        stateManager.executeAction(new Join("3"), gameState, configuration);
 
-        stateManager.executeAction(new Ready("3",true), board, configuration);
-        stateManager.executeAction(new Ready("1",true), board, configuration);
-        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+        stateManager.executeAction(new Ready("1",true), gameState, configuration);
+        stateManager.executeAction(new Ready("2",true), gameState, configuration);
 
-        stateManager.executeAction(new Raise("1", raiseMoney), board, configuration);
+        stateManager.executeAction(new Raise("1", raiseMoney), gameState, configuration);
 
         Player player = stateManager.getCurrentPlayer();
         assertEquals("2", player.getId());
-        stateManager.executeAction(new Check("2"), board, configuration);
+        stateManager.executeAction(new Check("2"), gameState, configuration);
         assertTrue(player.isReady());
         assertEquals(raiseMoney, player.getBet());
         assertEquals(configuration.startMoney() - raiseMoney, player.getMoney());
@@ -65,41 +65,41 @@ class CheckTest {
 
     @Test
     void playerNotFound() throws ActionException {
-        Board board = new Board(new Deck(random));
+        GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), board, configuration);
-        stateManager.executeAction(new Join("2"), board, configuration);
-        stateManager.executeAction(new Join("3"), board, configuration);
+        stateManager.executeAction(new Join("1"), gameState, configuration);
+        stateManager.executeAction(new Join("2"), gameState, configuration);
+        stateManager.executeAction(new Join("3"), gameState, configuration);
 
-        stateManager.executeAction(new Ready("3",true), board, configuration);
-        stateManager.executeAction(new Ready("1",true), board, configuration);
-        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+        stateManager.executeAction(new Ready("1",true), gameState, configuration);
+        stateManager.executeAction(new Ready("2",true), gameState, configuration);
 
-        assertThrows(ActionException.class, () -> stateManager.executeAction(new Check("4"), board, configuration));
+        assertThrows(ActionException.class, () -> stateManager.executeAction(new Check("4"), gameState, configuration));
     }
 
     @Test
     void checkNoMoney() throws ActionException {
         int raiseMoney = 2000;
 
-        Board board = new Board(new Deck(random));
+        GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), board, configuration);
-        stateManager.executeAction(new Join("2"), board, configuration);
-        stateManager.executeAction(new Join("3"), board, configuration);
+        stateManager.executeAction(new Join("1"), gameState, configuration);
+        stateManager.executeAction(new Join("2"), gameState, configuration);
+        stateManager.executeAction(new Join("3"), gameState, configuration);
 
-        stateManager.executeAction(new Ready("3",true), board, configuration);
-        stateManager.executeAction(new Ready("1",true), board, configuration);
-        stateManager.executeAction(new Ready("2",true), board, configuration);
+        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+        stateManager.executeAction(new Ready("1",true), gameState, configuration);
+        stateManager.executeAction(new Ready("2",true), gameState, configuration);
 
         stateManager.getCurrentPlayer().addMoney(raiseMoney);
-        stateManager.executeAction(new Raise("1", raiseMoney), board, configuration);
+        stateManager.executeAction(new Raise("1", raiseMoney), gameState, configuration);
 
         Player player = stateManager.getCurrentPlayer();
         assertEquals("2", player.getId());
-        assertEquals(raiseMoney, board.getCurrentBet());
-        assertThrows(ActionException.class, () -> stateManager.executeAction(new Check("2"), board, configuration));
+        assertEquals(raiseMoney, gameState.getCurrentBet());
+        assertThrows(ActionException.class, () -> stateManager.executeAction(new Check("2"), gameState, configuration));
     }
 }
