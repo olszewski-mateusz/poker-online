@@ -12,7 +12,8 @@ import {
   WritableSignal
 } from '@angular/core';
 import {MatList, MatListItem, MatListItemLine, MatListItemTitle, MatListModule} from '@angular/material/list';
-import {ActionType, Command, Game} from '../../../model/game';
+import {Game, GamePhase} from '../../../model/game';
+import {ActionType, HistoryEntry, isActionEntry, isPhaseChangeEntry, isWinnerEntry} from '../../../model/history';
 
 @Component({
   selector: 'app-history',
@@ -61,56 +62,43 @@ export class HistoryComponent {
 
   private buildHistoryEntries(game: Game): string[] {
     const entries: string[] = [];
-    let players: number = 0;
-    let readyPlayers: number = 0;
     let betPlaced: boolean = false;
-    let gameStarted: boolean = false;
-    for (const command of game.history) {
-      entries.push(this.translateCommandToHistoryEntry(command, betPlaced));
+    for (const entry of game.history) {
+      entries.push(this.translateHistoryEntry(entry, betPlaced));
 
-      if (command.actionType === ActionType.JOIN) {
-        players++;
-      }
-
-      if (command.actionType === ActionType.READY) {
-        if (command.amount === 1) {
-          readyPlayers++;
-        } else if (command.amount === 0) {
-          readyPlayers--;
-        }
-      }
-
-      if (readyPlayers === players && players >= this.game().configuration.minPlayersToStart) {
-        entries.push(gameStarted ? 'Next round' : 'Game started');
-        gameStarted = true;
-        readyPlayers = 0;
+      if (isPhaseChangeEntry(entry) && (entry.details === GamePhase.FIRST_BETTING || entry.details === GamePhase.SECOND_BETTING)) {
         betPlaced = false;
       }
 
-      if (!betPlaced && (command.actionType === ActionType.RAISE || command.actionType === ActionType.ALL_IN)) {
+      if (isActionEntry(entry) && (entry.entryType === ActionType.RAISE || entry.entryType === ActionType.ALL_IN)) {
         betPlaced = true;
       }
     }
     return entries;
   }
 
-  private translateCommandToHistoryEntry(command: Command, betPlaced: boolean): string {
-    const type: string | ActionType = command.actionType;
-    switch (type) {
-      case ActionType.JOIN:
-        return `${command.playerName} joined`;
-      case ActionType.ALL_IN:
-        return `${command.playerName} goes all in!`;
-      case ActionType.CHECK:
-        return command.playerName + (betPlaced ? ' called' : ' checked');
-      case ActionType.FOLD:
-        return `${command.playerName} folded`;
-      case ActionType.RAISE:
-        return command.playerName + (betPlaced ? ' raises to ' : ' bets ') + command.amount;
-      case ActionType.READY:
-        return `${command.playerName} is ${command.amount === 1 ? '' : 'not'} ready`;
-      case ActionType.REPLACE:
-        return `${command.playerName} replaced ${command.amount} cards`;
+  private translateHistoryEntry(entry: HistoryEntry, betPlaced: boolean): string {
+    if (isPhaseChangeEntry(entry)) {
+      return `${entry.details} phase started`
+    } else if (isWinnerEntry(entry)) {
+      return `${entry.details.playerName} won with ${entry.details.handType}`;
+    } else if (isActionEntry(entry)) {
+      switch (entry.entryType) {
+        case ActionType.JOIN:
+          return `${entry.details.playerName} joined`;
+        case ActionType.ALL_IN:
+          return `${entry.details.playerName} goes all in!`;
+        case ActionType.CHECK:
+          return entry.details.playerName + (betPlaced ? ' called' : ' checked');
+        case ActionType.FOLD:
+          return `${entry.details.playerName} folded`;
+        case ActionType.RAISE:
+          return entry.details.playerName + (betPlaced ? ' raises to ' : ' bets ') + entry.details.value;
+        case ActionType.READY:
+          return `${entry.details.playerName} is ${entry.details.value === true ? '' : 'not'} ready`;
+        case ActionType.REPLACE:
+          return `${entry.details.playerName} replaced ${entry.details.value} cards`;
+      }
     }
     return 'Unknown history entry';
   }

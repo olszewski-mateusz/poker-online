@@ -29,6 +29,6 @@ public class ActionEntry extends HistoryEntry {
         JOIN, ALL_IN, CHECK, FOLD, RAISE, READY, REPLACE
     }
 
-    public record Details(String playerName, Object details) {
+    public record Details(String playerName, Object value) {
     }
 }

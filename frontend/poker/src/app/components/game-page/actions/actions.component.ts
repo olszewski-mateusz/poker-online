@@ -9,7 +9,7 @@ import {
   Signal,
   WritableSignal
 } from '@angular/core';
-import {Card, Game, GameState, Player} from '../../../model/game';
+import {Card, Game, GamePhase, Player} from '../../../model/game';
 import {MatButton} from '@angular/material/button';
 import {ApiRestService} from '../../../services/api/api-rest.service';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
@@ -34,7 +34,7 @@ import {ReplaceCardsService} from '../../../services/replace-cards.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ActionsComponent {
-  protected readonly GameState: typeof GameState = GameState;
+  protected readonly GameState: typeof GamePhase = GamePhase;
 
   game: InputSignal<Game> = input.required<Game>();
 

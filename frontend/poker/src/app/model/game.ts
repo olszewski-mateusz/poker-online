@@ -1,12 +1,13 @@
-import {Rank} from './rank';
-import {Suit} from './suit';
+import {HistoryEntry} from './history';
+import {Card, HandType} from './card';
 
 export type Game = {
   players: Player[]
-  history: Command[]
+  history: HistoryEntry[]
   configuration: Configuration
-  state: GameState
+  phase: GamePhase
   currentPlayerId?: string
+  winnerId?: string
   myId: string
   gameId: string
   cardsInDeck: number
@@ -24,46 +25,13 @@ export type Player = {
   handType?: HandType
 }
 
-export type Card = {
-  rank: Rank
-  suit: Suit
-}
-
-export enum HandType {
-  HIGH_CARD = 'HIGH_CARD',
-  PAIR = 'PAIR',
-  TWO_PAIR = 'TWO_PAIR',
-  THREE_OF_A_KIND = 'THREE_OF_A_KIND',
-  STRAIGHT = 'STRAIGHT',
-  FLUSH = 'FLUSH',
-  FULL_HOUSE = 'FULL_HOUSE',
-  FOUR_OF_A_KIND = 'FOUR_OF_A_KIND',
-  STRAIGHT_FLUSH = 'STRAIGHT_FLUSH'
-}
-
-export type Command = {
-  playerName: string
-  actionType: ActionType
-  amount?: number
-}
-
 export type Configuration = {
   minPlayersToStart: number
   startMoney: number
   ante: number
 }
 
-export enum ActionType  {
-  JOIN = 'JOIN',
-  ALL_IN = 'ALL_IN',
-  CHECK = 'CHECK',
-  FOLD = 'FOLD',
-  RAISE = 'RAISE',
-  READY = 'READY',
-  REPLACE = 'REPLACE'
-}
-
-export enum GameState {
+export enum GamePhase {
   NOT_STARTED = 'NOT_STARTED',
   FIRST_BETTING = 'FIRST_BETTING',
   DRAWING = 'DRAWING',
