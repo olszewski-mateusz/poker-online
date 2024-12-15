@@ -32,7 +32,7 @@ class RaiseTest {
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
         stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         stateManager.executeAction(new Raise("1", raiseMoney), gameState, configuration);
         assertTrue(player.isReady());
@@ -55,7 +55,7 @@ class RaiseTest {
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
         stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         assertThrows(ActionException.class, () -> stateManager.executeAction(new Raise("1", raiseMoney), gameState, configuration));
     }
@@ -75,7 +75,7 @@ class RaiseTest {
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
         stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         assertThrows(ActionException.class, () -> stateManager.executeAction(new Raise("1", raiseMoney), gameState, configuration));
     }
@@ -95,7 +95,7 @@ class RaiseTest {
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
         stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         assertFalse(player.isReady());
         stateManager.executeAction(new Check("1"), gameState, configuration);

@@ -11,7 +11,6 @@ import jakarta.annotation.Nullable;
 import lombok.Builder;
 
 import java.util.List;
-import java.util.Set;
 
 public class StateManagerImpl implements StateManager {
 
@@ -29,42 +28,42 @@ public class StateManagerImpl implements StateManager {
         switch (action) {
             case Join ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPhase.of(Set.of(GamePhase.NOT_STARTED))))
+                        .validators(List.of(CorrectPhase.of(GamePhase.NOT_STARTED)))
                         .build();
             }
             case Ready ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPhase.of(Set.of(GamePhase.NOT_STARTED, GamePhase.SHOWDOWN))))
+                        .validators(List.of(CorrectPhase.of(GamePhase.NOT_STARTED, GamePhase.SHOWDOWN)))
                         .transition(StartRound.of())
                         .build();
             }
             case Check ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING)))
                         .transition(NextTurn.of())
                         .build();
             }
             case Raise ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING)))
                         .transition(NextTurn.of())
                         .build();
             }
             case AllIn ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING)))
                         .transition(NextTurn.of())
                         .build();
             }
             case Fold ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING)))
                         .transition(NextTurn.of())
                         .build();
             }
             case Replace ignored -> {
                 return ActionContext.builder()
-                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(Set.of(GamePhase.DRAWING))))
+                        .validators(List.of(CorrectPlayer.of(), CorrectPhase.of(GamePhase.DRAWING)))
                         .transition(NextTurn.of())
                         .build();
             }

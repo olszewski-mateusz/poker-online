@@ -15,8 +15,8 @@ public class CorrectPhase implements Validator{
         this.correctPhases = correctPhases;
     }
 
-    public static CorrectPhase of(Set<GamePhase> correctPhases) {
-        return new CorrectPhase(correctPhases);
+    public static CorrectPhase of(GamePhase... correctPhases) {
+        return new CorrectPhase(Set.of(correctPhases));
     }
 
     @Override

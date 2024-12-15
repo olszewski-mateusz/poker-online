@@ -38,7 +38,7 @@ class ReplaceTest {
         stateManager.executeAction(new Check("2"), gameState, configuration);
         stateManager.executeAction(new Check("3"), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
 
         List<Card> cards = List.copyOf(player.getHand().getCards());
@@ -68,7 +68,7 @@ class ReplaceTest {
         stateManager.executeAction(new Check("2"), gameState, configuration);
         stateManager.executeAction(new Check("3"), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
 
         Card wrongCard = gameState.getDeck().pop();
@@ -94,7 +94,7 @@ class ReplaceTest {
         stateManager.executeAction(new Check("2"), gameState, configuration);
         stateManager.executeAction(new Check("3"), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
 
         List<Card> cards = List.copyOf(player.getHand().getCards());
@@ -126,7 +126,7 @@ class ReplaceTest {
         stateManager.executeAction(new Check("2"), gameState, configuration);
         stateManager.executeAction(new Check("3"), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
 
         List<Card> cards = List.copyOf(player.getHand().getCards());

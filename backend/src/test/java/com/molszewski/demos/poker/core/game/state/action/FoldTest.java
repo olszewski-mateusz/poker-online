@@ -30,7 +30,7 @@ class FoldTest {
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
         stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         stateManager.executeAction(new Fold("1"), gameState, configuration);
         assertTrue(player.isReady());

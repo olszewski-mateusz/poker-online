@@ -30,7 +30,7 @@ class CheckTest {
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
         stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         stateManager.executeAction(new Check("1"), gameState, configuration);
         assertTrue(player.isReady());
@@ -55,7 +55,7 @@ class CheckTest {
 
         stateManager.executeAction(new Raise("1", raiseMoney), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("2", player.getId());
         stateManager.executeAction(new Check("2"), gameState, configuration);
         assertTrue(player.isReady());
@@ -94,10 +94,10 @@ class CheckTest {
         stateManager.executeAction(new Ready("1",true), gameState, configuration);
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
 
-        stateManager.getCurrentPlayer().addMoney(raiseMoney);
+        gameState.getCurrentPlayer().addMoney(raiseMoney);
         stateManager.executeAction(new Raise("1", raiseMoney), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("2", player.getId());
         assertEquals(raiseMoney, gameState.getCurrentBet());
         assertThrows(ActionException.class, () -> stateManager.executeAction(new Check("2"), gameState, configuration));

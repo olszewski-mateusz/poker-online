@@ -114,10 +114,10 @@ public class GameService {
         List<HistoryEntry> history = new ArrayList<>();
         for (Command command : commands) {
             boolean success = game.applyAction(command.toAction());
-            if (!success) {
-                log.warn("Illegal command found in stream");
-            } else {
+            if (success) {
                 commandCollector.processCommand(command, game);
+            } else {
+                log.warn("Illegal command found in stream");
             }
         }
         return history;

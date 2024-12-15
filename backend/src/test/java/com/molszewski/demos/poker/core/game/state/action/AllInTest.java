@@ -30,7 +30,7 @@ class AllInTest {
         stateManager.executeAction(new Ready("2", true), gameState, configuration);
         stateManager.executeAction(new Ready("3", true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         stateManager.executeAction(new AllIn("1"), gameState, configuration);
         assertTrue(player.isReady());
@@ -51,7 +51,7 @@ class AllInTest {
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
         stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         stateManager.executeAction(new Raise("1", configuration.startMoney()), gameState, configuration);
         assertTrue(player.isReady());
@@ -72,7 +72,7 @@ class AllInTest {
         stateManager.executeAction(new Ready("2",true), gameState, configuration);
         stateManager.executeAction(new Ready("3",true), gameState, configuration);
 
-        Player player = stateManager.getCurrentPlayer();
+        Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         stateManager.executeAction(new Check("1"), gameState, configuration);
         assertTrue(player.isReady());
