@@ -1,21 +1,23 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed, effect,
+  computed,
+  effect,
   inject,
   input,
-  InputSignal, model, ModelSignal,
+  InputSignal,
+  model,
+  ModelSignal,
   signal,
   Signal,
   WritableSignal
 } from '@angular/core';
-import {Card, Game, GamePhase, Player} from '../../../model/game';
+import {Card, Game, GamePhase, Player} from '../../../model';
 import {MatButton} from '@angular/material/button';
 import {ApiRestService} from '../../../services/api/api-rest.service';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
-import {PlayerSelectionService} from '../../../services/player-selection.service';
 import {ReplaceCardsService} from '../../../services/replace-cards.service';
 
 @Component({
@@ -57,13 +59,11 @@ export class ActionsComponent {
     return this.replaceCardsService.cardsToReplace().length;
   });
 
-  protected readonly raiseSelected: WritableSignal<boolean> = signal<boolean>(false);
+  protected readonly raisePanelActive: WritableSignal<boolean> = signal<boolean>(false);
 
-  protected readonly isBet: Signal<boolean> = computed(() => {
+  protected readonly betPlacedInCurrentPhase: Signal<boolean> = computed(() => {
     const game: Game = this.game();
-    return game.players.some(p => {
-      return p.bet > game.configuration.ante;
-    })
+    return game.betPlacedInCurrentPhase;
   });
 
   protected readonly minBet: Signal<number> = computed(() => {
@@ -74,13 +74,6 @@ export class ActionsComponent {
   protected readonly maxBet: Signal<number> = computed(() => {
     return this.myPlayer()?.money ?? this.minBet();
   });
-
-  constructor() {
-    effect(() => {
-      const minBet: number = this.minBet();
-      this.amount.update(value => Math.max(minBet, value));
-    }, {allowSignalWrites: true});
-  }
 
   sendReady(): void {
     const game: Game = this.game();
@@ -98,13 +91,13 @@ export class ActionsComponent {
   sendBetOrRaise(): void {
     const game: Game = this.game();
     this.apiRestService.sendBetOrRaise(game.gameId, game.myId, this.amount()).subscribe();
-    this.raiseSelected.set(false);
+    this.raisePanelActive.set(false);
   }
 
   sendAllIn(): void {
     const game: Game = this.game();
     this.apiRestService.sendAllIn(game.gameId, game.myId).subscribe();
-    this.raiseSelected.set(false);
+    this.raisePanelActive.set(false);
   }
 
   sendFold(): void {
@@ -125,5 +118,14 @@ export class ActionsComponent {
     let amount: number = this.amount() + number;
     amount = Math.max(min, (Math.min(max, amount)));
     this.amount.set(amount);
+  }
+
+  cancelRaisePanel(): void {
+    this.raisePanelActive.set(false)
+  }
+
+  activateRaisePanel(): void {
+    this.amount.set(this.minBet());
+    this.raisePanelActive.set(true)
   }
 }

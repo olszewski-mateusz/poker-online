@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, effect, inject, Signal} from '@angular/core';
 import {CardComponent} from "./card/card.component";
 import {ActivatedRoute} from '@angular/router';
-import {Game} from '../../model/game';
+import {Game} from '../../model';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {map, mergeMap} from 'rxjs';
 import {GameConnectorService} from '../../services/game-connector.service';

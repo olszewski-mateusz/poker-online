@@ -22,7 +22,7 @@ public class CorrectPhase implements Validator{
     @Override
     public void validate(Action action, GameState state) throws ActionException {
         if (!correctPhases.contains(state.getGamePhase())) {
-            throw new ActionException("Action not legal in state " + state.getGamePhase());
+            throw new ActionException("Action not legal in phase " + state.getGamePhase());
         }
     }
 }

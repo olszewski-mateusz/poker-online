@@ -12,6 +12,7 @@ export type Game = {
   gameId: string
   cardsInDeck: number
   discardedCards: number
+  betPlacedInCurrentPhase: boolean
 }
 
 export type Player = {

@@ -36,9 +36,10 @@ public class GameState {
                 .orElseThrow(() -> new IllegalStateException("No player in game"));
     }
 
-    public Player getWinner() {
-        return players.stream().max(Comparator.comparing(Player::getHand))
-                .orElseThrow(() -> new IllegalStateException("No player in game"));
+    public Optional<Player> getWinner() {
+        return players.stream()
+                .filter(p -> !p.isFolded() && p.getHand() != null)
+                .max(Comparator.comparing(Player::getHand));
     }
 
     public void addPlayer(String playerId, int startMoney) {

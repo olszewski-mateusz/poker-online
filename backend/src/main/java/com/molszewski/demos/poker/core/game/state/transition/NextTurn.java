@@ -44,7 +44,7 @@ public final class NextTurn implements Transition {
                     state.setGamePhase(GamePhase.SHOWDOWN);
                     state.getPlayers().forEach(player -> player.setReady(false));
                 }
-                default -> throw new IllegalStateException("Unexpected state: " + state.getGamePhase());
+                default -> throw new IllegalStateException("Unexpected phase: " + state.getGamePhase());
             }
         }
     }

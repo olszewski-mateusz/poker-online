@@ -5,11 +5,11 @@ import {
   input,
   InputSignal,
   output,
-  OutputEmitterRef, Signal
+  OutputEmitterRef,
+  Signal
 } from '@angular/core';
 import {MatIcon} from '@angular/material/icon';
-import {Rank} from '../../../model/rank';
-import {Suit} from '../../../model/suit';
+import {Rank, Suit} from '../../../model';
 
 @Component({
   selector: 'card',
@@ -29,7 +29,7 @@ export class CardComponent {
   clicked: OutputEmitterRef<void> = output<void>();
 
   rankValue: Signal<string> = computed(() => {
-    switch(this.rank()){
+    switch (this.rank()) {
       case Rank.TWO:
         return '2';
       case Rank.THREE:

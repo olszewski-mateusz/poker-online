@@ -1,5 +1,5 @@
 import {Injectable, Signal, signal, WritableSignal} from '@angular/core';
-import {Card} from '../model/game';
+import {Card} from '../model';
 
 @Injectable({
   providedIn: 'root'

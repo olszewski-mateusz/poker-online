@@ -1,11 +1,11 @@
-import {inject, Injectable, Signal} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {ApiRestService} from './api/api-rest.service';
 import {MatDialog} from '@angular/material/dialog';
 import {PlayerNamePromptComponent} from '../components/start-page/player-name-prompt/player-name-prompt.component';
 import {filter, map, mergeMap, Observable, of, tap} from 'rxjs';
 import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Game} from '../model/game';
+import {Game} from '../model';
 import {ApiStreamService} from './api/api-stream.service';
 
 @Injectable({

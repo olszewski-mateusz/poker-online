@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, InputSignal, Signal} from '@angular/core';
-import {Card, Game, GamePhase, Player} from '../../../model/game';
+import {Card, Game, GamePhase, Player} from '../../../model';
 import {CardComponent, CardSize} from '../card/card.component';
 import {ReplaceCardsService} from '../../../services/replace-cards.service';
 
@@ -17,7 +17,7 @@ export class HandComponent {
 
   protected readonly CardSize = CardSize;
 
-  private replaceCardService: ReplaceCardsService = inject(ReplaceCardsService);
+  private readonly replaceCardService: ReplaceCardsService = inject(ReplaceCardsService);
 
   game: InputSignal<Game> = input.required<Game>();
 
@@ -27,7 +27,7 @@ export class HandComponent {
   });
   isCardInteractive = computed(() => {
     const game: Game = this.game();
-    return game.state === GamePhase.DRAWING && game.myId === game.currentPlayerId;
+    return game.phase === GamePhase.DRAWING && game.myId === game.currentPlayerId;
   })
 
 

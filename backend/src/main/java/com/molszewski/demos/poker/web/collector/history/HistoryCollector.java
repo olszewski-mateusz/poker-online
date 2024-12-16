@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 public class HistoryCollector {
 
-    private GamePhase previousPhase;
+    private GamePhase previousPhase = GamePhase.NOT_STARTED;
 
     private final List<HistoryEntry> entries = new ArrayList<>();
 
@@ -29,16 +29,24 @@ public class HistoryCollector {
     }
 
     public void includeCommand(Command command, MetadataCollector metadataCollector, Game game) {
-        this.entries.add(ActionEntry.fromCommand(command, metadataCollector.getPlayerMetadata(command.getPlayerId()).name()));
+
+        ActionEntry actionEntry = ActionEntry.fromCommand(command, metadataCollector.getPlayerMetadata(command.getPlayerId()).name());
+        this.entries.add(actionEntry);
+
+        if (actionEntry.getEntryType().equals(ActionEntry.Type.RAISE.toString()) || actionEntry.getEntryType().equals(ActionEntry.Type.ALL_IN.toString())) {
+            metadataCollector.setBetPlacedInCurrentPhase(true);
+        }
 
         if (!game.getPhase().equals(this.previousPhase)) {
             this.entries.add(PhaseChangeEntry.fromPhase(game.getPhase()));
 
             if (game.getPhase().equals(GamePhase.SHOWDOWN)) {
-                Player winner = game.getGameState().getWinner();
+                Player winner = game.getGameState().getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
                 String winnerName = metadataCollector.getPlayerMetadata(winner.getId()).name();
                 this.entries.add(WinnerEntry.create(winnerName, winner.getHand().getHandType()));
             }
+
+            metadataCollector.setBetPlacedInCurrentPhase(false);
         }
 
         this.previousPhase = game.getPhase();

@@ -1,8 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
-import {Card, Game} from '../../model/game';
-import {ApiStreamService} from './api-stream.service';
+import {Card} from '../../model';
 
 export const API_HOST: string = 'http://localhost:8080';
 

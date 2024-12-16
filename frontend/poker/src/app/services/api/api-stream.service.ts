@@ -1,6 +1,6 @@
 import {Injectable, Signal} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
-import {Game} from '../../model/game';
+import {Game} from '../../model';
 import {API_HOST} from './api-rest.service';
 import {toSignal} from '@angular/core/rxjs-interop';
 
@@ -10,7 +10,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
 export class ApiStreamService {
   private eventSource?: EventSource;
 
-  private _game: Subject<Game> = new Subject();
+  private readonly _game: Subject<Game> = new Subject();
   readonly game$: Observable<Game> = this._game.asObservable();
   readonly game: Signal<Game | undefined> = toSignal(this.game$);
 

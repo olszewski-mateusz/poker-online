@@ -12,8 +12,15 @@ import {
   WritableSignal
 } from '@angular/core';
 import {MatList, MatListItem, MatListItemLine, MatListItemTitle, MatListModule} from '@angular/material/list';
-import {Game, GamePhase} from '../../../model/game';
-import {ActionType, HistoryEntry, isActionEntry, isPhaseChangeEntry, isWinnerEntry} from '../../../model/history';
+import {
+  ActionType,
+  Game,
+  GamePhase,
+  HistoryEntry,
+  isActionEntry,
+  isPhaseChangeEntry,
+  isWinnerEntry
+} from '../../../model';
 
 @Component({
   selector: 'app-history',

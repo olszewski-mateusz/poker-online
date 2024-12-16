@@ -1,13 +1,15 @@
 <div class="wrapper">
-  @if (game().state === GameState.NOT_STARTED) {
+  @if (game().phase === GameState.NOT_STARTED) {
     <button mat-button (click)="sendReady()">
       {{ myPlayer()?.ready ? 'Not ready' : 'Ready' }}
     </button>
-  } @else if (game().state === GameState.FIRST_BETTING || game().state === GameState.SECOND_BETTING) {
-    @if (raiseSelected()) {
+  } @else if (game().phase === GameState.FIRST_BETTING || game().phase === GameState.SECOND_BETTING) {
+    @if (raisePanelActive()) {
       <div class="column-wrapper">
 
-        <div class="row-wrapper amount-label">Raise amount: {{amount()}}</div>
+        <div class="row-wrapper amount-label">
+          {{betPlacedInCurrentPhase() ? 'Raise' : 'Bet'}} amount: {{amount()}}
+        </div>
 
         <div class="row-wrapper">
           <button mat-button (click)="addToAmount(-50)">-50</button>
@@ -27,21 +29,21 @@
           </button>
 
           <button mat-button [disabled]="!myTurn()" (click)="sendBetOrRaise()">
-            Raise
+            {{betPlacedInCurrentPhase() ? 'Raise' : 'Bet'}}
           </button>
 
-          <button mat-button [disabled]="!myTurn()" (click)="raiseSelected.set(false)">
+          <button mat-button [disabled]="!myTurn()" (click)="cancelRaisePanel()">
             Cancel
           </button>
         </div>
 
       </div>
-    } @else if (isBet()) {
+    } @else if (betPlacedInCurrentPhase()) {
       <button mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
         Call
       </button>
 
-      <button mat-button [disabled]="!myTurn()" (click)="raiseSelected.set(true)">
+      <button mat-button [disabled]="!myTurn()" (click)="activateRaisePanel()">
         Raise
       </button>
 
@@ -53,15 +55,15 @@
         Check
       </button>
 
-      <button mat-button [disabled]="!myTurn()" (click)="raiseSelected.set(true)">
+      <button mat-button [disabled]="!myTurn()" (click)="activateRaisePanel()">
         Bet
       </button>
     }
-  } @else if (game().state === GameState.DRAWING) {
+  } @else if (game().phase === GameState.DRAWING) {
     <button mat-button [disabled]="!myTurn()" (click)="sendReplace()">
       Replace cards ({{cardsToReplaceCount()}})
     </button>
-  } @else if (game().state === GameState.SHOWDOWN) {
+  } @else if (game().phase === GameState.SHOWDOWN) {
     <button mat-button (click)="sendReady()">
       {{ myPlayer()?.ready ? 'Not ready' : 'Ready for next round' }}
     </button>

@@ -1,15 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  input,
-  InputSignal, Signal,
-  signal,
-  viewChild,
-  WritableSignal
-} from '@angular/core';
-import {Game, Player} from '../../../model/game';
+import {ChangeDetectionStrategy, Component, effect, inject, input, InputSignal, Signal} from '@angular/core';
+import {Game, Player} from '../../../model';
 import {MatList, MatListItem, MatListItemTitle, MatListOption, MatSelectionList} from '@angular/material/list';
 import {PlayerSelectionService} from '../../../services/player-selection.service';
 
@@ -32,12 +22,12 @@ export class PlayerSelectionComponent {
   game: InputSignal<Game> = input.required<Game>();
   private readonly playerSelectionService: PlayerSelectionService = inject(PlayerSelectionService);
 
-  protected selectedPlayerId: Signal<string|undefined> = this.playerSelectionService.selectedPlayerId;
+  protected selectedPlayerId: Signal<string | undefined> = this.playerSelectionService.selectedPlayerId;
 
   constructor() {
     effect(() => {
       const game: Game = this.game();
-      const currentSelection: string|undefined = this.selectedPlayerId();
+      const currentSelection: string | undefined = this.selectedPlayerId();
       if (!currentSelection && game.currentPlayerId) {
         this.playerSelectionService.setSelectedPlayer(game.currentPlayerId);
       }

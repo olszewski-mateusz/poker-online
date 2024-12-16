@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, input, InputSignal, Signal} from '@angular/core';
-import {Game, Player} from '../../../model/game';
+import {Game, Player} from '../../../model';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({

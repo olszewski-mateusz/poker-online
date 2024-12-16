@@ -15,28 +15,30 @@ import java.util.Optional;
 public record GameResponse(
         String gameId,
         String myId,
-        GamePhase state,
+        GamePhase phase,
         String currentPlayerId,
         String winnerId,
         List<PlayerResponse> players,
         List<HistoryEntry> history,
         int cardsInDeck,
         int discardedCards,
+        boolean betPlacedInCurrentPhase,
         GameConfiguration configuration
         ) {
     public static GameResponse fromParams(Params params) {
         return GameResponse.builder()
                 .gameId(params.gameId)
                 .myId(params.myId)
-                .state(params.game.getPhase())
+                .phase(params.game.getPhase())
                 .currentPlayerId(Optional.ofNullable(params.game.getCurrentPlayer()).map(Player::getId).orElse(null))
-                .winnerId(Optional.ofNullable(params.game.getGameState().getWinner()).map(Player::getId).orElse(null))
+                .winnerId(params.game.getGameState().getWinner().map(Player::getId).orElse(null))
                 .players(params.game.getPlayers().stream()
                         .map(player -> PlayerResponse.fromPlayer(player, params.metadataCollector.getPlayerMetadata(player.getId())))
                         .toList())
                 .cardsInDeck(params.game.getCardsInDeck())
                 .discardedCards(params.game.getDiscardedCards())
                 .history(params.history)
+                .betPlacedInCurrentPhase(params.metadataCollector.isBetPlacedInCurrentPhase())
                 .configuration(params.game.getConfiguration())
                 .build();
     }

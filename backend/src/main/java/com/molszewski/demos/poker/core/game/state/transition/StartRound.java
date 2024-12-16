@@ -38,7 +38,7 @@ public final class StartRound implements Transition {
     }
 
     private void collectBet(GameState gameState) {
-        Player winner = gameState.getWinner();
+        Player winner = gameState.getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
         int collectedMoney = gameState.getPlayers().stream().map(Player::collectBet).reduce(0, Integer::sum);
         winner.addMoney(collectedMoney);
     }
