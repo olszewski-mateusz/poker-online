@@ -39,3 +39,13 @@ export enum GamePhase {
   SECOND_BETTING = 'SECOND_BETTING',
   SHOWDOWN = 'SHOWDOWN',
 }
+
+export function translateGamePhase(phase: GamePhase): string {
+  switch (phase) {
+    case GamePhase.NOT_STARTED: return 'Not started';
+    case GamePhase.FIRST_BETTING: return 'First betting';
+    case GamePhase.DRAWING: return 'Drawing';
+    case GamePhase.SECOND_BETTING: return 'Second betting';
+    case GamePhase.SHOWDOWN: return 'Showdown';
+  }
+}

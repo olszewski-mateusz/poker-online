@@ -15,6 +15,20 @@ export enum HandType {
   STRAIGHT_FLUSH = 'STRAIGHT_FLUSH'
 }
 
+export function translateHandType(type: HandType): string {
+  switch (type) {
+    case HandType.HIGH_CARD: return 'high card';
+    case HandType.PAIR: return 'pair';
+    case HandType.TWO_PAIR: return 'two pairs';
+    case HandType.THREE_OF_A_KIND: return 'three of a kind';
+    case HandType.STRAIGHT: return 'straight';
+    case HandType.FLUSH: return 'flush';
+    case HandType.FULL_HOUSE: return 'full house';
+    case HandType.FOUR_OF_A_KIND: return 'four of a kind';
+    case HandType.STRAIGHT_FLUSH: return 'straight flush';
+  }
+}
+
 export enum Rank {
   TWO = 'TWO',
   THREE = 'THREE',

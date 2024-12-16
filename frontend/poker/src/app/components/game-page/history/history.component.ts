@@ -19,7 +19,7 @@ import {
   HistoryEntry,
   isActionEntry,
   isPhaseChangeEntry,
-  isWinnerEntry
+  isWinnerEntry, translateGamePhase, translateHandType
 } from '../../../model';
 
 @Component({
@@ -86,17 +86,17 @@ export class HistoryComponent {
 
   private translateHistoryEntry(entry: HistoryEntry, betPlaced: boolean): string {
     if (isPhaseChangeEntry(entry)) {
-      return `${entry.details} phase started`
+      return `${translateGamePhase(entry.details)} phase starts`
     } else if (isWinnerEntry(entry)) {
-      return `${entry.details.playerName} won with ${entry.details.handType}`;
+      return `${entry.details.playerName} wins with ${translateHandType(entry.details.handType)}`;
     } else if (isActionEntry(entry)) {
       switch (entry.entryType) {
         case ActionType.JOIN:
-          return `${entry.details.playerName} joined`;
+          return `${entry.details.playerName} joins`;
         case ActionType.ALL_IN:
           return `${entry.details.playerName} goes all in!`;
         case ActionType.CHECK:
-          return entry.details.playerName + (betPlaced ? ' called' : ' checked');
+          return entry.details.playerName + (betPlaced ? ' calls' : ' checks');
         case ActionType.FOLD:
           return `${entry.details.playerName} folded`;
         case ActionType.RAISE:
@@ -104,7 +104,7 @@ export class HistoryComponent {
         case ActionType.READY:
           return `${entry.details.playerName} is ${entry.details.value === true ? '' : 'not'} ready`;
         case ActionType.REPLACE:
-          return `${entry.details.playerName} replaced ${entry.details.value} cards`;
+          return `${entry.details.playerName} replaces ${entry.details.value} cards`;
       }
     }
     return 'Unknown history entry';

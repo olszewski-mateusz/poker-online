@@ -1,10 +1,16 @@
 <div class="wrapper">
   <div>
-    {{game().phase}}
-    <mat-icon>poker_chip</mat-icon>
+    Phase: {{translatedGamePhase()}}
+  </div>
+  <div>
+    <span>Round reward: </span>
+    <mat-icon>trophy</mat-icon>
     {{collectedBet()}}
-    <mat-icon>playing_cards</mat-icon>
-    {{game().cardsInDeck}}
+  </div>
+  <div>
+    <span>Current bet: </span>
+    <mat-icon>poker_chip</mat-icon>
+    {{currentBet()}}
   </div>
   @if (currentPlayer()) {
     <div>
