@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, effect, inject, input, InputSignal, Signal} from '@angular/core';
-import {Game, Player} from '../../../model';
+import {Game, GamePhase, Player} from '../../../model';
 import {MatList, MatListItem, MatListItemTitle, MatListOption, MatSelectionList} from '@angular/material/list';
 import {PlayerSelectionService} from '../../../services/player-selection.service';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-player-selection',
@@ -11,7 +12,8 @@ import {PlayerSelectionService} from '../../../services/player-selection.service
     MatListItem,
     MatListItemTitle,
     MatSelectionList,
-    MatListOption
+    MatListOption,
+    MatIcon
   ],
   templateUrl: './player-selection.component.html',
   styleUrl: './player-selection.component.scss',
@@ -37,4 +39,6 @@ export class PlayerSelectionComponent {
   onPlayerChange(player: Player): void {
     this.playerSelectionService.setSelectedPlayer(player.id);
   }
+
+  protected readonly GamePhase = GamePhase;
 }

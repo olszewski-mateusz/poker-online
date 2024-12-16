@@ -1,7 +1,23 @@
 <mat-selection-list [multiple]="false">
   @for (player of game().players; track player.id) {
     <mat-list-option [selected]="selectedPlayerId() === player.id" (selectedChange)="onPlayerChange(player)">
-      <span matListItemTitle>{{player.name}}</span>
+
+      <span matListItemTitle>
+        @if (game().currentPlayerId === player.id) {
+          <mat-icon>chevron_right</mat-icon>
+        } @else if (player.ready) {
+          <mat-icon>check_small</mat-icon>
+        } @else if (player.folded) {
+          <mat-icon>close</mat-icon>
+        } @else if (game().phase === GamePhase.SHOWDOWN && player.id === game().winnerId) {
+          <mat-icon>crown</mat-icon>
+        } @else {
+          <span class="empty-icon"></span>
+        }
+        <span>
+          {{player.name}}
+        </span>
+      </span>
     </mat-list-option>
   }
 </mat-selection-list>
