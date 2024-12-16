@@ -1,5 +1,5 @@
 <div class="wrapper">
-  @for (card of myPlayer()?.cards ?? []; track (card.suit + card.rank)) {
+  @for (card of myCards(); track (card.suit + card.rank)) {
     <div class="card-column">
       <card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.BIG" [interactive]="isCardInteractive()" (clicked)="cardClicked(card)"/>
       @if (isCardSelected(card)) {

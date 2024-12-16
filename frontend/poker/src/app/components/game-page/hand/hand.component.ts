@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, InputSignal, Signal} from '@angular/core';
-import {Card, Game, GamePhase, Player} from '../../../model';
+import {Card, compareCards, Game, GamePhase, Player} from '../../../model';
 import {CardComponent, CardSize} from '../card/card.component';
 import {ReplaceCardsService} from '../../../services/replace-cards.service';
 
@@ -21,14 +21,15 @@ export class HandComponent {
 
   game: InputSignal<Game> = input.required<Game>();
 
-  myPlayer: Signal<Player | undefined> = computed(() => {
+  myCards: Signal<Card[]> = computed(() => {
     const game: Game = this.game();
-    return game.players.find(value => value.id === game.myId);
+    return game.players.find(value => value.id === game.myId)?.cards?.sort(compareCards) ?? [];
   });
-  isCardInteractive = computed(() => {
+
+  isCardInteractive: Signal<boolean> = computed(() => {
     const game: Game = this.game();
     return game.phase === GamePhase.DRAWING && game.myId === game.currentPlayerId;
-  })
+  });
 
 
   cardClicked(card: Card): void {
