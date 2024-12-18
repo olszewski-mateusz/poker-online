@@ -30,13 +30,13 @@ export class StartPageComponent {
   gameId = model<string|null>(null);
 
   createGame() {
-    this.gameService.createAndJoinGame().subscribe();
+    this.gameService.createNewGame().subscribe();
   }
 
   joinGame() {
     const gameId: string|null = this.gameId();
     if (gameId) {
-      this.gameService.joinGame(gameId).subscribe();
+      this.gameService.joinToExistingGame(gameId).subscribe();
     }
   }
 }

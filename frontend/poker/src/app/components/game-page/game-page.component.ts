@@ -42,13 +42,15 @@ export class GamePageComponent {
 
   game: Signal<Game | undefined> = toSignal(this.route.params.pipe(
     map(value => value['gameId']),
-    mergeMap(gameId => this.gameService.connectToGameStream(gameId))
+    mergeMap(gameId => this.gameService.subscribeToGameChanges(gameId))
   ));
 
   constructor() {
     effect(() => {
       const game = this.game();
-      console.log(game)
+      if (game) {
+        console.log(game);
+      }
     });
   }
 }

@@ -3,6 +3,7 @@ package com.molszewski.demos.poker.web.controller;
 import com.molszewski.demos.poker.web.model.request.*;
 import com.molszewski.demos.poker.web.model.response.ActionResponse;
 import com.molszewski.demos.poker.web.service.GameService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class ActionController {
     private final GameService gameService;
 
     @PostMapping("/join")
-    public Mono<ResponseEntity<ActionResponse>> join(@PathVariable String gameId, @RequestBody JoinRequest request) {
+    public Mono<ResponseEntity<ActionResponse>> join(@PathVariable String gameId, @RequestBody @Valid JoinRequest request) {
         return gameService.handleCommand(gameId, request.toCommand(gameService.generatePlayerId()))
                 .map(ResponseEntity::ok)
                 .onErrorReturn(ResponseEntity.badRequest().build());
