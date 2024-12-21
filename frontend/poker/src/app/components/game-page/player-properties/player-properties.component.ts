@@ -1,14 +1,16 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, InputSignal, Signal} from '@angular/core';
-import {Game, Player} from '../../../model';
+import {Card, compareCards, Game, Player} from '../../../model';
 import {PlayerSelectionService} from '../../../services/player-selection.service';
 import {MatIcon} from '@angular/material/icon';
+import {CardComponent, CardSize} from "../card/card.component";
 
 @Component({
   selector: 'app-player-properties',
   standalone: true,
-  imports: [
-    MatIcon
-  ],
+    imports: [
+        MatIcon,
+        CardComponent
+    ],
   templateUrl: './player-properties.component.html',
   styleUrl: './player-properties.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,4 +24,9 @@ export class PlayerPropertiesComponent {
     return this.game().players.find(player => player.id === selectedPlayerId);
   })
 
+  protected selectedPlayerCards: Signal<Card[]> = computed(() => {
+    return this.selectedPlayer()?.cards?.sort(compareCards) ?? [];
+  })
+
+  protected readonly CardSize = CardSize;
 }

@@ -1,16 +1,21 @@
 <div class="wrapper">
   @if (selectedPlayer(); as selectedPlayer) {
-    <div>
+    <div class="row">
       <mat-icon>account_circle</mat-icon>
       {{selectedPlayer.name}}
     </div>
-    <div>
+    <div class="row">
       <mat-icon>paid</mat-icon>
       {{selectedPlayer.money}}
     </div>
-    <div>
+    <div class="row">
       <mat-icon>poker_chip</mat-icon>
       {{selectedPlayer.bet}}
+    </div>
+    <div class="player-cards">
+      @for (card of selectedPlayerCards(); track (card.suit + card.rank)) {
+        <card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.SMALL"/>
+      }
     </div>
   }
 </div>
