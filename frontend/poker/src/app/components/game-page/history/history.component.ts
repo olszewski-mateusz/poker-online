@@ -19,7 +19,9 @@ import {
   HistoryEntry,
   isActionEntry,
   isPhaseChangeEntry,
-  isWinnerEntry, translateGamePhase, translateHandType
+  isWinnerEntry,
+  translateGamePhase,
+  translateHandType
 } from '../../../model';
 
 @Component({
@@ -86,6 +88,9 @@ export class HistoryComponent {
 
   private translateHistoryEntry(entry: HistoryEntry, betPlaced: boolean): string {
     if (isPhaseChangeEntry(entry)) {
+      if (entry.details === GamePhase.FIRST_BETTING) {
+        return 'Round starts';
+      }
       return `${translateGamePhase(entry.details)} phase starts`
     } else if (isWinnerEntry(entry)) {
       return `${entry.details.playerName} wins with ${translateHandType(entry.details.handType)}`;

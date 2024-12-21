@@ -1,8 +1,7 @@
-import {Injectable, Signal} from '@angular/core';
-import {EMPTY, Observable, Subject} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
 import {Game} from '../../model';
 import {API_HOST} from './api-rest.service';
-import {toSignal} from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +45,7 @@ export class ApiStreamService {
 
   closeStream(): void {
     if (!this.eventSource) {
-      const errMessage: string = 'EventSource already closed'
+      const errMessage: string = 'EventSource already closed';
       console.log(errMessage);
       throw new Error(errMessage);
     }

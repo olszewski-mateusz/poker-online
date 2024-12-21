@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {ApiRestService} from './api/api-rest.service';
 import {MatDialog} from '@angular/material/dialog';
 import {PlayerNamePromptComponent} from '../components/start-page/player-name-prompt/player-name-prompt.component';
-import {catchError, filter, map, mergeMap, Observable, of, repeat, repeatWhen, retry, take, takeWhile, tap} from 'rxjs';
+import {catchError, filter, map, mergeMap, Observable, of, retry, tap} from 'rxjs';
 import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Game} from '../model';
@@ -45,7 +45,7 @@ export class GameConnectorService {
             if (err instanceof Event && err.target instanceof EventSource) {
               console.log("Trying to reconnect to game...");
             } else {
-              console.log(err);
+              console.error(err);
             }
             this.apiStreamService.closeStream();
             throw err;

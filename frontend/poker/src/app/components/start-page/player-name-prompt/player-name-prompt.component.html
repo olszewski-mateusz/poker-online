@@ -5,14 +5,27 @@
       [(ngModel)]="playerName"
       matInput
       required
+      minlength="3"
+      maxlength="32"
       placeholder="name"
+      pattern="[\S\s]+[\S]+"
       #playerNameInput="ngModel"
     />
     @if (playerNameInput.invalid && (playerNameInput.dirty || playerNameInput.touched)) {
-      <mat-error>Name is required</mat-error>
+      <mat-error>
+      @if (playerNameInput.errors?.['required']) {
+        Name is required
+      } @else if (playerNameInput.errors?.['minlength']) {
+        Name must have at least 3 characters
+      } @else if (playerNameInput.errors?.['maxlength']) {
+        Name can't have more than 32 characters
+      } @else if (playerNameInput.errors?.['pattern']) {
+        Name cannot be blank
+      }
+      </mat-error>
     }
   </mat-form-field>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+<mat-dialog-actions align="center">
   <button [disabled]="playerNameInput.invalid" mat-button [mat-dialog-close]="playerName()">Join</button>
 </mat-dialog-actions>
