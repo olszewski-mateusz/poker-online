@@ -75,6 +75,20 @@ export class ActionsComponent {
     return this.myPlayer()?.money ?? this.minBet();
   });
 
+  protected readonly isRaiseIllegal: Signal<boolean> = computed(() => {
+    return this.maxBet() <= this.minBet();
+  });
+
+  protected readonly isCallIllegal: Signal<boolean> = computed(() => {
+    const currentBet: number = this.game().players
+      .map(p => p.bet ?? 0)
+      .reduce((a, b) => {
+        return Math.max(a, b);
+      }, 0);
+
+    return currentBet - (this.myPlayer()?.bet ?? 0) >= (this.myPlayer()?.money ?? 0);
+  });
+
   sendReady(): void {
     const game: Game = this.game();
     const myPlayer = this.myPlayer();

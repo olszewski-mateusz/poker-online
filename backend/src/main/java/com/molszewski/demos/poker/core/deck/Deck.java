@@ -51,6 +51,10 @@ public class Deck {
         cards.addAll(discards);
     }
 
+    public void addAllToDiscards(Collection<Card> cards) {
+        discards.addAll(cards);
+    }
+
     public void addToDiscards(Card card) {
         discards.add(card);
     }

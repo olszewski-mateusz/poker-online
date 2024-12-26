@@ -5,6 +5,8 @@
       <span matListItemTitle>
         @if (game().currentPlayerId === player.id) {
           <mat-icon>chevron_right</mat-icon>
+        } @else if (!player.folded && player.money === 0 && (game().phase === GamePhase.FIRST_BETTING || game().phase === GamePhase.SECOND_BETTING)) {
+          <mat-icon>done_all</mat-icon>
         } @else if (player.ready) {
           <mat-icon>check_small</mat-icon>
         } @else if (player.folded) {

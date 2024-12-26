@@ -19,7 +19,11 @@ public final class Raise extends Action {
     public void execute(GameState gameState, GameConfiguration configuration) throws ActionException {
         Player player = gameState.getPlayerById(this.getPlayerId())
                 .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
-        gameState.getPlayers().forEach(p -> p.setReady(false));
+        gameState.getPlayers().forEach(p -> {
+            if (p.getMoney() > 0) {
+                p.setReady(false);
+            }
+        });
         player.setReady(true);
 
         int currentBet = gameState.getCurrentBet();

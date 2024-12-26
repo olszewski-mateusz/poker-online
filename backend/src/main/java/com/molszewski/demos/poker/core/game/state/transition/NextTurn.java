@@ -25,9 +25,12 @@ public final class NextTurn implements Transition {
         nextPlayer(state);
         if (state.getPlayers().stream().allMatch(player -> player.isReady() || player.isFolded())) {
 
-            if (state.getPlayers().stream().filter(player -> !player.isFolded()).count() == 1) {
+            if (state.getPlayers().stream().filter(player -> !player.isFolded()).count() == 1 ||
+                state.getGamePhase().equals(GamePhase.DRAWING) && state.getPlayers().stream().filter(player -> !player.isFolded() && player.getMoney() > 0).count() <= 1) {
+
                 state.setGamePhase(GamePhase.SHOWDOWN);
                 state.getPlayers().forEach(player -> player.setReady(false));
+                state.setCurrentPlayer(null);
                 return;
             }
 
@@ -38,11 +41,16 @@ public final class NextTurn implements Transition {
                 }
                 case DRAWING -> {
                     state.setGamePhase(GamePhase.SECOND_BETTING);
-                    state.getPlayers().forEach(player -> player.setReady(false));
+                    state.getPlayers().forEach(player -> {
+                        if (player.getMoney() > 0) {
+                            player.setReady(false);
+                        }
+                    });
                 }
                 case SECOND_BETTING -> {
                     state.setGamePhase(GamePhase.SHOWDOWN);
                     state.getPlayers().forEach(player -> player.setReady(false));
+                    state.setCurrentPlayer(null);
                 }
                 default -> throw new IllegalStateException("Unexpected phase: " + state.getGamePhase());
             }
@@ -62,9 +70,16 @@ public final class NextTurn implements Transition {
             throw new IllegalStateException("Current player is null");
         }
 
-        List<Player> playersInGame = players.stream()
-                .filter(player -> !player.isFolded() || player == currentPlayer)
-                .toList();
+        List<Player> playersInGame;
+        if (state.getGamePhase().equals(GamePhase.FIRST_BETTING) || state.getGamePhase().equals(GamePhase.SECOND_BETTING)) {
+            playersInGame = players.stream()
+                    .filter(player -> (!player.isFolded() && player.getMoney() > 0) || player == currentPlayer)
+                    .toList();
+        } else {
+            playersInGame = players.stream()
+                    .filter(player -> !player.isFolded() || player == currentPlayer)
+                    .toList();
+        }
 
         state.setCurrentPlayer(playersInGame.get((playersInGame.indexOf(currentPlayer) + 1) % playersInGame.size()));
     }

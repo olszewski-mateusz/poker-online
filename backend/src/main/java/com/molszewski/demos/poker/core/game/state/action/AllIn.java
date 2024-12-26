@@ -22,7 +22,11 @@ public final class AllIn extends Action {
 
         int newBid = gameState.getCurrentBet();
         if (newBid > oldBid) {
-            gameState.getPlayers().forEach(p -> p.setReady(false));
+            gameState.getPlayers().forEach(p -> {
+                if (p.getMoney() > 0) {
+                    p.setReady(false);
+                }
+            });
         }
         player.setReady(true);
     }

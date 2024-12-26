@@ -103,7 +103,7 @@ export class HistoryComponent {
         case ActionType.CHECK:
           return entry.details.playerName + (betPlaced ? ' calls' : ' checks');
         case ActionType.FOLD:
-          return `${entry.details.playerName} folded`;
+          return `${entry.details.playerName} folds`;
         case ActionType.RAISE:
           return entry.details.playerName + (betPlaced ? ' raises to ' : ' bets ') + entry.details.value;
         case ActionType.READY:

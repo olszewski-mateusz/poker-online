@@ -7,28 +7,30 @@
     @if (raisePanelActive()) {
       <div class="column-wrapper">
 
-        <div class="row-wrapper amount-label">
-          {{betPlacedInCurrentPhase() ? 'Raise' : 'Bet'}} amount: {{amount()}}
-        </div>
+        @if (!isRaiseIllegal()) {
+          <div class="row-wrapper amount-label">
+            {{betPlacedInCurrentPhase() ? 'Raise' : 'Bet'}} amount: {{amount()}}
+          </div>
 
-        <div class="row-wrapper">
-          <button mat-button (click)="addToAmount(-50)">-50</button>
-          <button mat-button (click)="addToAmount(-5)">-5</button>
+          <div class="row-wrapper">
+            <button mat-button (click)="addToAmount(-50)">-50</button>
+            <button mat-button (click)="addToAmount(-5)">-5</button>
 
-          <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
-            <input [(value)]="amount" matSliderThumb>
-          </mat-slider>
+            <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
+              <input [(value)]="amount" matSliderThumb>
+            </mat-slider>
 
-          <button mat-button (click)="addToAmount(5)">+5</button>
-          <button mat-button (click)="addToAmount(50)">+50</button>
-        </div>
+            <button mat-button (click)="addToAmount(5)">+5</button>
+            <button mat-button (click)="addToAmount(50)">+50</button>
+          </div>
+        }
 
         <div class="row-wrapper">
           <button mat-button [disabled]="!myTurn()" (click)="sendAllIn()">
             All in
           </button>
 
-          <button mat-button [disabled]="!myTurn()" (click)="sendBetOrRaise()">
+          <button mat-button [disabled]="!myTurn() || isRaiseIllegal()" (click)="sendBetOrRaise()">
             {{betPlacedInCurrentPhase() ? 'Raise' : 'Bet'}}
           </button>
 
@@ -39,13 +41,20 @@
 
       </div>
     } @else if (betPlacedInCurrentPhase()) {
-      <button mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
-        Call
-      </button>
 
-      <button mat-button [disabled]="!myTurn()" (click)="activateRaisePanel()">
-        Raise
-      </button>
+      @if (!isCallIllegal()) {
+        <button mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
+          Call
+        </button>
+
+        <button mat-button [disabled]="!myTurn()" (click)="activateRaisePanel()">
+          Raise
+        </button>
+      } @else {
+        <button mat-button [disabled]="!myTurn()" (click)="sendAllIn()">
+          All in
+        </button>
+      }
 
       <button mat-button [disabled]="!myTurn()" (click)="sendFold()">
         Fold

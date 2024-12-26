@@ -28,13 +28,14 @@ public final class StartRound implements Transition {
         if (state.getGamePhase().equals(GamePhase.SHOWDOWN)) {
             reorderPlayers(state);
             collectBet(state);
-            disablePlayersWithoutMoney(state);
         }
+        state.getPlayers().forEach(player -> player.setFolded(false));
+        state.getPlayers().forEach(player -> player.setReady(false));
+        disablePlayersWithoutMoney(state);
         state.setGamePhase(GamePhase.FIRST_BETTING);
-        state.setCurrentPlayer(state.getPlayers().getFirst());
+        state.setCurrentPlayer(state.getPlayers().stream().filter(player -> !player.isFolded()).findFirst().orElse(null));
         giveCardsToPlayers(state);
         collectAnte(state, configuration);
-        state.getPlayers().forEach(player -> player.setReady(false));
     }
 
     private void collectBet(GameState gameState) {
@@ -55,12 +56,18 @@ public final class StartRound implements Transition {
 
     private void giveCardsToPlayers(GameState gameState) {
         for (Player player : gameState.getPlayers()) {
-            player.setHand(gameState.getDeck().getHand());
+            if (player.getHand() != null) {
+                gameState.getDeck().addAllToDiscards(player.getHand().getCards());
+                player.setHand(null);
+            }
+            if (!player.isFolded()) {
+                player.setHand(gameState.getDeck().getHand());
+            }
         }
     }
 
     private void collectAnte(GameState gameState, GameConfiguration configuration) {
-        for (Player player : gameState.getPlayers()) {
+        for (Player player : gameState.getPlayers().stream().filter(player -> !player.isFolded()).toList()) {
             player.moveMoneyToBet(configuration.ante());
         }
     }
