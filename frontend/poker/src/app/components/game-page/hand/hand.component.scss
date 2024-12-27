@@ -13,7 +13,10 @@
     .replace-label {
       text-align: center;
       color: var(--mat-app-text-color);
-      font-size: 30px;
+      margin-top: 5px;
+      font-weight: 500;
+      transform: scaleY(0.8);
+      font-size: 60px;
       -webkit-user-select: none;
       user-select: none;
     }

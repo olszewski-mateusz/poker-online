@@ -1,11 +1,45 @@
-mat-list {
-  height: 50vh;
-  width: 300px;
-  overflow-y: scroll;
-  background-color: #151515;
+:host {
+  display: flex;
+  justify-content: center;
 
-  mat-list-item {
-    height: 34px;
+  .wrapper {
+    background-color: #151515;
+    display: flex;
+    flex-direction: column;
+    flex-basis: 320px;
+
+
+    .header {
+      display: flex;
+      margin: 4px 15px;
+      margin-bottom: 10px;
+      color: var(--mat-app-text-color);
+      height: 50px;
+      h2 {
+        font-size: 26px;
+        font-weight: 500;
+      }
+      mat-icon {
+        margin-top: 12px;
+        margin-right: 5px;
+        font-size: 30px;
+      }
+    }
+
+    .container {
+      flex: 1 1 0;
+      min-height: 0;
+
+      mat-list {
+        padding: 0 !important;
+        height: 100%;
+        overflow-y: auto;
+
+        mat-list-item {
+          height: 38px;
+        }
+      }
+    }
   }
 }
 

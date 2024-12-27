@@ -1,16 +1,28 @@
-.card {
-  background-color: #f1f1f1;
+.card, .not-card {
   font-family: "Segoe UI Semibold", system-ui;
-
   div {
     -webkit-user-select: none;
     user-select: none;
   }
+}
+
+.not-card {
+  background-color: #1c1c1c;
+
+  .unknown-symbol {
+    text-align: center;
+    color: #b2b2b2;
+  }
+}
+
+.card {
+  background-color: #f1f1f1;
 
   .rank {
     text-align: center;
   }
 }
+
 .red {
   color: #af0000;
 }
@@ -30,6 +42,7 @@
     width: 45px;
     transform: translate(6%, 40%);
   }
+
   .suit {
     width: 30px;
     transform: translate(28%, 120%);
@@ -39,6 +52,11 @@
     font-size: 85px;
     width: 50px;
     transform: translate(75%, 165%);
+  }
+
+  .unknown-symbol {
+    padding-top: 50px;
+    font-size: 80px;
   }
 }
 
@@ -52,6 +70,7 @@
     width: 38px;
     transform: translate(4%, 30%);
   }
+
   .suit {
     transform: translate(9%, 70%);
   }
@@ -59,6 +78,11 @@
   .big-suit {
     font-size: 65px;
     transform: translate(42%, 78%);
+  }
+
+  .unknown-symbol {
+    padding-top: 25px;
+    font-size: 40px;
   }
 }
 
@@ -72,8 +96,14 @@
     width: 36px;
     transform: translate(20%, 30%);
   }
+
   .suit {
     transform: translate(24%, 70%);
+  }
+
+  .unknown-symbol {
+    padding-top: 25px;
+    font-size: 40px;
   }
 }
 

@@ -10,6 +10,7 @@
       placeholder="name"
       pattern="[\S\s]+[\S]+"
       #playerNameInput="ngModel"
+      (keydown.enter)="submitBtn._elementRef.nativeElement.click()"
     />
     @if (playerNameInput.invalid && (playerNameInput.dirty || playerNameInput.touched)) {
       <mat-error>
@@ -27,5 +28,5 @@
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button [disabled]="playerNameInput.invalid" mat-button [mat-dialog-close]="playerName()">Join</button>
+  <button #submitBtn [disabled]="playerNameInput.invalid" mat-button [mat-dialog-close]="playerName()">Join</button>
 </mat-dialog-actions>

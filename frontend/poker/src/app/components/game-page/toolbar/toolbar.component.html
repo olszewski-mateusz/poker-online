@@ -1,26 +1,31 @@
 <mat-toolbar>
   @if (myPlayer(); as myPlayer) {
-    <div class="player-info">
-      <div>
-        <mat-icon>account_circle</mat-icon>
-        <span>{{myPlayer.name}}</span>
+      <div class="start">
+        <div>
+          <mat-icon inline>account_circle</mat-icon>
+          <span>{{myPlayer.name}}</span>
+        </div>
+
+        <div>
+          <mat-icon inline>paid</mat-icon>
+          <span>{{myPlayer.money}}</span>
+        </div>
+
+        <div>
+          <mat-icon inline>poker_chip</mat-icon>
+          <span>{{myPlayer.bet}}</span>
+        </div>
       </div>
 
-      <div>
-        <mat-icon>paid</mat-icon>
-        <span>{{myPlayer.money}}</span>
+      <div class="middle">
+        Game ID: {{game().gameId}}
       </div>
 
-      <div>
-        <mat-icon>poker_chip</mat-icon>
-        <span>{{myPlayer.bet}}</span>
+      <div class="end">
+        <button mat-button (click)="leave()">
+          <mat-icon>logout</mat-icon>
+          <span>Leave</span>
+        </button>
       </div>
-    </div>
-
-    <div class="menu">
-      <button mat-icon-button>
-        <mat-icon>menu</mat-icon>
-      </button>
-    </div>
   }
 </mat-toolbar>

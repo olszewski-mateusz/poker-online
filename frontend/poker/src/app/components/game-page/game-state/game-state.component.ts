@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, input, InputSignal, signal, Signal} from '@angular/core';
-import {Game, Player, translateGamePhase} from '../../../model';
+import {Game, GamePhase, Player} from '../../../model';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
@@ -28,7 +28,7 @@ export class GameStateComponent {
   });
 
   translatedGamePhase: Signal<string> = computed(() => {
-    return translateGamePhase(this.game().phase);
+    return this.translateGamePhase(this.game().phase);
   });
 
   currentBet: Signal<number> = computed(() => {
@@ -38,4 +38,14 @@ export class GameStateComponent {
         return Math.max(previousValue, currentValue);
       }, 0)
   })
+
+  private translateGamePhase(phase: GamePhase): string {
+    switch (phase) {
+      case GamePhase.NOT_STARTED: return 'Game not started';
+      case GamePhase.FIRST_BETTING: return 'First betting phase';
+      case GamePhase.DRAWING: return 'Drawing phase';
+      case GamePhase.SECOND_BETTING: return 'Second betting phase';
+      case GamePhase.SHOWDOWN: return 'Showdown phase';
+    }
+  }
 }

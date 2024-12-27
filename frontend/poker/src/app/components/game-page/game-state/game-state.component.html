@@ -1,21 +1,21 @@
-<div class="wrapper">
-  <div>
-    Phase: {{translatedGamePhase()}}
+<div class="wrapper mat-elevation-z5">
+  <div class="phase">
+    {{translatedGamePhase()}}
   </div>
-  <div>
+  <div class="property">
     <mat-icon>trophy</mat-icon>
     <span>Round reward: </span>
     {{collectedBet()}}
   </div>
-  <div>
+  <div class="property">
     <mat-icon>poker_chip</mat-icon>
     <span>Current bet: </span>
     {{currentBet()}}
   </div>
   @if (currentPlayer()) {
-    <div>
+    <div class="property">
       <mat-icon>account_circle</mat-icon>
-      Turn: {{currentPlayer()?.name}}
+      <span>Turn: {{currentPlayer()?.name}}</span>
     </div>
   }
 </div>

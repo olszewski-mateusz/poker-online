@@ -1,7 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 html, body { height: 100%; }
 body {
-  background-color: #222222;
+  background-color: #262626;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+
+  --accent-color: #ffb787;
+}
+
+[mat-button] {
+  --mdc-text-button-label-text-color: var(--mat-app-text-color);
+  --mat-ripple-color: var(--mat-app-text-color);
+  --mat-text-button-ripple-color: #8d8d8d;
+  --mat-text-button-state-layer-color: #8d8d8d;
+
+  --mat-text-button-hover-state-layer-opacity: 0.08;
+  --mat-text-button-focus-state-layer-opacity: 0.12;
+  --mat-text-button-pressed-state-layer-opacity: 0.12;
 }

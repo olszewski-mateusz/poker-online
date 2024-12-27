@@ -1,23 +1,44 @@
 mat-toolbar {
   --mat-toolbar-container-background-color: #101010;
-
   display: flex;
   justify-content: space-between;
 
-  .player-info {
-    flex-grow: 1;
+  flex-grow: 1;
+
+  .start {
     display: flex;
-    justify-content: space-between;
+    font-size: 24px;
+    gap: 50px;
+    flex-basis: calc(100% / 3);
+
     mat-icon {
-      transform: translateY(4px);
+      transform: translateY(5px);
+      font-size: 28px;
       margin-right: 5px;
     }
   }
 
-  .menu {
-    flex-grow: 3;
+  .middle {
+    flex-basis: calc(100% / 3);
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+  }
+
+  .end {
+    display: flex;
+    flex-basis: calc(100% / 3);
+    justify-content: end;
+    mat-icon {
+      font-size: 30px;
+      width: 30px;
+      height: 30px;
+    }
+    span {
+      font-size: 20px;
+    }
+    button {
+      height: 50px;
+    }
   }
 }
 

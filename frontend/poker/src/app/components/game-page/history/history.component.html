@@ -1,7 +1,17 @@
-<mat-list>
-  @for (entry of historyEntries(); track $index) {
-    <mat-list-item>
-      <span matListItemTitle>{{entry}}</span>
-    </mat-list-item>
-  }
-</mat-list>
+<div class="wrapper mat-elevation-z5">
+  <div class="header">
+    <mat-icon inline>event_note</mat-icon>
+    <h2>History:</h2>
+  </div>
+
+  <div class="container">
+    <mat-list>
+      @for (entry of historyEntries(); track $index) {
+        <mat-list-item>
+          <span matListItemTitle>{{entry}}</span>
+        </mat-list-item>
+      }
+    </mat-list>
+  </div>
+</div>
+

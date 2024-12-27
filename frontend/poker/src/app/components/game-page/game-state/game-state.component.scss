@@ -1,9 +1,33 @@
-.wrapper {
-  color: var(--mat-app-text-color);
-  background-color: #151515;
-  padding: 10px;
+:host {
+  display: flex;
+  flex-direction: column;
 
-  mat-icon {
-    transform: translateY(4px);
+  .wrapper {
+    color: var(--mat-app-text-color);
+    background-color: #151515;
+    padding: 10px;
+    flex-basis: 200px;
+
+    .phase {
+      font-size: 32px;
+      text-align: center;
+      font-weight: 500;
+      padding: 20px 10px;
+      margin-bottom: 10px;
+      line-height: 32px;
+    }
+
+    .property {
+      font-size: 18px;
+
+      mat-icon {
+        transform: translateY(4px);
+        margin-right: 8px;
+      }
+    }
+
+
   }
 }
+
+

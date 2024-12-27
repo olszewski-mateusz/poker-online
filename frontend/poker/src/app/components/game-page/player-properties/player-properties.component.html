@@ -1,16 +1,20 @@
-<div class="wrapper">
+<div class="wrapper mat-elevation-z5">
   @if (selectedPlayer(); as selectedPlayer) {
-    <div class="row">
-      <mat-icon>account_circle</mat-icon>
-      {{selectedPlayer.name}}
-    </div>
-    <div class="row">
-      <mat-icon>paid</mat-icon>
-      {{selectedPlayer.money}}
-    </div>
-    <div class="row">
-      <mat-icon>poker_chip</mat-icon>
-      {{selectedPlayer.bet}}
+    <div class="properties">
+      <div class="column">
+        <mat-icon>account_circle</mat-icon>
+        {{selectedPlayer.name}}
+      </div>
+      <div class="column">
+        <div>
+          <mat-icon>paid</mat-icon>
+          {{selectedPlayer.money}}
+        </div>
+        <div>
+          <mat-icon>poker_chip</mat-icon>
+          {{selectedPlayer.bet}}
+        </div>
+      </div>
     </div>
     <div class="player-cards">
       @for (card of selectedPlayerCards(); track (card.suit + card.rank)) {

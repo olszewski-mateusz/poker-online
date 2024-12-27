@@ -1,14 +1,20 @@
-<div class="card"
+<div class="mat-elevation-z3"
+     [class.card]="isCard()"
+     [class.not-card]="!isCard()"
      [class.red]="isRed()"
      [class.size-small]="isSmall()"
      [class.size-medium]="isMedium()"
      [class.size-big]="isBig()"
      [class.interactive]="interactive()"
      (click)="onCardClick()">
-  <div class="rank">{{ rankValue() }}</div>
-  <div class="suit">{{ suitValue() }}</div>
-  @if (!isSmall()) {
-    <div class="big-suit">{{ suitValue() }}</div>
+  @if (isCard()) {
+    <div class="rank">{{ rankValue() }}</div>
+    <div class="suit">{{ suitValue() }}</div>
+    @if (!isSmall()) {
+      <div class="big-suit">{{ suitValue() }}</div>
+    }
+  } @else {
+    <div class="unknown-symbol">?</div>
   }
 </div>
 

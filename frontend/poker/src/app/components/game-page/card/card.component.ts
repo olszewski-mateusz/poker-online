@@ -5,8 +5,7 @@ import {
   input,
   InputSignal,
   output,
-  OutputEmitterRef,
-  Signal
+  OutputEmitterRef, Signal
 } from '@angular/core';
 import {MatIcon} from '@angular/material/icon';
 import {Rank, Suit} from '../../../model';
@@ -22,8 +21,8 @@ import {Rank, Suit} from '../../../model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent {
-  rank: InputSignal<Rank> = input.required<Rank>();
-  suit: InputSignal<Suit> = input.required<Suit>();
+  rank: InputSignal<Rank|undefined> = input<Rank>();
+  suit: InputSignal<Suit|undefined> = input<Suit>();
   size: InputSignal<CardSize> = input.required<CardSize>();
   interactive: InputSignal<boolean> = input(false);
   clicked: OutputEmitterRef<void> = output<void>();
@@ -57,6 +56,7 @@ export class CardComponent {
       case Rank.ACE:
         return 'A';
     }
+    return '';
   })
 
   suitValue: Signal<string> = computed(() => {
@@ -70,10 +70,12 @@ export class CardComponent {
       case Suit.CLUBS:
         return '♣';
     }
+    return '';
   })
 
   isRed: Signal<boolean> = computed(() => {
-    return [Suit.HEARTS, Suit.DIAMONDS].includes(this.suit());
+    const suit: Suit | undefined = this.suit();
+    return !!suit && [Suit.HEARTS, Suit.DIAMONDS].includes(suit);
   })
 
   isSmall: Signal<boolean> = computed(() => {
@@ -86,6 +88,10 @@ export class CardComponent {
 
   isBig: Signal<boolean> = computed(() => {
     return this.size() === CardSize.BIG;
+  })
+
+  isCard = computed(() => {
+    return !!this.rank() && !!this.suit();
   })
 
   onCardClick(): void {

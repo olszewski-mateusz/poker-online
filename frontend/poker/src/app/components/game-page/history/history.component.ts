@@ -20,9 +20,9 @@ import {
   isActionEntry,
   isPhaseChangeEntry,
   isWinnerEntry,
-  translateGamePhase,
   translateHandType
 } from '../../../model';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-history',
@@ -32,7 +32,8 @@ import {
     MatListItemLine,
     MatListItem,
     MatList,
-    MatListModule
+    MatListModule,
+    MatIcon
   ],
   templateUrl: './history.component.html',
   styleUrl: './history.component.scss',
@@ -46,7 +47,11 @@ export class HistoryComponent {
   private readonly firstScroll: WritableSignal<boolean> = signal<boolean>(true);
 
   historyEntries: Signal<string[]> = computed(() => {
-    return this.buildHistoryEntries(this.game());
+    const entries: string[] = this.buildHistoryEntries(this.game());
+    if (entries.length > 100) {
+      return entries.slice(-100);
+    }
+    return entries;
   })
 
   constructor() {
@@ -91,7 +96,7 @@ export class HistoryComponent {
       if (entry.details === GamePhase.FIRST_BETTING) {
         return 'Round starts';
       }
-      return `${translateGamePhase(entry.details)} phase starts`
+      return `${this.translateGamePhase(entry.details)} phase starts`
     } else if (isWinnerEntry(entry)) {
       return `${entry.details.playerName} wins with ${translateHandType(entry.details.handType)}`;
     } else if (isActionEntry(entry)) {
@@ -113,5 +118,15 @@ export class HistoryComponent {
       }
     }
     return 'Unknown history entry';
+  }
+
+  private translateGamePhase(phase: GamePhase): string {
+    switch (phase) {
+      case GamePhase.NOT_STARTED: return 'Not started';
+      case GamePhase.FIRST_BETTING: return 'First betting';
+      case GamePhase.DRAWING: return 'Drawing';
+      case GamePhase.SECOND_BETTING: return 'Second betting';
+      case GamePhase.SHOWDOWN: return 'Showdown';
+    }
   }
 }

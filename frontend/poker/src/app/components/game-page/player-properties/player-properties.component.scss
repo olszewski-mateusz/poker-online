@@ -1,20 +1,35 @@
-.wrapper {
-  background-color: #151515;
-  padding: 30px;
+:host {
+  display: flex;
+  justify-content: center;
 
-  .row {
-    color: var(--mat-app-text-color);
+  .wrapper {
+    background-color: #151515;
+    padding: 10px 25px;
+    display: flex;
+    flex-direction: column;
+    flex-basis: 270px;
+    justify-content: center;
+    gap: 10px;
 
-    mat-icon {
-      transform: translateY(5px);
-      margin-right: 4px;
+    .properties {
+      display: flex;
+      flex-direction: row;
+      gap: 100px;
+
+      color: var(--mat-app-text-color);
+
+      mat-icon {
+        transform: translateY(5px);
+        margin-right: 4px;
+      }
+    }
+
+    .player-cards {
+      margin-top: 10px;
+      display: flex;
+      column-gap: 5px;
+      justify-content: center
     }
   }
-
-  .player-cards {
-    margin-top: 10px;
-    display: flex;
-    column-gap: 5px;
-
-  }
 }
+

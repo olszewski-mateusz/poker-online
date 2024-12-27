@@ -25,7 +25,8 @@ export class PlayerPropertiesComponent {
   })
 
   protected selectedPlayerCards: Signal<Card[]> = computed(() => {
-    return this.selectedPlayer()?.cards?.sort(compareCards) ?? [];
+    return this.selectedPlayer()?.cards?.sort(compareCards) ??
+      Array(5).fill(<Card>{});
   })
 
   protected readonly CardSize = CardSize;

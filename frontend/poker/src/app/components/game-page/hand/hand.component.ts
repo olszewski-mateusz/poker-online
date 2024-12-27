@@ -23,7 +23,8 @@ export class HandComponent {
 
   myCards: Signal<Card[]> = computed(() => {
     const game: Game = this.game();
-    return game.players.find(value => value.id === game.myId)?.cards?.sort(compareCards) ?? [];
+    return game.players.find(value => value.id === game.myId)?.cards?.sort(compareCards) ??
+      Array(5).fill(<Card>{});
   });
 
   isCardInteractive: Signal<boolean> = computed(() => {

@@ -1,7 +1,26 @@
-mat-selection-list {
-  background-color: #151515;
+:host {
+  display: flex;
+  justify-content: center;
+  mat-selection-list {
+    background-color: #151515;
+    flex-basis: 320px;
+
+    mat-list-option {
+      --mdc-list-list-item-label-text-size: 20px;
+      height: 40px;
+      mat-icon {
+        font-size: 32px;
+        margin-bottom: -2px;
+        margin-right: 4px;
+        margin-left: -8px;
+      }
+
+      .empty-icon {
+        opacity: 0;
+      }
+    }
+  }
 }
 
-.empty-icon {
-  margin-left: 28px;
-}
+
+
