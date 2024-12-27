@@ -1,0 +1,29 @@
+$poker-panel: #151515;
+$poker-text: #c9c9c9;
+$poker-color-accent: #ffb787;
+
+$poker-background: lighten($poker-panel, 7);
+$poker-text-light: lighten($poker-text, 10);
+$poker-text-disabled: darken($poker-text, 50);
+
+$poker-toolbar: darken($poker-panel, 2);
+$poker-separator: darken($poker-text, 30);
+
+$poker-button-ripple: darken($poker-text, 15);
+$poker-input-background: lighten($poker-background, 8);
+
+$poker-slider-active: $poker-text;
+$poker-slider-inactive: lighten($poker-background, 12);
+$poker-slider-ripple-hover: fade-out($poker-slider-active, 0.95);
+$poker-slider-ripple-focus: fade-out($poker-slider-active, 0.8);
+
+$poker-scrollbar-background: lighten($poker-panel, 12);
+$poker-scrollbar-thumb: lighten($poker-panel, 35);
+$poker-scrollbar-thumb-hover: darken($poker-scrollbar-thumb, 5);
+
+$poker-card-background: #e7e7e7;
+$poker-card-black: #151515;
+$poker-card-red: #ab1b1b;
+$poker-card-replace-label: #cccccc;
+$poker-card-unknown-background: #1c1c1c;
+$poker-card-unknown-symbol: #b2b2b2;

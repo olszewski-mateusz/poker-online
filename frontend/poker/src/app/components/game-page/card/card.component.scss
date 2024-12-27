@@ -1,3 +1,5 @@
+@import "../../../../colors";
+
 .card, .not-card {
   font-family: "Segoe UI Semibold", system-ui;
   div {
@@ -7,16 +9,17 @@
 }
 
 .not-card {
-  background-color: #1c1c1c;
+  background-color: $poker-card-unknown-background;
 
   .unknown-symbol {
     text-align: center;
-    color: #b2b2b2;
+    color: $poker-card-unknown-symbol;
   }
 }
 
 .card {
-  background-color: #f1f1f1;
+  background-color: $poker-card-background;
+  color: $poker-card-black;
 
   .rank {
     text-align: center;
@@ -24,7 +27,7 @@
 }
 
 .red {
-  color: #af0000;
+  color: $poker-card-red;
 }
 
 .interactive:hover {

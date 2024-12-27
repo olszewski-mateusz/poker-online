@@ -3,7 +3,7 @@
     <div class="card-column">
       <card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.BIG" [interactive]="isCardInteractive()" (clicked)="cardClicked(card)"/>
       @if (isCardSelected(card)) {
-        <div class="replace-label">x</div>
+        <div class="replace-label poker-text">x</div>
       }
     </div>
   }

@@ -2,18 +2,15 @@
   display: flex;
   justify-content: center;
 
-  .wrapper {
-    background-color: #151515;
+  .poker-panel {
     display: flex;
     flex-direction: column;
     flex-basis: 320px;
-
 
     .header {
       display: flex;
       margin: 4px 15px;
       margin-bottom: 10px;
-      color: var(--mat-app-text-color);
       height: 50px;
       h2 {
         font-size: 26px;
@@ -41,27 +38,5 @@
       }
     }
   }
-}
-
-/* width */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #afafaf;
-  border-radius: 3px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #6c6c6c;
-  border-radius: 3px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 
