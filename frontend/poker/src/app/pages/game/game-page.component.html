@@ -1,0 +1,22 @@
+@if (game(); as game) {
+
+  <app-toolbar [game]="game"/>
+
+  <div class="main-container">
+    <app-history class="left-column" [game]="game"/>
+
+    <div class="middle-column">
+      <app-game-state [game]="game"/>
+      <app-hand [game]="game"/>
+    </div>
+
+    <div class="right-column">
+      <app-player-selection [game]="game"/>
+      <app-player-properties [game]="game"/>
+    </div>
+
+  </div>
+
+  <app-actions [game]="game"/>
+}
+

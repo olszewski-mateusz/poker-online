@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  justify-content: center;
+
+  mat-selection-list {
+    flex-basis: 320px;
+
+    mat-list-option {
+      --mdc-list-list-item-label-text-size: 20px;
+      height: 40px;
+
+      mat-icon {
+        font-size: 32px;
+        margin: 0 4px -2px -8px;
+      }
+
+      .empty-icon {
+        opacity: 0;
+      }
+    }
+  }
+}
+
+
+

@@ -1,0 +1,42 @@
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+
+  .start, .middle, .end {
+    display: flex;
+    flex-basis: calc(100% / 3);
+  }
+
+  .start {
+    font-size: 24px;
+    gap: 50px;
+
+    mat-icon {
+      transform: translateY(5px);
+      font-size: 28px;
+      margin-right: 5px;
+    }
+  }
+
+  .middle {
+    justify-content: center;
+  }
+
+  .end {
+    justify-content: end;
+    button {
+      height: 50px;
+
+      mat-icon {
+        font-size: 30px;
+        width: 30px;
+        height: 30px;
+      }
+      span {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+

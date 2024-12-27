@@ -14,7 +14,7 @@ export class ApiRestService {
   createGame(): Observable<string> {
     return this.httpClient.post<{gameId: string}>(`${API_HOST}/game`, undefined)
       .pipe(
-        map(value => value.gameId)
+        map(response => response.gameId)
       );
   }
 
@@ -26,7 +26,7 @@ export class ApiRestService {
     return this.httpClient.post<{myId: string}>(`${API_HOST}/game/${gameId}/action/join`,{
       displayName: displayName
     }).pipe(
-      map(value => value.myId)
+      map(response => response.myId)
     );
   }
 

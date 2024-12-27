@@ -1,0 +1,54 @@
+:host {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .logo {
+    margin: 50px;
+    font-size: 70px;
+    font-weight: 500;
+    mat-icon {
+      font-size: 100px;
+      width: 100px;
+      height: 100px;
+      transform: translateY(22px);
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 80px;
+
+    mat-form-field {
+      width: 180px;
+      margin-top: 5px;
+      input {
+        font-size: 18px;
+      }
+    }
+
+    .poker-separator {
+      margin: 30px 40px 40px;
+      width: 5px;
+      height: 200px;
+      border-radius: 4px;
+    }
+
+    .join-btn, .create-btn {
+      margin-bottom: 16px;
+    }
+
+    .join-btn {
+      margin-left: 10px;
+    }
+
+    .create-btn {
+      margin-right: 10px;
+    }
+  }
+}

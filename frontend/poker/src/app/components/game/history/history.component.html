@@ -1,0 +1,17 @@
+<div class="poker-panel">
+  <div class="header poker-text-light">
+    <mat-icon inline>event_note</mat-icon>
+    <h2>History:</h2>
+  </div>
+
+  <div class="container">
+    <mat-list>
+      @for (entry of historyEntries(); track $index) {
+        <mat-list-item>
+          <span matListItemTitle>{{entry}}</span>
+        </mat-list-item>
+      }
+    </mat-list>
+  </div>
+</div>
+

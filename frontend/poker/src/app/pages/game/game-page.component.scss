@@ -1,0 +1,56 @@
+$outer-margin: 30px;
+
+:host {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .main-container {
+    flex-basis: 70%;
+
+    margin-top: $outer-margin;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+
+    .left-column, .middle-column, .right-column {
+      flex-basis: calc(100% / 3);
+    }
+
+    .left-column {
+      margin-left: $outer-margin
+    }
+
+    .middle-column {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+
+      app-game-state, app-hand {
+        flex-basis: calc(100% / 2);
+      }
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      margin-right: $outer-margin;
+
+      app-player-selection {
+        flex-basis: 65%;
+      }
+
+      app-player-properties {
+        flex-basis: 35%;
+      }
+    }
+  }
+
+  app-actions {
+    flex-basis: 30%;
+  }
+}

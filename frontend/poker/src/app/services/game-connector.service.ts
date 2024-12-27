@@ -1,12 +1,11 @@
 import {inject, Injectable} from '@angular/core';
-import {ApiRestService} from './api/api-rest.service';
+import {ApiRestService, ApiStreamService} from './api';
 import {MatDialog} from '@angular/material/dialog';
-import {PlayerNamePromptComponent} from '../components/start-page/player-name-prompt/player-name-prompt.component';
+import {PlayerNameDialogComponent} from '../components/dialogs';
 import {catchError, filter, map, mergeMap, Observable, of, retry, tap} from 'rxjs';
-import {Router} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Game} from '../model';
-import {ApiStreamService} from './api/api-stream.service';
+import {RouterService} from './router.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,21 +14,19 @@ export class GameConnectorService {
 
   private readonly apiRestService: ApiRestService = inject(ApiRestService);
   private readonly apiStreamService: ApiStreamService = inject(ApiStreamService);
-
   private readonly dialog: MatDialog = inject(MatDialog);
-  private readonly router: Router = inject(Router);
+  private readonly routerService: RouterService = inject(RouterService);
   private readonly snackBar: MatSnackBar = inject(MatSnackBar);
-
 
   createNewGame(): Observable<boolean> {
     return this.apiRestService.createGame().pipe(
-      mergeMap((gameId) => this.router.navigate(['game', gameId]))
+      mergeMap((gameId) => this.routerService.navigateToGamePage(gameId))
     )
   }
 
   joinToExistingGame(gameId: string): Observable<boolean> {
     return this.checkGameExistence(gameId, false).pipe(
-      mergeMap(() => this.router.navigate(['game', gameId]))
+      mergeMap(() => this.routerService.navigateToGamePage(gameId))
     )
   }
 
@@ -66,7 +63,7 @@ export class GameConnectorService {
 
   private createNewConnection(gameId: string): Observable<GameConnection> {
     return of(gameId).pipe(
-      mergeMap(() => this.dialog.open(PlayerNamePromptComponent, {hasBackdrop: false}).afterClosed()),
+      mergeMap(() => this.dialog.open(PlayerNameDialogComponent, {hasBackdrop: false}).afterClosed()),
       mergeMap(playerName => this.apiRestService.joinGame(gameId, playerName)),
       retry(),
       tap(myId => localStorage.setItem(gameId, myId)),
@@ -82,12 +79,13 @@ export class GameConnectorService {
         }
 
         if (reroute) {
-          return this.router.navigate(['game', 'not-found']).then(() => false);
+          return this.routerService.navigateToGameNotFoundPage(gameId).pipe(
+            map(() => false)
+          );
         }
 
         this.snackBar.open("Game with provided id doesn't exist", "Close");
         return of(false);
-
       }),
       filter(Boolean)
     );

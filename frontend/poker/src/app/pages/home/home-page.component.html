@@ -1,0 +1,33 @@
+<div class="logo poker-text-light">
+  <span>Poker</span>
+  <mat-icon>playing_cards</mat-icon>
+</div>
+
+<div class="actions">
+  <mat-form-field>
+    <input
+      matInput
+      #gameIdInput="ngModel"
+      required minlength="8" maxlength="8"
+      placeholder="Game ID"
+      [(ngModel)]="gameId"
+    />
+    @if (gameIdInput.invalid && (gameIdInput.dirty || gameIdInput.touched)) {
+      <mat-error>
+        Game ID must contains 8 characters.
+      </mat-error>
+    }
+  </mat-form-field>
+
+  <button class="button-large join-btn" mat-button [disabled]="gameIdInput.invalid" (click)="joinGame()">
+    Join
+  </button>
+
+  <div class="poker-separator"></div>
+
+  <button class="button-large create-btn" mat-button (click)="createGame()">
+    Create new game
+  </button>
+</div>
+
+

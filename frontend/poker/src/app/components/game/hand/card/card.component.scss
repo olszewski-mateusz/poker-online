@@ -1,0 +1,110 @@
+@import "../../../../../colors";
+
+.card, .not-card {
+  font-family: "Segoe UI Semibold", system-ui;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.not-card {
+  background-color: $poker-card-unknown-background;
+
+  .unknown-symbol {
+    text-align: center;
+    color: $poker-card-unknown-symbol;
+  }
+}
+
+.card {
+  background-color: $poker-card-background;
+  color: $poker-card-black;
+
+  .rank {
+    text-align: center;
+  }
+}
+
+.red {
+  color: $poker-card-red;
+}
+
+.interactive:hover {
+  background-color: $poker-card-background-hover;
+  cursor: pointer;
+}
+
+.size-big {
+  width: 100px;
+  height: 140px;
+  border-radius: 10px;
+  font-size: 50px;
+
+  .rank {
+    width: 45px;
+    transform: translate(6%, 40%);
+  }
+
+  .suit {
+    width: 30px;
+    transform: translate(28%, 120%);
+  }
+
+  .big-suit {
+    font-size: 85px;
+    width: 50px;
+    transform: translate(75%, 165%);
+  }
+
+  .unknown-symbol {
+    padding-top: 50px;
+    font-size: 80px;
+  }
+}
+
+.size-medium {
+  width: 80px;
+  height: 110px;
+  border-radius: 10px;
+  font-size: 40px;
+
+  .rank {
+    width: 38px;
+    transform: translate(4%, 30%);
+  }
+
+  .suit {
+    transform: translate(9%, 70%);
+  }
+
+  .big-suit {
+    font-size: 65px;
+    transform: translate(42%, 78%);
+  }
+
+  .unknown-symbol {
+    padding-top: 25px;
+    font-size: 40px;
+  }
+}
+
+.size-small {
+  width: 50px;
+  height: 75px;
+  border-radius: 10px;
+  font-size: 38px;
+
+  .rank {
+    width: 36px;
+    transform: translate(20%, 30%);
+  }
+
+  .suit {
+    transform: translate(24%, 70%);
+  }
+
+  .unknown-symbol {
+    padding-top: 25px;
+    font-size: 40px;
+  }
+}
+

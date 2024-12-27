@@ -1,0 +1,26 @@
+<div class="poker-panel">
+
+  <div class="phase poker-text-light">
+    {{translatedGamePhase()}}
+  </div>
+
+  <div class="property">
+    <mat-icon>trophy</mat-icon>
+    <span>Round reward: </span>
+    {{roundReward()}}
+  </div>
+
+  <div class="property">
+    <mat-icon>poker_chip</mat-icon>
+    <span>Current bet: </span>
+    {{currentBet()}}
+  </div>
+
+  @if (currentPlayer()) {
+    <div class="property">
+      <mat-icon>account_circle</mat-icon>
+      <span>Turn: {{currentPlayer()?.name}}</span>
+    </div>
+  }
+</div>
+

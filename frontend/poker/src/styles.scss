@@ -1,5 +1,9 @@
 @import "colors";
 
+@mixin poker-panel-elevation {
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12)
+}
+
 html, body {
   height: 100%;
 }
@@ -22,9 +26,15 @@ body {
   --mdc-text-button-disabled-label-text-color: #{$poker-text-disabled};
 }
 
+.button-large {
+  font-size: 30px !important;
+  padding: 35px !important;
+}
+
 mat-toolbar {
   --mat-toolbar-container-background-color: #{$poker-toolbar};
   --mat-toolbar-container-text-color: #{$poker-text-light};
+  @include poker-panel-elevation;
 }
 
 mat-list, mat-selection-list {
@@ -66,6 +76,7 @@ mat-slider {
 .poker-panel {
   background-color: $poker-panel;
   color: $poker-text;
+  @include poker-panel-elevation;
 }
 
 .poker-text {
