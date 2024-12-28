@@ -3,7 +3,7 @@ import {Game, GamePhase, Player} from '../../../model';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-  selector: 'app-game-state',
+  selector: 'poker-game-state',
   standalone: true,
   imports: [
     MatIcon

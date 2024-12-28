@@ -25,7 +25,7 @@ import {
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-  selector: 'app-history',
+  selector: 'poker-game-history',
   standalone: true,
   imports: [
     MatListItemTitle,

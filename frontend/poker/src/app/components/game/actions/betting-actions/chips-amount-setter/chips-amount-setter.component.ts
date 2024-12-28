@@ -14,7 +14,7 @@ import {buildMyPlayerSignal, buildMyTurnSignal, Game, Player} from '../../../../
 import {ApiRestService} from '../../../../../services';
 
 @Component({
-  selector: 'app-chips-amount-setter',
+  selector: 'poker-game-chips-amount-setter',
   standalone: true,
   imports: [
     MatButton,

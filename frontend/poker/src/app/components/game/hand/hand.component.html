@@ -1,7 +1,7 @@
 <div class="wrapper">
   @for (card of myCards(); track (card.suit + card.rank)) {
     <div class="card-column">
-      <card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.BIG" [interactive]="isCardInteractive()" (clicked)="cardClicked(card)"/>
+      <poker-game-card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.BIG" [interactive]="isCardInteractive()" (clicked)="cardClicked(card)"/>
       @if (isCardSelected(card)) {
         <div class="replace-label poker-text">x</div>
       }

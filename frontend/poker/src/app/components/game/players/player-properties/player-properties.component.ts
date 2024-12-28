@@ -5,7 +5,7 @@ import {MatIcon} from '@angular/material/icon';
 import {CardComponent, CardSize} from "../../hand";
 
 @Component({
-  selector: 'app-player-properties',
+  selector: 'poker-game-player-properties',
   standalone: true,
   imports: [
     MatIcon,

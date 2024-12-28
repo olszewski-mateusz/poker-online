@@ -7,7 +7,7 @@ import {BettingActionsComponent} from './betting-actions/betting-actions.compone
 import {MatButton} from '@angular/material/button';
 
 @Component({
-  selector: 'app-actions',
+  selector: 'poker-game-actions',
   standalone: true,
   imports: [
     ChipsAmountSetterComponent,

@@ -15,7 +15,7 @@ import {map, mergeMap, tap} from 'rxjs';
 import {GameConnectorService} from '../../services';
 
 @Component({
-  selector: 'app-game-page',
+  selector: 'poker-page-game',
   standalone: true,
   imports: [
     ToolbarComponent,

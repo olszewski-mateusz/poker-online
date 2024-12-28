@@ -5,7 +5,7 @@ import {PlayerSelectionService} from '../player-selection.service';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
-  selector: 'app-player-selection',
+  selector: 'poker-game-player-selection',
   standalone: true,
   imports: [
     MatListItemTitle,

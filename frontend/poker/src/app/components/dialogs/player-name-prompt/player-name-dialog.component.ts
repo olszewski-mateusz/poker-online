@@ -6,7 +6,7 @@ import {MatInput} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 @Component({
-  selector: 'app-player-name-dialog',
+  selector: 'poker-dialog-player-name',
   standalone: true,
   imports: [
     MatDialogContent,

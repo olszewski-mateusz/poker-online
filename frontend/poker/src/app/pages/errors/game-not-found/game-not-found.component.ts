@@ -3,7 +3,7 @@ import {MatButton} from '@angular/material/button';
 import {RouterService} from '../../../services/router.service';
 
 @Component({
-  selector: 'app-game-not-found',
+  selector: 'poker-game-not-found',
   standalone: true,
   imports: [
     MatButton

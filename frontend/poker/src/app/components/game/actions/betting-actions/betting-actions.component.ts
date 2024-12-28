@@ -14,7 +14,7 @@ import {ApiRestService} from '../../../../services';
 import {ChipsAmountSetterComponent} from './chips-amount-setter/chips-amount-setter.component';
 
 @Component({
-  selector: 'app-betting-actions',
+  selector: 'poker-game-betting-actions',
   standalone: true,
   imports: [
     MatButton,

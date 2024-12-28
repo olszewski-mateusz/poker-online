@@ -7,7 +7,7 @@
       {{ myPlayer()?.ready ? 'Not ready' : 'Ready for next round' }}
     </button>
   } @else if (actionsForBetting()) {
-    <app-betting-actions [game]="game()"/>
+    <poker-game-betting-actions [game]="game()"/>
   } @else if (actionsForDrawing()) {
     <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendReplace()">
       Replace cards ({{cardsToReplaceCount()}})

@@ -6,7 +6,7 @@ import {buildMyPlayerSignal, Game, Player} from '../../../model';
 import {RouterService} from '../../../services/router.service';
 
 @Component({
-  selector: 'app-toolbar',
+  selector: 'poker-game-toolbar',
   standalone: true,
   imports: [
     MatToolbar,

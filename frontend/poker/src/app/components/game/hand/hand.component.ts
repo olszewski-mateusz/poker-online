@@ -4,7 +4,7 @@ import {CardComponent, CardSize} from './card/card.component';
 import {ReplaceCardsService} from '../actions';
 
 @Component({
-  selector: 'app-hand',
+  selector: 'poker-game-hand',
   standalone: true,
   imports: [
     CardComponent

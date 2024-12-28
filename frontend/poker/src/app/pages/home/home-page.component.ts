@@ -7,7 +7,7 @@ import {FormsModule} from '@angular/forms';
 import {GameConnectorService} from '../../services';
 
 @Component({
-  selector: 'app-home-page',
+  selector: 'poker-page-home',
   standalone: true,
   imports: [
     MatButton,

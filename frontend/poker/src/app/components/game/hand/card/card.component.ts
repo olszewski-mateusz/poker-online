@@ -11,7 +11,7 @@ import {MatIcon} from '@angular/material/icon';
 import {Rank, Suit} from '../../../../model';
 
 @Component({
-  selector: 'card',
+  selector: 'poker-game-card',
   standalone: true,
   imports: [
     MatIcon
