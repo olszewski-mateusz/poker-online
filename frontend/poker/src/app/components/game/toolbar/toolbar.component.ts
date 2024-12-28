@@ -22,6 +22,7 @@ export class ToolbarComponent {
   private routerService: RouterService = inject(RouterService);
 
   game: InputSignal<Game> = input.required<Game>();
+  mobile: InputSignal<boolean> = input.required<boolean>();
   myPlayer: Signal<Player | undefined> = buildMyPlayerSignal(this.game);
 
   leave(): void {

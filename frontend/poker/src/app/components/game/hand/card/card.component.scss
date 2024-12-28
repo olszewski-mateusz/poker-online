@@ -62,28 +62,23 @@
 }
 
 .size-medium {
-  width: 80px;
-  height: 110px;
+  width: 65px;
+  height: 95px;
   border-radius: 10px;
-  font-size: 40px;
+  font-size: 50px;
 
   .rank {
-    width: 38px;
-    transform: translate(4%, 30%);
+    width: 50px;
+    transform: translate(14%, 50%);
   }
 
   .suit {
-    transform: translate(9%, 70%);
-  }
-
-  .big-suit {
-    font-size: 65px;
-    transform: translate(42%, 78%);
+    transform: translate(22%, 130%);
   }
 
   .unknown-symbol {
-    padding-top: 25px;
-    font-size: 40px;
+    padding-top: 32px;
+    font-size: 50px;
   }
 }
 

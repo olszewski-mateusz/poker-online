@@ -1,22 +1,8 @@
 @if (game(); as game) {
-
-  <poker-game-toolbar [game]="game"/>
-
-  <div class="main-container">
-    <poker-game-history class="left-column" [game]="game"/>
-
-    <div class="middle-column">
-      <poker-game-state [game]="game"/>
-      <poker-game-hand [game]="game"/>
-    </div>
-
-    <div class="right-column">
-      <poker-game-player-selection [game]="game"/>
-      <poker-game-player-properties [game]="game"/>
-    </div>
-
-  </div>
-
-  <poker-game-actions [game]="game"/>
+  @if (isMobile) {
+    <poker-game-mobile-layout [game]="game" [mobile]="isMobile"/>
+  } @else {
+    <poker-game-desktop-layout [game]="game" [mobile]="isMobile"/>
+  }
 }
 

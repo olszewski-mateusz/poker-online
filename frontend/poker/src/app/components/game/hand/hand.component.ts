@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, InputSignal, Signal} from '@angular/core';
-import {Card, compareCards, Game, GamePhase} from '../../../model';
+import {Card, compareCards, Game, GamePhase, Rank} from '../../../model';
 import {CardComponent, CardSize} from './card/card.component';
 import {ReplaceCardsService} from '../actions';
 
@@ -14,24 +14,32 @@ import {ReplaceCardsService} from '../actions';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HandComponent {
-
-  protected readonly CardSize = CardSize;
+  private readonly unknownCards: Card[] = [
+    <Card>{rank: Rank.TWO},
+    <Card>{rank: Rank.THREE},
+    <Card>{rank: Rank.FOUR},
+    <Card>{rank: Rank.FIVE},
+    <Card>{rank: Rank.SIX}
+  ];
 
   private readonly replaceCardService: ReplaceCardsService = inject(ReplaceCardsService);
 
   game: InputSignal<Game> = input.required<Game>();
+  mobile: InputSignal<boolean> = input.required<boolean>();
 
   myCards: Signal<Card[]> = computed(() => {
     const game: Game = this.game();
-    return game.players.find(value => value.id === game.myId)?.cards?.sort(compareCards) ??
-      Array(5).fill(<Card>{});
+    return game.players.find(value => value.id === game.myId)?.cards?.sort(compareCards) ?? this.unknownCards;
   });
 
-  isCardInteractive: Signal<boolean> = computed(() => {
+  cardsInteractive: Signal<boolean> = computed(() => {
     const game: Game = this.game();
     return game.phase === GamePhase.DRAWING && game.myId === game.currentPlayerId;
   });
 
+  cardsSize: Signal<CardSize> = computed(() => {
+    return this.mobile() ? CardSize.MEDIUM : CardSize.BIG;
+  })
 
   cardClicked(card: Card): void {
     this.replaceCardService.toggleCard(card);

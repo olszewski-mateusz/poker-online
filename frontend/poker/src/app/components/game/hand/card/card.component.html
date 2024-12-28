@@ -10,7 +10,7 @@
   @if (isCard()) {
     <div class="rank">{{ rankValue() }}</div>
     <div class="suit">{{ suitValue() }}</div>
-    @if (!isSmall()) {
+    @if (isBig()) {
       <div class="big-suit">{{ suitValue() }}</div>
     }
   } @else {
