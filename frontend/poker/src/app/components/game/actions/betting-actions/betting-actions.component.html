@@ -1,0 +1,33 @@
+@if (raisePanelActive()) {
+  <app-chips-amount-setter
+    [game]="game()"
+    (cancelRequest)="cancelRaisePanel()"
+  />
+} @else if (betPlaced()) {
+
+  @if (!callIllegal()) {
+    <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
+      Call
+    </button>
+
+    <button class="button-large" mat-button [disabled]="!myTurn()" (click)="activateRaisePanel()">
+      Raise
+    </button>
+  } @else {
+    <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendAllIn()">
+      All in
+    </button>
+  }
+
+  <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendFold()">
+    Fold
+  </button>
+} @else {
+  <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
+    Check
+  </button>
+
+  <button class="button-large" mat-button [disabled]="!myTurn()" (click)="activateRaisePanel()">
+    Bet
+  </button>
+}

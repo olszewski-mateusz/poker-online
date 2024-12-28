@@ -11,7 +11,7 @@ import {
   viewChild,
   WritableSignal
 } from '@angular/core';
-import {MatList, MatListItem, MatListItemLine, MatListItemTitle, MatListModule} from '@angular/material/list';
+import {MatList, MatListItem, MatListItemTitle} from '@angular/material/list';
 import {
   ActionType,
   Game,
@@ -29,10 +29,8 @@ import {MatIcon} from '@angular/material/icon';
   standalone: true,
   imports: [
     MatListItemTitle,
-    MatListItemLine,
     MatListItem,
     MatList,
-    MatListModule,
     MatIcon
   ],
   templateUrl: './history.component.html',

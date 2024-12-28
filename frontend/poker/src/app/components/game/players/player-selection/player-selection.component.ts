@@ -1,12 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject, input, InputSignal} from '@angular/core';
 import {Game, GamePhase, Player} from '../../../../model';
-import {
-  MatList,
-  MatListItem,
-  MatListItemTitle,
-  MatListOption,
-  MatSelectionList
-} from '@angular/material/list';
+import {MatListItemTitle, MatListOption, MatSelectionList} from '@angular/material/list';
 import {PlayerSelectionService} from '../player-selection.service';
 import {MatIcon} from '@angular/material/icon';
 
@@ -14,8 +8,6 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'app-player-selection',
   standalone: true,
   imports: [
-    MatList,
-    MatListItem,
     MatListItemTitle,
     MatSelectionList,
     MatListOption,

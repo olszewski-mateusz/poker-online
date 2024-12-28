@@ -1,91 +1,35 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  InputSignal,
-  model,
-  ModelSignal,
-  signal,
-  Signal,
-  WritableSignal
-} from '@angular/core';
-import {Card, Game, GamePhase, Player} from '../../../model';
-import {MatButton} from '@angular/material/button';
+import {ChangeDetectionStrategy, Component, computed, inject, input, InputSignal, Signal} from '@angular/core';
+import {buildMyPlayerSignal, buildMyTurnSignal, Card, Game, GamePhase, Player} from '../../../model';
 import {ApiRestService} from '../../../services';
-import {MatSlider, MatSliderThumb} from '@angular/material/slider';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
 import {ReplaceCardsService} from './replace-cards.service';
+import {ChipsAmountSetterComponent} from './betting-actions/chips-amount-setter/chips-amount-setter.component';
+import {BettingActionsComponent} from './betting-actions/betting-actions.component';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-actions',
   standalone: true,
   imports: [
-    MatButton,
-    MatSlider,
-    MatSliderThumb,
-    MatFormField,
-    MatInput,
-    MatLabel
+    ChipsAmountSetterComponent,
+    BettingActionsComponent,
+    MatButton
   ],
   templateUrl: './actions.component.html',
   styleUrl: './actions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ActionsComponent {
-  protected readonly GameState: typeof GamePhase = GamePhase;
-
   game: InputSignal<Game> = input.required<Game>();
-
-  amount: ModelSignal<number> = model<number>(0);
 
   private readonly apiRestService: ApiRestService = inject(ApiRestService);
   private readonly replaceCardsService: ReplaceCardsService = inject(ReplaceCardsService);
 
-  protected readonly myPlayer: Signal<Player | undefined> = computed(() => {
-    const game: Game = this.game();
-    return game.players.find(value => value.id === game.myId);
-  });
+  protected readonly myPlayer: Signal<Player | undefined> = buildMyPlayerSignal(this.game);
 
-  protected readonly myTurn: Signal<boolean> = computed(() => {
-    const game: Game = this.game();
-    return game.currentPlayerId === game.myId;
-  });
+  protected readonly myTurn: Signal<boolean> = buildMyTurnSignal(this.game);
 
   protected readonly cardsToReplaceCount: Signal<number> = computed(() => {
     return this.replaceCardsService.cardsToReplace().length;
-  });
-
-  protected readonly raisePanelActive: WritableSignal<boolean> = signal<boolean>(false);
-
-  protected readonly betPlacedInCurrentPhase: Signal<boolean> = computed(() => {
-    const game: Game = this.game();
-    return game.betPlacedInCurrentPhase;
-  });
-
-  protected readonly minBet: Signal<number> = computed(() => {
-    return 2 * this.game().players.map(p => p.bet)
-      .reduce((a, b) => Math.max(a, b), 0);
-  });
-
-  protected readonly maxBet: Signal<number> = computed(() => {
-    return this.myPlayer()?.money ?? this.minBet();
-  });
-
-  protected readonly isRaiseIllegal: Signal<boolean> = computed(() => {
-    return this.maxBet() <= this.minBet();
-  });
-
-  protected readonly isCallIllegal: Signal<boolean> = computed(() => {
-    const currentBet: number = this.game().players
-      .map(p => p.bet ?? 0)
-      .reduce((a, b) => {
-        return Math.max(a, b);
-      }, 0);
-
-    return currentBet - (this.myPlayer()?.bet ?? 0) >= (this.myPlayer()?.money ?? 0);
   });
 
   sendReady(): void {
@@ -96,28 +40,6 @@ export class ActionsComponent {
     }
   }
 
-  sendCheckOrCall(): void {
-    const game: Game = this.game();
-    this.apiRestService.sendCheckOrCall(game.gameId, game.myId).subscribe();
-  }
-
-  sendBetOrRaise(): void {
-    const game: Game = this.game();
-    this.apiRestService.sendBetOrRaise(game.gameId, game.myId, this.amount()).subscribe();
-    this.raisePanelActive.set(false);
-  }
-
-  sendAllIn(): void {
-    const game: Game = this.game();
-    this.apiRestService.sendAllIn(game.gameId, game.myId).subscribe();
-    this.raisePanelActive.set(false);
-  }
-
-  sendFold(): void {
-    const game: Game = this.game();
-    this.apiRestService.sendFold(game.gameId, game.myId).subscribe();
-  }
-
   sendReplace(): void {
     const game: Game = this.game();
     const cardsToReplace: Card[] = this.replaceCardsService.cardsToReplace();
@@ -125,20 +47,19 @@ export class ActionsComponent {
     this.replaceCardsService.clearSelection();
   }
 
-  addToAmount(number: number) {
-    const min: number = this.minBet();
-    const max: number = this.maxBet();
-    let amount: number = this.amount() + number;
-    amount = Math.max(min, (Math.min(max, amount)));
-    this.amount.set(amount);
+  actionsForGameNotStarted(): boolean {
+    return this.game().phase === GamePhase.NOT_STARTED;
   }
 
-  cancelRaisePanel(): void {
-    this.raisePanelActive.set(false)
+  actionsForBetting(): boolean {
+    return this.game().phase === GamePhase.FIRST_BETTING || this.game().phase === GamePhase.SECOND_BETTING;
   }
 
-  activateRaisePanel(): void {
-    this.amount.set(this.minBet());
-    this.raisePanelActive.set(true)
+  actionsForDrawing(): boolean {
+    return this.game().phase === GamePhase.DRAWING;
+  }
+
+  actionsForShowdown(): boolean {
+    return this.game().phase === GamePhase.SHOWDOWN;
   }
 }

@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input, InputSignal, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, input, InputSignal, Signal} from '@angular/core';
 import {MatToolbar} from '@angular/material/toolbar';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {Game, Player} from '../../../model';
+import {buildMyPlayerSignal, Game, Player} from '../../../model';
 import {RouterService} from '../../../services/router.service';
 
 @Component({
@@ -19,14 +19,10 @@ import {RouterService} from '../../../services/router.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolbarComponent {
-  game: InputSignal<Game> = input.required<Game>();
-
   private routerService: RouterService = inject(RouterService);
 
-  myPlayer: Signal<Player | undefined> = computed(() => {
-    const game: Game = this.game();
-    return game.players.find(value => value.id === game.myId);
-  });
+  game: InputSignal<Game> = input.required<Game>();
+  myPlayer: Signal<Player | undefined> = buildMyPlayerSignal(this.game);
 
   leave(): void {
     this.routerService.navigateToStartPage().subscribe();

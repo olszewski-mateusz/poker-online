@@ -1,0 +1,32 @@
+@if (!raiseIllegal()) {
+  <div class="row-container amount-label poker-text">
+    {{betPlaced() ? 'Raise' : 'Bet'}} amount: {{amount()}}
+  </div>
+
+  <div class="row-container">
+    <button class="button-large" mat-button (click)="addToAmount(-50)">-50</button>
+    <button class="button-large" mat-button (click)="addToAmount(-5)">-5</button>
+
+    <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
+      <input [(value)]="amount" matSliderThumb>
+    </mat-slider>
+
+    <button class="button-large" mat-button (click)="addToAmount(5)">+5</button>
+    <button class="button-large" mat-button (click)="addToAmount(50)">+50</button>
+  </div>
+}
+
+<div class="row-container">
+  <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendAllIn()">
+    All in
+  </button>
+
+  <button class="button-large" mat-button [disabled]="!myTurn() || raiseIllegal()" (click)="sendBetOrRaise()">
+    {{betPlaced() ? 'Raise' : 'Bet'}}
+  </button>
+
+  <button class="button-large" mat-button [disabled]="!myTurn()" (click)="cancelRequest.emit()">
+    Cancel
+  </button>
+</div>
+

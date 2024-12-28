@@ -1,80 +1,15 @@
-<div class="wrapper">
-  @if (game().phase === GameState.NOT_STARTED) {
-    <button mat-button (click)="sendReady()">
+  @if (actionsForGameNotStarted()) {
+    <button class="button-large" mat-button (click)="sendReady()">
       {{ myPlayer()?.ready ? 'Not ready' : 'Ready' }}
     </button>
-  } @else if (game().phase === GameState.FIRST_BETTING || game().phase === GameState.SECOND_BETTING) {
-    @if (raisePanelActive()) {
-      <div class="column-wrapper">
-
-        @if (!isRaiseIllegal()) {
-          <div class="row-wrapper amount-label poker-text">
-            {{betPlacedInCurrentPhase() ? 'Raise' : 'Bet'}} amount: {{amount()}}
-          </div>
-
-          <div class="row-wrapper">
-            <button mat-button (click)="addToAmount(-50)">-50</button>
-            <button mat-button (click)="addToAmount(-5)">-5</button>
-
-            <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
-              <input [(value)]="amount" matSliderThumb>
-            </mat-slider>
-
-            <button mat-button (click)="addToAmount(5)">+5</button>
-            <button mat-button (click)="addToAmount(50)">+50</button>
-          </div>
-        }
-
-        <div class="row-wrapper">
-          <button mat-button [disabled]="!myTurn()" (click)="sendAllIn()">
-            All in
-          </button>
-
-          <button mat-button [disabled]="!myTurn() || isRaiseIllegal()" (click)="sendBetOrRaise()">
-            {{betPlacedInCurrentPhase() ? 'Raise' : 'Bet'}}
-          </button>
-
-          <button mat-button [disabled]="!myTurn()" (click)="cancelRaisePanel()">
-            Cancel
-          </button>
-        </div>
-
-      </div>
-    } @else if (betPlacedInCurrentPhase()) {
-
-      @if (!isCallIllegal()) {
-        <button mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
-          Call
-        </button>
-
-        <button mat-button [disabled]="!myTurn()" (click)="activateRaisePanel()">
-          Raise
-        </button>
-      } @else {
-        <button mat-button [disabled]="!myTurn()" (click)="sendAllIn()">
-          All in
-        </button>
-      }
-
-      <button mat-button [disabled]="!myTurn()" (click)="sendFold()">
-        Fold
-      </button>
-    } @else {
-      <button mat-button [disabled]="!myTurn()" (click)="sendCheckOrCall()">
-        Check
-      </button>
-
-      <button mat-button [disabled]="!myTurn()" (click)="activateRaisePanel()">
-        Bet
-      </button>
-    }
-  } @else if (game().phase === GameState.DRAWING) {
-    <button mat-button [disabled]="!myTurn()" (click)="sendReplace()">
-      Replace cards ({{cardsToReplaceCount()}})
-    </button>
-  } @else if (game().phase === GameState.SHOWDOWN) {
-    <button mat-button (click)="sendReady()">
+  } @else if (actionsForShowdown()) {
+    <button class="button-large" mat-button (click)="sendReady()">
       {{ myPlayer()?.ready ? 'Not ready' : 'Ready for next round' }}
     </button>
+  } @else if (actionsForBetting()) {
+    <app-betting-actions [game]="game()"/>
+  } @else if (actionsForDrawing()) {
+    <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendReplace()">
+      Replace cards ({{cardsToReplaceCount()}})
+    </button>
   }
-</div>

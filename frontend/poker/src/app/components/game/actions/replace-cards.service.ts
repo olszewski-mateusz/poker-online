@@ -10,8 +10,6 @@ export class ReplaceCardsService {
 
   toggleCard(card: Card): void {
     const cardsToReplace: Card[] = this._cardsToReplace();
-    console.log("CARD", card)
-    console.log("ALL", cardsToReplace)
     if (cardsToReplace.find(c => c.rank === card.rank && c.suit === card.suit)) {
       this._cardsToReplace.set(cardsToReplace.filter(c => !(c.rank === card.rank && c.suit === card.suit)));
     } else {

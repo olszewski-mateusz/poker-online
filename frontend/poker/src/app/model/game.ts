@@ -1,5 +1,6 @@
 import {HistoryEntry} from './history';
 import {Card, HandType} from './card';
+import {computed, Signal} from '@angular/core';
 
 export type Game = {
   players: Player[]
@@ -13,6 +14,20 @@ export type Game = {
   cardsInDeck: number
   discardedCards: number
   betPlacedInCurrentPhase: boolean
+}
+
+export function buildMyPlayerSignal(gameSignal: Signal<Game>): Signal<Player | undefined> {
+  return computed(() => {
+    const game: Game = gameSignal();
+    return game.players.find(value => value.id === game.myId);
+  })
+}
+
+export function buildMyTurnSignal(gameSignal: Signal<Game>): Signal<boolean> {
+  return computed(() => {
+    const game: Game = gameSignal();
+    return game.currentPlayerId === game.myId;
+  })
 }
 
 export type Player = {
