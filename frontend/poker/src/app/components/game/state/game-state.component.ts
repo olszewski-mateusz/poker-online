@@ -14,6 +14,7 @@ import {MatIcon} from '@angular/material/icon';
 })
 export class GameStateComponent {
   game: InputSignal<Game> = input.required<Game>();
+  mobile: InputSignal<boolean> = input.required<boolean>();
 
   currentPlayer: Signal<Player|undefined> = computed(() => {
     return this.game().players.find(p => p.id === this.game().currentPlayerId);
