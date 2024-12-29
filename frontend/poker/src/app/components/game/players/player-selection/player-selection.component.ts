@@ -22,6 +22,7 @@ export class PlayerSelectionComponent {
   private readonly playerSelectionService: PlayerSelectionService = inject(PlayerSelectionService);
 
   game: InputSignal<Game> = input.required<Game>();
+  mobile: InputSignal<boolean> = input.required<boolean>();
 
   playerSelected(playerId: string): boolean {
     return playerId === this.playerSelectionService.selectedPlayerId();

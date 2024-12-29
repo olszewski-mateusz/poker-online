@@ -5,7 +5,7 @@
   .poker-panel {
     display: flex;
     flex-direction: column;
-    flex-basis: 320px;
+    flex-grow: 1;
 
     .header {
       display: flex;

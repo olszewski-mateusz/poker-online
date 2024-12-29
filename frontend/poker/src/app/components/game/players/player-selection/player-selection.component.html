@@ -1,21 +1,23 @@
-<mat-selection-list class="poker-panel" [multiple]="false">
+<mat-selection-list class="poker-panel" [multiple]="false"
+                    [class.mobile]="mobile()"
+                    [class.desktop]="!mobile()">
   @for (player of game().players; track player.id) {
     <mat-list-option color="primary"
                      [value]="player.id" [selected]="playerSelected(player.id)"
                      (click)="onOptionClicked(player)">
       <span matListItemTitle>
         @if (game().currentPlayerId === player.id) {
-          <mat-icon>chevron_right</mat-icon>
+          <mat-icon inline>crown</mat-icon>
         } @else if (showAllInIcon(player)) {
-          <mat-icon>done_all</mat-icon>
+          <mat-icon inline>done_all</mat-icon>
         } @else if (player.ready) {
-          <mat-icon>check_small</mat-icon>
+          <mat-icon inline>check_small</mat-icon>
         } @else if (player.folded) {
-          <mat-icon>close</mat-icon>
+          <mat-icon inline>close</mat-icon>
         } @else if (showWinnerIcon(player)) {
-          <mat-icon>crown</mat-icon>
+          <mat-icon inline>crown</mat-icon>
         } @else {
-          <mat-icon class="empty-icon">check_small</mat-icon>
+          <mat-icon inline class="empty-icon">check_small</mat-icon>
         }
         <span>{{player.name}}</span>
       </span>

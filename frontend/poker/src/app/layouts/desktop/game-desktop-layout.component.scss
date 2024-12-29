@@ -17,7 +17,7 @@ $outer-margin: 30px;
 
     .left-column {
       margin-left: $outer-margin;
-      flex-basis: 350px;
+      flex-basis: 320px;
       flex-shrink: 100;
     }
 
@@ -40,7 +40,7 @@ $outer-margin: 30px;
 
     .right-column {
       display: flex;
-      flex-basis: 350px;
+      flex-basis: 320px;
       flex-shrink: 10;
       flex-direction: column;
       gap: 15px;

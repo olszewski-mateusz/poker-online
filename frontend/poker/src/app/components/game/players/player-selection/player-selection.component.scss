@@ -3,17 +3,9 @@
   justify-content: center;
 
   mat-selection-list {
-    flex-basis: 320px;
+    flex-grow: 1;
 
     mat-list-option {
-      --mdc-list-list-item-label-text-size: 20px;
-      height: 40px;
-
-      mat-icon {
-        font-size: 32px;
-        margin: 0 4px -2px -8px;
-      }
-
       .empty-icon {
         opacity: 0;
       }
@@ -21,5 +13,32 @@
   }
 }
 
+mat-selection-list.mobile {
+  mat-list-option {
+    --mdc-list-list-item-label-text-size: 16px;
+    height: 30px;
+    padding-left: 10px;
+
+    mat-icon {
+      font-size: 26px;
+      margin-right: 4px;
+      margin-bottom: -4px;
+    }
+  }
+}
+
+mat-selection-list.desktop {
+  mat-list-option {
+    --mdc-list-list-item-label-text-size: 20px;
+    height: 40px;
+    padding-left: 12px;
+
+    mat-icon {
+      font-size: 32px;
+      margin-right: 6px;
+      margin-bottom: -4px;
+    }
+  }
+}
 
 

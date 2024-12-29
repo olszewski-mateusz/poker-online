@@ -1,4 +1,6 @@
-<div class="poker-panel">
+<div class="poker-panel"
+     [class.mobile]="mobile()"
+     [class.desktop]="!mobile()">
   @if (selectedPlayer(); as selectedPlayer) {
     <div class="properties">
 
