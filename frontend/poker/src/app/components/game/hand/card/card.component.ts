@@ -74,24 +74,28 @@ export class CardComponent {
     return '';
   })
 
-  isRed: Signal<boolean> = computed(() => {
+  colorRed: Signal<boolean> = computed(() => {
     const suit: Suit | undefined = this.suit();
     return !!suit && [Suit.HEARTS, Suit.DIAMONDS].includes(suit);
   })
 
-  isSmall: Signal<boolean> = computed(() => {
-    return this.size() === CardSize.SMALL;
+  mobileSmall: Signal<boolean> = computed(() => {
+    return this.size() === CardSize.MOBILE_SMALL;
   })
 
-  isMedium: Signal<boolean> = computed(() => {
-    return this.size() === CardSize.MEDIUM;
+  desktopSmall: Signal<boolean> = computed(() => {
+    return this.size() === CardSize.DESKTOP_SMALL;
   })
 
-  isBig: Signal<boolean> = computed(() => {
-    return this.size() === CardSize.BIG;
+  mobileBig: Signal<boolean> = computed(() => {
+    return this.size() === CardSize.MOBILE_BIG;
   })
 
-  isCard: Signal<boolean> = computed(() => {
+  desktopBig: Signal<boolean> = computed(() => {
+    return this.size() === CardSize.DESKTOP_BIG;
+  })
+
+  unknownCard: Signal<boolean> = computed(() => {
     return !!this.rank() && !!this.suit();
   })
 
@@ -103,5 +107,5 @@ export class CardComponent {
 }
 
 export enum CardSize {
-  SMALL, MEDIUM, BIG
+  MOBILE_SMALL, DESKTOP_SMALL, MOBILE_BIG, DESKTOP_BIG
 }

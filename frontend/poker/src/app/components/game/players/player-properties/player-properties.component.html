@@ -22,7 +22,7 @@
 
     <div class="player-cards">
       @for (card of selectedPlayerCards(); track (card.suit + card.rank)) {
-        <poker-game-card [rank]="card.rank" [suit]="card.suit" [size]="CardSize.SMALL"/>
+        <poker-game-card [rank]="card.rank" [suit]="card.suit" [size]="cardSize()"/>
       }
     </div>
   }

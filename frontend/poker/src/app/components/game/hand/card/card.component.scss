@@ -1,12 +1,12 @@
 @import "../../../../../colors";
 
-.card, .not-card {
+.card, .unknown-card {
   font-family: "Segoe UI Semibold", system-ui;
   -webkit-user-select: none;
   user-select: none;
 }
 
-.not-card {
+.unknown-card {
   background-color: $poker-card-unknown-background;
 
   .unknown-symbol {
@@ -33,7 +33,7 @@
   cursor: pointer;
 }
 
-.size-big {
+.size-big-desktop {
   width: 100px;
   height: 140px;
   border-radius: 10px;
@@ -61,7 +61,7 @@
   }
 }
 
-.size-medium {
+.size-big-mobile {
   width: 65px;
   height: 95px;
   border-radius: 10px;
@@ -69,11 +69,11 @@
 
   .rank {
     width: 50px;
-    transform: translate(14%, 50%);
+    transform: translate(16%, 50%);
   }
 
   .suit {
-    transform: translate(22%, 130%);
+    transform: translate(24%, 130%);
   }
 
   .unknown-symbol {
@@ -82,7 +82,7 @@
   }
 }
 
-.size-small {
+.size-small-desktop {
   width: 50px;
   height: 75px;
   border-radius: 10px;
@@ -103,3 +103,23 @@
   }
 }
 
+.size-small-mobile {
+  width: 30px;
+  height: 50px;
+  border-radius: 8px;
+  font-size: 24px;
+
+  .rank {
+    width: 24px;
+    transform: translate(14%, 10%);
+  }
+
+  .suit {
+    transform: translate(24%, 5%);
+  }
+
+  .unknown-symbol {
+    padding-top: 12px;
+    font-size: 30px;
+  }
+}

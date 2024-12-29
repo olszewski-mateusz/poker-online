@@ -38,7 +38,7 @@ export class HandComponent {
   });
 
   cardsSize: Signal<CardSize> = computed(() => {
-    return this.mobile() ? CardSize.MEDIUM : CardSize.BIG;
+    return this.mobile() ? CardSize.MOBILE_BIG : CardSize.DESKTOP_BIG;
   })
 
   cardClicked(card: Card): void {

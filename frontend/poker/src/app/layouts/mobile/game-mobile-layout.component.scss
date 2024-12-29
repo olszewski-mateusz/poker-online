@@ -6,10 +6,18 @@
 
   .row {
     display: flex;
+
+    poker-game-player-selection, poker-game-player-properties {
+      flex-basis: 50%;
+    }
   }
 
   poker-game-hand {
     margin-left: 15px;
     margin-right: 15px;
+  }
+
+  poker-game-actions {
+    flex-basis: 250px;
   }
 }

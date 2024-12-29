@@ -1,16 +1,17 @@
 <div class="mat-elevation-z3"
-     [class.card]="isCard()"
-     [class.not-card]="!isCard()"
-     [class.red]="isRed()"
-     [class.size-small]="isSmall()"
-     [class.size-medium]="isMedium()"
-     [class.size-big]="isBig()"
+     [class.card]="unknownCard()"
+     [class.unknown-card]="!unknownCard()"
+     [class.red]="colorRed()"
+     [class.size-small-mobile]="mobileSmall()"
+     [class.size-small-desktop]="desktopSmall()"
+     [class.size-big-mobile]="mobileBig()"
+     [class.size-big-desktop]="desktopBig()"
      [class.interactive]="interactive()"
      (click)="onCardClick()">
-  @if (isCard()) {
+  @if (unknownCard()) {
     <div class="rank">{{ rankValue() }}</div>
     <div class="suit">{{ suitValue() }}</div>
-    @if (isBig()) {
+    @if (desktopBig()) {
       <div class="big-suit">{{ suitValue() }}</div>
     }
   } @else {

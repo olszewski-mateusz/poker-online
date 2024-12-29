@@ -1,10 +1,7 @@
-.wrapper {
+:host {
   display: flex;
-  justify-content: space-between;
-
-  poker-game-card {
-    margin: 4px
-  }
+  justify-content: center;
+  flex-wrap: wrap;
 
   .card-column {
     display: flex;
@@ -20,4 +17,12 @@
       user-select: none;
     }
   }
+}
+
+.mobile.card-column {
+  margin: 4px;
+}
+
+.desktop.card-column {
+  margin: 10px;
 }

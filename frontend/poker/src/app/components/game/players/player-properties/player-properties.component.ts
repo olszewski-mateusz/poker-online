@@ -16,12 +16,7 @@ import {CardComponent, CardSize} from "../../hand";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerPropertiesComponent {
-  protected readonly CardSize = CardSize;
-
-  game: InputSignal<Game> = input.required<Game>()
-
   private readonly playerSelectionService: PlayerSelectionService = inject(PlayerSelectionService);
-
   private readonly unknownCards: Card[] = [
     <Card>{rank: Rank.TWO},
     <Card>{rank: Rank.THREE},
@@ -29,6 +24,13 @@ export class PlayerPropertiesComponent {
     <Card>{rank: Rank.FIVE},
     <Card>{rank: Rank.SIX}
   ];
+
+  game: InputSignal<Game> = input.required<Game>()
+  mobile: InputSignal<boolean> = input.required<boolean>();
+
+  protected cardSize: Signal<CardSize> = computed(() => {
+    return this.mobile() ? CardSize.MOBILE_SMALL : CardSize.DESKTOP_SMALL;
+  });
 
   protected selectedPlayer: Signal<Player | undefined> = computed(() => {
     const game: Game = this.game();
