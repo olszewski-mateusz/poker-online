@@ -4,12 +4,20 @@
   @if (selectedPlayer(); as selectedPlayer) {
     <div class="properties">
 
-      <div class="column">
-        <mat-icon>account_circle</mat-icon>
-        <span>{{selectedPlayer.name}}</span>
-      </div>
+      @if (!mobile()) {
+        <div class="column">
+          <mat-icon>account_circle</mat-icon>
+          <span>{{selectedPlayer.name}}</span>
+        </div>
+      }
 
       <div class="column">
+        @if (mobile()) {
+          <div>
+            <mat-icon>account_circle</mat-icon>
+            <span>{{selectedPlayer.name}}</span>
+          </div>
+        }
         <div>
           <mat-icon>paid</mat-icon>
           <span>{{selectedPlayer.money}}</span>

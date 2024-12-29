@@ -7,7 +7,7 @@
                      (click)="onOptionClicked(player)">
       <span matListItemTitle>
         @if (game().currentPlayerId === player.id) {
-          <mat-icon inline>crown</mat-icon>
+          <mat-icon inline>chevron_right</mat-icon>
         } @else if (showAllInIcon(player)) {
           <mat-icon inline>done_all</mat-icon>
         } @else if (player.ready) {

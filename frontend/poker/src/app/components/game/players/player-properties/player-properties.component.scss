@@ -7,8 +7,6 @@
     flex-grow: 1;
     flex-direction: column;
     justify-content: center;
-    gap: 10px;
-    padding: 10px 25px;
 
     .properties {
       display: flex;
@@ -27,9 +25,29 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 5px;
       margin-top: 10px;
     }
   }
 }
 
+.mobile.poker-panel {
+  gap: 0;
+  padding: 15px 5px;
+
+  .properties {
+    margin-left: 10px;
+  }
+
+  .player-cards {
+    gap: 3px;
+  }
+}
+
+.desktop.poker-panel {
+  gap: 10px;
+  padding: 10px 25px;
+
+  .player-cards {
+    gap: 5px;
+  }
+}
