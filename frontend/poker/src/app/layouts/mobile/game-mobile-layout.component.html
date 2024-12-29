@@ -1,12 +1,12 @@
-<poker-game-toolbar [game]="game()" [mobile]="mobile()"/>
+<poker-game-toolbar [game]="game()" [mobile]="true"/>
 
 <div class="row">
   <poker-game-player-selection [game]="game()"/>
-  <poker-game-player-properties [game]="game()"/>
+  <poker-game-player-properties [game]="game()" [mobile]="true"/>
 </div>
 
 <poker-game-state [game]="game()"/>
 
-<poker-game-hand [game]="game()" [mobile]="mobile()"/>
+<poker-game-hand [game]="game()" [mobile]="true"/>
 
 <poker-game-actions [game]="game()"/>

@@ -1,8 +1,8 @@
 @if (game(); as game) {
   @if (isMobile) {
-    <poker-game-mobile-layout [game]="game" [mobile]="isMobile"/>
+    <poker-game-mobile-layout [game]="game"/>
   } @else {
-    <poker-game-desktop-layout [game]="game" [mobile]="isMobile"/>
+    <poker-game-desktop-layout [game]="game"/>
   }
 }
 

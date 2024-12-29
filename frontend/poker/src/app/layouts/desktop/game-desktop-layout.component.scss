@@ -5,51 +5,60 @@ $outer-margin: 30px;
   flex-direction: column;
   flex-grow: 1;
   justify-content: space-between;
+  overflow-x: hidden;
 
   .main-container {
-    flex-basis: 70%;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 20px;
+    flex-basis: 75%;
 
     margin-top: $outer-margin;
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-
-    .left-column, .middle-column, .right-column {
-      flex-basis: calc(100% / 3);
-    }
 
     .left-column {
-      margin-left: $outer-margin
+      margin-left: $outer-margin;
+      flex-basis: 350px;
+      flex-shrink: 100;
     }
 
     .middle-column {
       display: flex;
-      justify-content: space-between;
+      flex-basis: 620px;
+      flex-grow: 0;
+      flex-shrink: 1;
       flex-direction: column;
+      justify-content: space-between;
 
       poker-game-state, poker-game-hand {
-        flex-basis: calc(100% / 2);
+        flex-basis: 50%;
+      }
+
+      poker-game-hand {
+        margin-top: 10px;
       }
     }
 
     .right-column {
       display: flex;
+      flex-basis: 350px;
+      flex-shrink: 10;
       flex-direction: column;
       gap: 15px;
 
       margin-right: $outer-margin;
 
       poker-game-player-selection {
-        flex-basis: 65%;
+        flex-grow: 1;
       }
 
       poker-game-player-properties {
-        flex-basis: 35%;
+        flex-basis: 200px;
       }
     }
   }
 
   poker-game-actions {
-    flex-basis: 30%;
+    flex-basis: 25%;
+    padding: 50px
   }
 }

@@ -27,5 +27,4 @@ import {Game} from '../../model';
 })
 export class GameDesktopLayoutComponent {
   game: InputSignal<Game> = input.required<Game>();
-  mobile: InputSignal<boolean> = input.required<boolean>();
 }
