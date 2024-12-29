@@ -18,11 +18,11 @@
     {{currentBet()}}
   </div>
 
-  @if (currentPlayer()) {
-    <div class="property">
-      <mat-icon>account_circle</mat-icon>
-      <span>Turn: {{currentPlayer()?.name}}</span>
-    </div>
-  }
+
+  <div class="property">
+    <mat-icon>account_circle</mat-icon>
+    <span>Turn: {{currentPlayer()?.name ?? '-'}}</span>
+  </div>
+
 </div>
 

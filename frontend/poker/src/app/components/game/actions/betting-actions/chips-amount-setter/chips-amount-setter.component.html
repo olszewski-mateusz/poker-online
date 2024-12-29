@@ -3,29 +3,53 @@
     {{betPlaced() ? 'Raise' : 'Bet'}} amount: {{amount()}}
   </div>
 
-  <div class="row-container">
-    <button class="button-large" mat-button (click)="addToAmount(-50)">-50</button>
-    <button class="button-large" mat-button (click)="addToAmount(-5)">-5</button>
+  @if (mobile()) {
+    <div class="row-container">
+      <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
+        <input [(value)]="amount" matSliderThumb>
+      </mat-slider>
+    </div>
 
-    <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
-      <input [(value)]="amount" matSliderThumb>
-    </mat-slider>
+    <div class="row-container margin-bottom">
+      <button class="button-medium" mat-button (click)="addToAmount(-50)">-50</button>
+      <button class="button-medium" mat-button (click)="addToAmount(-5)">-5</button>
+      <button class="button-medium" mat-button (click)="addToAmount(5)">+5</button>
+      <button class="button-medium" mat-button (click)="addToAmount(50)">+50</button>
+    </div>
+  } @else {
+    <div class="row-container">
+      <button class="button-large" mat-button (click)="addToAmount(-50)">-50</button>
+      <button class="button-large" mat-button (click)="addToAmount(-5)">-5</button>
 
-    <button class="button-large" mat-button (click)="addToAmount(5)">+5</button>
-    <button class="button-large" mat-button (click)="addToAmount(50)">+50</button>
-  </div>
+      <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
+        <input [(value)]="amount" matSliderThumb>
+      </mat-slider>
+
+      <button class="button-large" mat-button (click)="addToAmount(5)">+5</button>
+      <button class="button-large" mat-button (click)="addToAmount(50)">+50</button>
+    </div>
+  }
 }
 
 <div class="row-container">
-  <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendAllIn()">
+  <button mat-button
+          [class.button-large]="!mobile()"
+          [class.button-medium]="mobile()"
+          [disabled]="!myTurn()" (click)="sendAllIn()">
     All in
   </button>
 
-  <button class="button-large" mat-button [disabled]="!myTurn() || raiseIllegal()" (click)="sendBetOrRaise()">
+  <button mat-button
+          [class.button-large]="!mobile()"
+          [class.button-medium]="mobile()"
+          [disabled]="!myTurn() || raiseIllegal()" (click)="sendBetOrRaise()">
     {{betPlaced() ? 'Raise' : 'Bet'}}
   </button>
 
-  <button class="button-large" mat-button [disabled]="!myTurn()" (click)="cancelRequest.emit()">
+  <button mat-button
+          [class.button-large]="!mobile()"
+          [class.button-medium]="mobile()"
+          [disabled]="!myTurn()" (click)="cancelRequest.emit()">
     Cancel
   </button>
 </div>

@@ -2,14 +2,24 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  justify-content: space-between;
+  justify-content: flex-start;
 
   .row {
     display: flex;
+    margin-bottom: 15px;
 
     poker-game-player-selection, poker-game-player-properties {
       flex-basis: 50%;
     }
+  }
+
+  poker-game-state {
+    margin: 0 30px;
+  }
+
+  poker-game-history {
+    flex-grow: 1;
+    margin: 0 30px 20px;
   }
 
   poker-game-hand {
@@ -19,5 +29,7 @@
 
   poker-game-actions {
     flex-basis: 250px;
+    //justify-self: end;
+    //place-self: end;
   }
 }

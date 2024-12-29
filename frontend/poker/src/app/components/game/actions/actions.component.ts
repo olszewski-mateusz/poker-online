@@ -20,6 +20,7 @@ import {MatButton} from '@angular/material/button';
 })
 export class ActionsComponent {
   game: InputSignal<Game> = input.required<Game>();
+  mobile: InputSignal<boolean> = input.required<boolean>();
 
   private readonly apiRestService: ApiRestService = inject(ApiRestService);
   private readonly replaceCardsService: ReplaceCardsService = inject(ReplaceCardsService);

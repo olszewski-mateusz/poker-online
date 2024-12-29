@@ -1,6 +1,7 @@
 @if (raisePanelActive()) {
   <poker-game-chips-amount-setter
     [game]="game()"
+    [mobile]="mobile()"
     (cancelRequest)="cancelRaisePanel()"
   />
 } @else if (betPlaced()) {

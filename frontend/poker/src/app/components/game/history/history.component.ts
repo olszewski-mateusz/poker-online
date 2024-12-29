@@ -39,15 +39,20 @@ import {MatIcon} from '@angular/material/icon';
 })
 export class HistoryComponent {
   game: InputSignal<Game> = input.required<Game>()
+  mobile: InputSignal<boolean> = input.required<boolean>();
 
   private readonly historyContainer = viewChild.required<MatList, ElementRef>(MatList, {read: ElementRef});
 
   private readonly firstScroll: WritableSignal<boolean> = signal<boolean>(true);
 
+  private maxEntries: Signal<number> = computed(() => {
+    return this.mobile() ? 20 : 100;
+  })
+
   historyEntries: Signal<string[]> = computed(() => {
     const entries: string[] = this.buildHistoryEntries(this.game());
-    if (entries.length > 100) {
-      return entries.slice(-100);
+    if (entries.length > this.maxEntries()) {
+      return entries.slice(-this.maxEntries());
     }
     return entries;
   })

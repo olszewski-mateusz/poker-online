@@ -9,9 +9,9 @@ $outer-margin: 30px;
 
   .main-container {
     display: flex;
+    flex-grow: 1;
     justify-content: space-evenly;
     gap: 20px;
-    flex-basis: 75%;
 
     margin-top: $outer-margin;
 
@@ -58,7 +58,7 @@ $outer-margin: 30px;
   }
 
   poker-game-actions {
-    flex-basis: 25%;
+    flex-basis: 180px;
     padding: 50px
   }
 }

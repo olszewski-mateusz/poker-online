@@ -28,6 +28,7 @@ export class BettingActionsComponent {
   private readonly apiRestService: ApiRestService = inject(ApiRestService);
 
   game: InputSignal<Game> = input.required<Game>();
+  mobile: InputSignal<boolean> = input.required<boolean>();
 
   protected readonly raisePanelActive: WritableSignal<boolean> = signal<boolean>(false);
 

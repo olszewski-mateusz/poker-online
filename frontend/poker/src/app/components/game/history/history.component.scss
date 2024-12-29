@@ -1,3 +1,5 @@
+@import "../../../../colors";
+
 :host {
   display: flex;
   justify-content: center;
@@ -31,12 +33,28 @@
         padding: 0 !important;
         height: 100%;
         overflow-y: auto;
-
-        mat-list-item {
-          height: 38px;
-        }
       }
     }
   }
 }
 
+.mobile.poker-panel {
+  background-color: lighten($poker-panel, 3);
+  mat-list-item {
+    height: 24px;
+
+    [matListItemTitle] {
+      font-size: 14px;
+    }
+  }
+}
+
+.desktop.poker-panel {
+  mat-list-item {
+    height: 38px;
+
+    [matListItemTitle] {
+      font-size: 16px;
+    }
+  }
+}

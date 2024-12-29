@@ -1,7 +1,7 @@
 <poker-game-toolbar [game]="game()" [mobile]="false"/>
 
 <div class="main-container">
-  <poker-game-history class="left-column" [game]="game()"/>
+  <poker-game-history class="left-column" [game]="game()" [mobile]="false"/>
 
   <div class="middle-column">
     <poker-game-state [game]="game()" [mobile]="false"/>
@@ -15,4 +15,4 @@
 
 </div>
 
-<poker-game-actions [game]="game()"/>
+<poker-game-actions [game]="game()" [mobile]="false"/>

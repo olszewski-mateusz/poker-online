@@ -29,6 +29,7 @@ export class ChipsAmountSetterComponent {
   private readonly apiRestService: ApiRestService = inject(ApiRestService);
 
   game: InputSignal<Game> = input.required<Game>();
+  mobile: InputSignal<boolean> = input.required<boolean>();
   cancelRequest: OutputEmitterRef<void> = output<void>();
 
   protected amount: ModelSignal<number> = model<number>(0);
