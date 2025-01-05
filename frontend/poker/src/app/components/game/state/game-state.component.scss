@@ -7,26 +7,27 @@
       text-align: center;
       font-weight: 500;
     }
-
-    .property {
-      font-size: 18px;
-
-      mat-icon {
-        transform: translateY(4px);
-        margin-right: 8px;
-      }
-    }
   }
 }
 
 .mobile.poker-panel {
-  padding: 20px;
+  padding: 12px 20px;
 
   .phase {
-    font-size: 26px;
-    line-height: 26px;
-    padding: 5px;
+    font-size: 22px;
+    line-height: 22px;
     margin-bottom: 10px;
+  }
+
+  .property {
+    font-size: 14px;
+    line-height: 14px;
+
+    mat-icon {
+      font-size: 16px;
+      transform: translateY(2px);
+      margin-right: 4px;
+    }
   }
 }
 
@@ -38,5 +39,15 @@
     line-height: 32px;
     padding: 10px;
     margin-bottom: 20px;
+  }
+
+  .property {
+    font-size: 18px;
+
+    mat-icon {
+      font-size: 22px;
+      transform: translateY(4px);
+      margin-right: 8px;
+    }
   }
 }

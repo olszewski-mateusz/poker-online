@@ -5,6 +5,7 @@ import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatIcon} from '@angular/material/icon';
 import {FormsModule} from '@angular/forms';
 import {GameConnectorService} from '../../services';
+import {DeviceDetectorService} from 'ngx-device-detector';
 
 @Component({
   selector: 'poker-page-home',
@@ -23,9 +24,11 @@ import {GameConnectorService} from '../../services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePageComponent {
-
+  private readonly deviceService: DeviceDetectorService = inject(DeviceDetectorService);
   private readonly gameService: GameConnectorService = inject(GameConnectorService);
+
   protected gameId: ModelSignal<string | null> = model<string | null>(null);
+  protected readonly isMobile: boolean = this.deviceService.isMobile();
 
   createGame(): void {
     this.gameService.createNewGame().subscribe();
@@ -39,4 +42,6 @@ export class HomePageComponent {
       console.error("Game id is required!")
     }
   }
+
+  protected readonly model = model;
 }

@@ -41,10 +41,10 @@
 .mobile.poker-panel {
   background-color: lighten($poker-panel, 3);
   mat-list-item {
-    height: 24px;
+    height: 18px;
 
     [matListItemTitle] {
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 }

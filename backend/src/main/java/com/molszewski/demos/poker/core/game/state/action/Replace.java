@@ -31,6 +31,7 @@ public final class Replace extends Action{
         }
 
         cardsInHand.removeAll(cardsToReplace);
+        gameState.getDeck().addAllToDiscards(cardsToReplace);
 
         for (int i = 0; i < cardsToReplace.size(); i++) {
             cardsInHand.add(gameState.getDeck().pop());

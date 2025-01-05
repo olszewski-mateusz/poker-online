@@ -6,7 +6,7 @@
 
       @if (!mobile()) {
         <div class="column">
-          <mat-icon>account_circle</mat-icon>
+          <mat-icon inline>account_circle</mat-icon>
           <span>{{selectedPlayer.name}}</span>
         </div>
       }
@@ -14,16 +14,16 @@
       <div class="column">
         @if (mobile()) {
           <div>
-            <mat-icon>account_circle</mat-icon>
+            <mat-icon inline>account_circle</mat-icon>
             <span>{{selectedPlayer.name}}</span>
           </div>
         }
         <div>
-          <mat-icon>paid</mat-icon>
+          <mat-icon inline>paid</mat-icon>
           <span>{{selectedPlayer.money}}</span>
         </div>
         <div>
-          <mat-icon>poker_chip</mat-icon>
+          <mat-icon inline>poker_chip</mat-icon>
           <span>{{selectedPlayer.bet}}</span>
         </div>
       </div>

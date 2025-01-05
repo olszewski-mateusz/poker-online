@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
 import {Card} from '../../model';
 
-export const API_HOST: string = 'http://localhost:8080';
+export const API_HOST: string = 'http://192.168.50.153:8080';
 
 @Injectable({
   providedIn: 'root'

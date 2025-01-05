@@ -1,5 +1,7 @@
 @if (!raiseIllegal()) {
-  <div class="row-container amount-label poker-text">
+  <div class="row-container amount-label poker-text"
+       [class.mobile]="mobile()"
+       [class.desktop]="!mobile()">
     {{betPlaced() ? 'Raise' : 'Bet'}} amount: {{amount()}}
   </div>
 

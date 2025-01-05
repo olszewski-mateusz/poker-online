@@ -1,7 +1,9 @@
 @import "../../../../../colors";
 
 .card, .unknown-card {
-  font-family: "Segoe UI Semibold", system-ui;
+  font-family: "M PLUS Rounded 1c", serif;
+  font-weight: 600;
+  font-style: normal;
   -webkit-user-select: none;
   user-select: none;
 }
@@ -37,22 +39,22 @@
   width: 100px;
   height: 140px;
   border-radius: 10px;
-  font-size: 50px;
+  font-size: 48px;
 
   .rank {
-    width: 45px;
-    transform: translate(6%, 40%);
+    width: 90px;
+    transform: translate(-22%, 40%);
   }
 
   .suit {
     width: 30px;
-    transform: translate(28%, 120%);
+    transform: translate(6%, 135%);
   }
 
   .big-suit {
-    font-size: 85px;
+    font-size: 80px;
     width: 50px;
-    transform: translate(75%, 165%);
+    transform: translate(55%, 190%);
   }
 
   .unknown-symbol {
@@ -62,18 +64,18 @@
 }
 
 .size-big-mobile {
-  width: 65px;
-  height: 95px;
+  width: 55px;
+  height: 85px;
   border-radius: 10px;
-  font-size: 50px;
+  font-size: 42px;
 
   .rank {
-    width: 50px;
-    transform: translate(16%, 50%);
+    width: 80px;
+    transform: translate(-16%, 50%);
   }
 
   .suit {
-    transform: translate(24%, 130%);
+    transform: translate(14%, 120%);
   }
 
   .unknown-symbol {
@@ -86,15 +88,15 @@
   width: 50px;
   height: 75px;
   border-radius: 10px;
-  font-size: 38px;
+  font-size: 36px;
 
   .rank {
-    width: 36px;
-    transform: translate(20%, 30%);
+    width: 78px;
+    transform: translate(-18%, 34%);
   }
 
   .suit {
-    transform: translate(24%, 70%);
+    transform: translate(17%, 84%);
   }
 
   .unknown-symbol {
@@ -105,21 +107,21 @@
 
 .size-small-mobile {
   width: 30px;
-  height: 50px;
+  height: 45px;
   border-radius: 8px;
-  font-size: 24px;
+  font-size: 22px;
 
   .rank {
-    width: 24px;
-    transform: translate(14%, 10%);
+    width: 34px;
+    transform: translate(-5%, 0%);
   }
 
   .suit {
-    transform: translate(24%, 5%);
+    transform: translate(15%, -10%);
   }
 
   .unknown-symbol {
-    padding-top: 12px;
+    padding-top: 10px;
     font-size: 30px;
   }
 }

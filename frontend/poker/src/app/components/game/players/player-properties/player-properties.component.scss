@@ -14,11 +14,6 @@
       .column {
         flex-basis: 50%;
       }
-
-      mat-icon {
-        transform: translateY(5px);
-        margin-right: 4px;
-      }
     }
 
     .player-cards {
@@ -32,10 +27,18 @@
 
 .mobile.poker-panel {
   gap: 0;
-  padding: 15px 5px;
+  padding: 10px 5px;
 
   .properties {
     margin-left: 10px;
+    font-size: 14px;
+    line-height: 15px;
+
+    mat-icon {
+      font-size: 16px;
+      transform: translateY(2px);
+      margin-right: 4px;
+    }
   }
 
   .player-cards {
@@ -46,6 +49,14 @@
 .desktop.poker-panel {
   gap: 10px;
   padding: 10px 25px;
+
+  .properties {
+    mat-icon {
+      font-size: 22px;
+      transform: translateY(5px);
+      margin-right: 4px;
+    }
+  }
 
   .player-cards {
     gap: 5px;
