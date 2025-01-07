@@ -17,7 +17,7 @@ export class GameStateComponent {
   mobile: InputSignal<boolean> = input.required<boolean>();
 
   currentPlayer: Signal<Player|undefined> = computed(() => {
-    return this.game().players.find(p => p.id === this.game().currentPlayerId);
+    return this.game().players.find(p => p.index === this.game().currentPlayerIndex);
   });
 
   roundReward: Signal<number> = computed(() => {

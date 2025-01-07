@@ -34,15 +34,15 @@ export class PlayerPropertiesComponent {
 
   protected selectedPlayer: Signal<Player | undefined> = computed(() => {
     const game: Game = this.game();
-    let selectedPlayerId: string | undefined = this.playerSelectionService.selectedPlayerId();
-    if (!selectedPlayerId) {
+    let selectedPlayerIndex: number | undefined = this.playerSelectionService.selectedPlayerIndex();
+    if (!selectedPlayerIndex) {
       if (game.phase === GamePhase.SHOWDOWN) {
-        selectedPlayerId = game.winnerId;
+        selectedPlayerIndex = game.winnerIndex;
       } else {
-        selectedPlayerId = game.currentPlayerId;
+        selectedPlayerIndex = game.currentPlayerIndex;
       }
     }
-    return game.players.find(player => player.id === selectedPlayerId);
+    return game.players.find(player => player.index === selectedPlayerIndex);
   })
 
   protected selectedPlayerCards: Signal<Card[]> = computed(() => {

@@ -5,10 +5,10 @@ import {Injectable, Signal, signal, WritableSignal} from '@angular/core';
 })
 export class PlayerSelectionService {
 
-  private readonly _selectedPlayerId: WritableSignal<string|undefined> = signal<string|undefined>(undefined);
-  readonly selectedPlayerId: Signal<string|undefined> = this._selectedPlayerId.asReadonly();
+  private readonly _selectedPlayerIndex: WritableSignal<number|undefined> = signal<number|undefined>(undefined);
+  readonly selectedPlayerIndex: Signal<number|undefined> = this._selectedPlayerIndex.asReadonly();
 
-  setSelectedPlayer(playerId?: string): void {
-    this._selectedPlayerId.set(playerId);
+  setSelectedPlayer(playerIndex?: number): void {
+    this._selectedPlayerIndex.set(playerIndex);
   }
 }

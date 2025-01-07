@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Builder
 public record PlayerResponse(
-        String id,
+        int index,
         String name,
         int money,
         int bet,
@@ -21,16 +21,16 @@ public record PlayerResponse(
         Set<Card> cards,
         HandType handType
 ) {
-    public static PlayerResponse fromPlayer(Player player, PlayerMetadata metadata) {
+    public static PlayerResponse fromPlayer(Player player, PlayerMetadata metadata, boolean hideCards) {
         return  PlayerResponse.builder()
-                .id(player.getId())
+                .index(metadata.index())
                 .name(metadata.name())
                 .money(player.getMoney())
                 .bet(player.getBet())
                 .ready(player.isReady())
                 .folded(player.isFolded())
-                .cards(Optional.ofNullable(player.getHand()).map(Hand::getCards).orElse(null))
-                .handType(Optional.ofNullable(player.getHand()).map(Hand::getHandType).orElse(null))
+                .cards(hideCards ? null : Optional.ofNullable(player.getHand()).map(Hand::getCards).orElse(null))
+                .handType(hideCards ? null : Optional.ofNullable(player.getHand()).map(Hand::getHandType).orElse(null))
                 .build();
     }
 }

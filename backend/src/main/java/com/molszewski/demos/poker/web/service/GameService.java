@@ -42,7 +42,7 @@ public class GameService {
                         .map(Record::getValue)
                         .collectList()
                         .flatMap(commands -> {
-                            Game game = gameSetup.toGame(new Random());
+                            Game game = gameSetup.toGame();
                             for (Command command : commands) {
                                 boolean success = game.applyAction(command.toAction());
                                 if (!success) {
@@ -63,7 +63,7 @@ public class GameService {
         final AtomicReference<StreamOffset<String>> currentOffset = new AtomicReference<>(StreamOffset.fromStart(commandRepository.getStreamKey(gameId)));
 
         return gameSetupRepository.findById(gameId)
-                .map(gameSetup -> gameSetup.toGame(new Random()))
+                .map(GameSetup::toGame)
                 .flatMapMany(game -> {
                     CommandCollector commandCollector = CommandCollector.newInstance();
                     return Mono.defer(() -> commandRepository.readFromOffsetWithBlock(currentOffset.get()).collectList()
@@ -89,7 +89,7 @@ public class GameService {
 
     public Mono<GameResponse> getCurrentGame(String gameId, String myId) {
         return gameSetupRepository.findById(gameId)
-                .map(gameSetup -> gameSetup.toGame(new Random()))
+                .map(GameSetup::toGame)
                 .flatMap(game -> commandRepository.readAll(gameId)
                         .map(Record::getValue)
                         .collectList()

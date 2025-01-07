@@ -33,11 +33,11 @@ public class HistoryCollector {
         ActionEntry actionEntry = ActionEntry.fromCommand(command, metadataCollector.getPlayerMetadata(command.getPlayerId()).name());
         this.entries.add(actionEntry);
 
-        if (actionEntry.getEntryType().equals(ActionEntry.Type.RAISE.toString()) || actionEntry.getEntryType().equals(ActionEntry.Type.ALL_IN.toString())) {
+        if (this.isRaiseOrAllInAction(actionEntry)) {
             metadataCollector.setBetPlacedInCurrentPhase(true);
         }
 
-        if (!game.getPhase().equals(this.previousPhase)) {
+        if (this.phaseChanged(game.getPhase())) {
             this.entries.add(PhaseChangeEntry.fromPhase(game.getPhase()));
 
             if (game.getPhase().equals(GamePhase.SHOWDOWN)) {
@@ -48,7 +48,18 @@ public class HistoryCollector {
 
             metadataCollector.setBetPlacedInCurrentPhase(false);
         }
+    }
 
-        this.previousPhase = game.getPhase();
+    private boolean isRaiseOrAllInAction(ActionEntry actionEntry) {
+        return actionEntry.getEntryType().equals(ActionEntry.Type.RAISE.toString()) ||
+                actionEntry.getEntryType().equals(ActionEntry.Type.ALL_IN.toString());
+    }
+
+    private boolean phaseChanged(GamePhase phase) {
+        if (!phase.equals(this.previousPhase)) {
+            this.previousPhase = phase;
+            return true;
+        }
+        return false;
     }
 }

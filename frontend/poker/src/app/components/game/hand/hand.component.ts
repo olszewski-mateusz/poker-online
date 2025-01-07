@@ -29,12 +29,12 @@ export class HandComponent {
 
   myCards: Signal<Card[]> = computed(() => {
     const game: Game = this.game();
-    return game.players.find(value => value.id === game.myId)?.cards?.sort(compareCards) ?? this.unknownCards;
+    return game.players.find(value => value.index === game.myIndex)?.cards?.sort(compareCards) ?? this.unknownCards;
   });
 
   cardsInteractive: Signal<boolean> = computed(() => {
     const game: Game = this.game();
-    return game.phase === GamePhase.DRAWING && game.myId === game.currentPlayerId;
+    return game.phase === GamePhase.DRAWING && game.myIndex === game.currentPlayerIndex;
   });
 
   cardsSize: Signal<CardSize> = computed(() => {

@@ -24,13 +24,13 @@ export class PlayerSelectionComponent {
   game: InputSignal<Game> = input.required<Game>();
   mobile: InputSignal<boolean> = input.required<boolean>();
 
-  playerSelected(playerId: string): boolean {
-    return playerId === this.playerSelectionService.selectedPlayerId();
+  playerSelected(playerIndex: number): boolean {
+    return playerIndex === this.playerSelectionService.selectedPlayerIndex();
   }
 
   onOptionClicked(player: Player): void {
-    const alreadySelected: boolean = this.playerSelected(player.id);
-    this.playerSelectionService.setSelectedPlayer(alreadySelected ? undefined : player.id);
+    const alreadySelected: boolean = this.playerSelected(player.index);
+    this.playerSelectionService.setSelectedPlayer(alreadySelected ? undefined : player.index);
   }
 
   showAllInIcon(player: Player): boolean {
@@ -39,6 +39,6 @@ export class PlayerSelectionComponent {
   }
 
   showWinnerIcon(player: Player): boolean {
-    return this.game().phase === GamePhase.SHOWDOWN && player.id === this.game().winnerId;
+    return this.game().phase === GamePhase.SHOWDOWN && player.index === this.game().winnerIndex;
   }
 }

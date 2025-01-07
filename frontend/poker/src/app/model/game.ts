@@ -7,9 +7,10 @@ export type Game = {
   history: HistoryEntry[]
   configuration: Configuration
   phase: GamePhase
-  currentPlayerId?: string
-  winnerId?: string
+  currentPlayerIndex?: number
+  winnerIndex?: number
   myId: string
+  myIndex: number
   gameId: string
   cardsInDeck: number
   discardedCards: number
@@ -19,19 +20,19 @@ export type Game = {
 export function buildMyPlayerSignal(gameSignal: Signal<Game>): Signal<Player | undefined> {
   return computed(() => {
     const game: Game = gameSignal();
-    return game.players.find(value => value.id === game.myId);
+    return game.players.find(value => value.index === game.myIndex);
   })
 }
 
 export function buildMyTurnSignal(gameSignal: Signal<Game>): Signal<boolean> {
   return computed(() => {
     const game: Game = gameSignal();
-    return game.currentPlayerId === game.myId;
+    return game.currentPlayerIndex === game.myIndex;
   })
 }
 
 export type Player = {
-  id: string
+  index: number
   name: string
   money: number
   bet: number

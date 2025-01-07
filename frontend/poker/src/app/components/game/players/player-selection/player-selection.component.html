@@ -1,12 +1,12 @@
 <mat-selection-list class="poker-panel" [multiple]="false"
                     [class.mobile]="mobile()"
                     [class.desktop]="!mobile()">
-  @for (player of game().players; track player.id) {
+  @for (player of game().players; track player.index) {
     <mat-list-option color="primary"
-                     [value]="player.id" [selected]="playerSelected(player.id)"
+                     [value]="player.index" [selected]="playerSelected(player.index)"
                      (click)="onOptionClicked(player)">
       <span matListItemTitle>
-        @if (game().currentPlayerId === player.id) {
+        @if (game().currentPlayerIndex === player.index) {
           <mat-icon inline>chevron_right</mat-icon>
         } @else if (showAllInIcon(player)) {
           <mat-icon inline>done_all</mat-icon>
