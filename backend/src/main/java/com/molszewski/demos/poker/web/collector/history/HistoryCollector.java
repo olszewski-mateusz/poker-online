@@ -4,10 +4,7 @@ import com.molszewski.demos.poker.core.game.Game;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
-import com.molszewski.demos.poker.web.collector.history.entry.ActionEntry;
-import com.molszewski.demos.poker.web.collector.history.entry.HistoryEntry;
-import com.molszewski.demos.poker.web.collector.history.entry.PhaseChangeEntry;
-import com.molszewski.demos.poker.web.collector.history.entry.WinnerEntry;
+import com.molszewski.demos.poker.web.collector.history.entry.*;
 import com.molszewski.demos.poker.web.collector.metadata.MetadataCollector;
 import lombok.Getter;
 
@@ -44,6 +41,10 @@ public class HistoryCollector {
                 Player winner = game.getGameState().getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
                 String winnerName = metadataCollector.getPlayerMetadata(winner.getId()).name();
                 this.entries.add(WinnerEntry.create(winnerName, winner.getHand().getHandType()));
+            } else if (game.getPhase().equals(GamePhase.FINISHED)) {
+                Player winner = game.getGameState().getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
+                String winnerName = metadataCollector.getPlayerMetadata(winner.getId()).name();
+                this.entries.add(GameWinnerEntry.create(winnerName));
             }
 
             metadataCollector.setBetPlacedInCurrentPhase(false);

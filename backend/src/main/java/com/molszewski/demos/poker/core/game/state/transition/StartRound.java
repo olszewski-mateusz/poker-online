@@ -32,10 +32,18 @@ public final class StartRound implements Transition {
         state.getPlayers().forEach(player -> player.setFolded(false));
         state.getPlayers().forEach(player -> player.setReady(false));
         disablePlayersWithoutMoney(state);
-        state.setGamePhase(GamePhase.FIRST_BETTING);
         state.setCurrentPlayer(state.getPlayers().stream().filter(player -> !player.isFolded()).findFirst().orElse(null));
+        if (isGameFinished(state)) {
+            state.setGamePhase(GamePhase.FINISHED);
+            return;
+        }
+        state.setGamePhase(GamePhase.FIRST_BETTING);
         giveCardsToPlayers(state);
         collectAnte(state, configuration);
+    }
+
+    private boolean isGameFinished(GameState state) {
+        return state.getPlayers().stream().filter(player -> !player.isFolded()).count() == 1;
     }
 
     private void collectBet(GameState gameState) {

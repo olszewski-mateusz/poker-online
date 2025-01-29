@@ -5,5 +5,6 @@ public enum GamePhase {
     FIRST_BETTING,
     DRAWING,
     SECOND_BETTING,
-    SHOWDOWN
+    SHOWDOWN,
+    FINISHED,
 }

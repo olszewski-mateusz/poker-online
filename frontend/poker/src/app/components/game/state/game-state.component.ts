@@ -47,6 +47,7 @@ export class GameStateComponent {
       case GamePhase.DRAWING: return 'Drawing phase';
       case GamePhase.SECOND_BETTING: return 'Second betting phase';
       case GamePhase.SHOWDOWN: return 'Showdown phase';
+      case GamePhase.FINISHED: return 'Game finished';
     }
   }
 }

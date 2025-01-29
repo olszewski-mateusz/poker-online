@@ -17,7 +17,7 @@ import {
   Game,
   GamePhase,
   HistoryEntry,
-  isActionEntry,
+  isActionEntry, isGameWinnerEntry,
   isPhaseChangeEntry,
   isWinnerEntry,
   translateHandType
@@ -45,7 +45,7 @@ export class HistoryComponent {
 
   private readonly firstScroll: WritableSignal<boolean> = signal<boolean>(true);
 
-  private maxEntries: Signal<number> = computed(() => {
+  private readonly maxEntries: Signal<number> = computed(() => {
     return this.mobile() ? 20 : 100;
   })
 
@@ -99,6 +99,8 @@ export class HistoryComponent {
       return this.translateGamePhaseToEntry(entry.details);
     } else if (isWinnerEntry(entry)) {
       return `${entry.details.playerName} wins with ${translateHandType(entry.details.handType)}`;
+    } else if (isGameWinnerEntry(entry)) {
+      return `${entry.details.playerName} is game winner!`;
     } else if (isActionEntry(entry)) {
       switch (entry.entryType) {
         case ActionType.JOIN:
@@ -113,9 +115,10 @@ export class HistoryComponent {
           return entry.details.playerName + (betPlaced ? ' raises to ' : ' bets ') + entry.details.value;
         case ActionType.READY:
           return `${entry.details.playerName} is ${entry.details.value === true ? '' : 'not'} ready`;
-        case ActionType.REPLACE:
+        case ActionType.REPLACE: {
           const isOne: boolean = entry.details.value === 1;
           return `${entry.details.playerName} replaces ${entry.details.value} ${isOne ? 'card' : 'cards'}`;
+        }
       }
     }
     return 'Unknown history entry';
@@ -128,6 +131,7 @@ export class HistoryComponent {
       case GamePhase.DRAWING: return 'Drawing phase starts';
       case GamePhase.SECOND_BETTING: return 'Second betting phase starts';
       case GamePhase.SHOWDOWN: return 'Showdown phase starts';
+      case GamePhase.FINISHED: return 'There is only one player left with chips';
     }
   }
 }

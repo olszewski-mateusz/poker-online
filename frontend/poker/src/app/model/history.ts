@@ -1,7 +1,7 @@
 import {GamePhase} from './game';
 import {HandType} from './card';
 
-export type HistoryEntry = ActionEntry | PhaseChangeEntry | WinnerEntry;
+export type HistoryEntry = ActionEntry | PhaseChangeEntry | WinnerEntry | GameWinnerEntry;
 
 export type ActionEntry = {
   entryType: ActionType
@@ -13,6 +13,10 @@ export type ActionEntry = {
 
 export function isWinnerEntry(entry: HistoryEntry): entry is WinnerEntry {
   return entry.entryType === 'WINNER';
+}
+
+export function isGameWinnerEntry(entry: HistoryEntry): entry is GameWinnerEntry {
+  return entry.entryType === 'GAME_WINNER';
 }
 
 export function isPhaseChangeEntry(entry: HistoryEntry): entry is PhaseChangeEntry {
@@ -43,5 +47,12 @@ export type WinnerEntry = {
   details: {
     playerName: string
     handType: HandType
+  }
+}
+
+export type GameWinnerEntry = {
+  entryType: 'GAME_WINNER'
+  details: {
+    playerName: string
   }
 }

@@ -37,12 +37,14 @@ public class GameState {
     }
 
     public Optional<Player> getWinner() {
-        if (gamePhase != GamePhase.SHOWDOWN) {
-            return Optional.empty();
+        if (gamePhase == GamePhase.SHOWDOWN) {
+            return players.stream()
+                    .filter(p -> !p.isFolded() && p.getHand() != null)
+                    .max(Comparator.comparing(Player::getHand));
+        } else if(gamePhase == GamePhase.FINISHED) {
+            return players.stream().filter(p -> !p.isFolded()).findFirst();
         }
-        return players.stream()
-                .filter(p -> !p.isFolded() && p.getHand() != null)
-                .max(Comparator.comparing(Player::getHand));
+        return Optional.empty();
     }
 
     public void addPlayer(String playerId, int startMoney) {
