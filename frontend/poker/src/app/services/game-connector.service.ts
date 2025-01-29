@@ -30,7 +30,7 @@ export class GameConnectorService {
     )
   }
 
-  subscribeToGameChanges(gameId: string): Observable<Game> {
+  openConnectionToGameChanges(gameId: string): Observable<Game> {
     return this.checkGameExistence(gameId, true).pipe(
       map(() => this.tryToGetExistingConnection(gameId)),
       mergeMap(conn => conn ? of(conn) : this.createNewConnection(gameId)),
@@ -89,6 +89,10 @@ export class GameConnectorService {
       }),
       filter(Boolean)
     );
+  }
+
+  closeConnectionToGameChanges() {
+    this.apiStreamService.closeStream();
   }
 }
 

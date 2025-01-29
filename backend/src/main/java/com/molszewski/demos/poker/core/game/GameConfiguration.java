@@ -6,6 +6,6 @@ public record GameConfiguration(
         int ante
 ) {
     public static GameConfiguration defaultConfiguration() {
-        return new GameConfiguration(3, 1000, 5);
+        return new GameConfiguration(2, 1000, 5);
     }
 }

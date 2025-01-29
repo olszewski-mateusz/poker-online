@@ -114,7 +114,8 @@ export class HistoryComponent {
         case ActionType.READY:
           return `${entry.details.playerName} is ${entry.details.value === true ? '' : 'not'} ready`;
         case ActionType.REPLACE:
-          return `${entry.details.playerName} replaces ${entry.details.value} cards`;
+          const isOne: boolean = entry.details.value === 1;
+          return `${entry.details.playerName} replaces ${entry.details.value} ${isOne ? 'card' : 'cards'}`;
       }
     }
     return 'Unknown history entry';

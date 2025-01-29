@@ -52,6 +52,7 @@ export class ApiStreamService {
 
     this.eventSource.close();
     this.eventSource = undefined;
+    this._game?.complete()
     this._game = undefined;
   }
 }
