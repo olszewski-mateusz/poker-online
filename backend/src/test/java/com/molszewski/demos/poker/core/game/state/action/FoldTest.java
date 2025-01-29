@@ -7,6 +7,7 @@ import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.player.Player;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -18,6 +19,7 @@ class FoldTest {
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();
 
     @Test
+    @DisplayName("Player correctly folds")
     void simpleRaise() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -33,7 +35,7 @@ class FoldTest {
         Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
         stateManager.executeAction(new Fold("1"), gameState, configuration);
-        assertTrue(player.isReady());
+        assertFalse(player.isReady());
         assertTrue(player.isFolded());
     }
 }

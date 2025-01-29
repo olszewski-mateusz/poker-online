@@ -3,6 +3,7 @@ package com.molszewski.demos.poker.core.hand;
 import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.card.Rank;
 import com.molszewski.demos.poker.core.card.Suit;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HandResultTest {
 
     @Test
+    @DisplayName("Correct hand - high card")
     void highCardTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.CLUBS),
@@ -26,6 +28,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - pair")
     void pairTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.CLUBS),
@@ -39,6 +42,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - two pairs")
     void twoPairTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.CLUBS),
@@ -52,6 +56,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - three of a kind")
     void threeOfAKindTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.CLUBS),
@@ -65,6 +70,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - straight")
     void straightTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.FOUR, Suit.CLUBS),
@@ -78,6 +84,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - flush")
     void flushTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.SIX, Suit.DIAMONDS),
@@ -91,6 +98,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - full house")
     void fullHouseTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.DIAMONDS),
@@ -104,6 +112,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - four of a kind")
     void fourOfAKindTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.JACK, Suit.CLUBS),
@@ -117,6 +126,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - straight flush")
     void straightFlushTest() {
         HandResult result = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.HEARTS),
@@ -130,6 +140,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Compare hands - different types")
     void compareDifferentHandTypes() {
         HandResult resultA = new HandResult(Set.of(
                 new Card(Rank.EIGHT, Suit.HEARTS),
@@ -161,6 +172,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Compare hands - same types and score")
     void compareSameHandTypesSameScore() {
         HandResult resultA = new HandResult(Set.of(
                 new Card(Rank.TWO, Suit.SPADES),
@@ -182,6 +194,7 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Compare hands - same types and different score")
     void compareSameHandTypesDifferentScore() {
         HandResult resultA = new HandResult(Set.of(
                 new Card(Rank.TWO, Suit.HEARTS),

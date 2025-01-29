@@ -7,6 +7,7 @@ import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.player.Player;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -18,7 +19,8 @@ class RaiseTest {
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();
 
     @Test
-    void simpleRaise() throws ActionException {
+    @DisplayName("Player correctly bets 100 chips")
+    void simpleBet() throws ActionException {
         int raiseMoney = 100;
 
         GameState gameState = new GameState(new Deck(random));
@@ -41,6 +43,7 @@ class RaiseTest {
     }
 
     @Test
+    @DisplayName("Player bets too little chips - throws error")
     void raiseTooLittle() throws ActionException {
         int raiseMoney = configuration.ante() + 1;
 
@@ -61,7 +64,8 @@ class RaiseTest {
     }
 
     @Test
-    void raiseTooMuch() throws ActionException {
+    @DisplayName("Player bets too many chips - throws error")
+    void raiseTooMany() throws ActionException {
         int raiseMoney = configuration.startMoney() + 1;
 
         GameState gameState = new GameState(new Deck(random));
@@ -81,6 +85,7 @@ class RaiseTest {
     }
 
     @Test
+    @DisplayName("When player raises - others are not ready (when they have chips)")
     void raiseChangesReadyStatus() throws ActionException {
         int raiseMoney = 2 * configuration.ante();
 
@@ -102,5 +107,31 @@ class RaiseTest {
         assertTrue(player.isReady());
         stateManager.executeAction(new Raise("2", raiseMoney), gameState, configuration);
         assertFalse(player.isReady());
+    }
+
+    @Test
+    @DisplayName("When player raises - others are still ready (when they don't have chips)")
+    void raiseNotChangesReadyStatus() throws ActionException {
+        GameState gameState = new GameState(new Deck(random));
+        StateManager stateManager = new StateManagerImpl();
+
+        stateManager.executeAction(new Join("1"), gameState, configuration);
+        stateManager.executeAction(new Join("2"), gameState, configuration);
+        stateManager.executeAction(new Join("3"), gameState, configuration);
+
+        stateManager.executeAction(new Ready("1",true), gameState, configuration);
+        stateManager.executeAction(new Ready("2",true), gameState, configuration);
+        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+
+        Player player = gameState.getCurrentPlayer();
+        assertEquals("1", player.getId());
+        assertFalse(player.isReady());
+        stateManager.executeAction(new Check("1"), gameState, configuration);
+        assertTrue(player.isReady());
+
+        player.transferMoneyToBet(player.getMoney());
+        player.clearAndGetBet();
+        stateManager.executeAction(new Raise("2", configuration.startMoney()), gameState, configuration);
+        assertTrue(player.isReady());
     }
 }

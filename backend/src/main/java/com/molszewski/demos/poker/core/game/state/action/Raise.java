@@ -33,6 +33,6 @@ public final class Raise extends Action {
         if (amount - player.getBet() > player.getMoney()) {
             throw new ActionException("Must have money for raise.");
         }
-        player.moveMoneyToBet(amount - player.getBet());
+        player.transferMoneyToBet(amount - player.getBet());
     }
 }

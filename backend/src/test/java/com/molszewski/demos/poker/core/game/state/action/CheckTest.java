@@ -7,6 +7,7 @@ import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.player.Player;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -18,6 +19,7 @@ class CheckTest {
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();
 
     @Test
+    @DisplayName("Player correctly checks")
     void simpleCheck() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -39,8 +41,9 @@ class CheckTest {
     }
 
     @Test
-    void raiseAndCheck() throws ActionException {
-        int raiseMoney = 100;
+    @DisplayName("Player correctly calls")
+    void simpleCall() throws ActionException {
+        int raiseMoney = 3 * configuration.ante();
 
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -64,6 +67,7 @@ class CheckTest {
     }
 
     @Test
+    @DisplayName("Non existing player checks - throws error")
     void playerNotFound() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -80,8 +84,9 @@ class CheckTest {
     }
 
     @Test
+    @DisplayName("Player calls when he doesn't have enough chips - throws error")
     void checkNoMoney() throws ActionException {
-        int raiseMoney = 2000;
+        int raiseMoney = 2 * configuration.startMoney();
 
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();

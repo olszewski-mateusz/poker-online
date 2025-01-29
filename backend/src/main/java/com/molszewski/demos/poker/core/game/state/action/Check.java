@@ -20,6 +20,6 @@ public final class Check extends Action{
         if (currentBet - player.getBet() > player.getMoney()) {
             throw new ActionException("Not having money for check. Use all in or fold.");
         }
-        player.moveMoneyToBet(currentBet - player.getBet());
+        player.transferMoneyToBet(currentBet - player.getBet());
     }
 }

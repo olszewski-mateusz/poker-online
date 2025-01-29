@@ -7,6 +7,7 @@ import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
 import com.molszewski.demos.poker.core.player.Player;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -18,6 +19,7 @@ class JoinTest {
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();
 
     @Test
+    @DisplayName("One player joins")
     void onePlayerCorrectlyAdded() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -35,6 +37,7 @@ class JoinTest {
     }
 
     @Test
+    @DisplayName("Three players join")
     void threePlayerCorrectlyAdded() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -47,6 +50,7 @@ class JoinTest {
     }
 
     @Test
+    @DisplayName("One player added two times - throws error")
     void samePlayerAddedTwoTimes() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();

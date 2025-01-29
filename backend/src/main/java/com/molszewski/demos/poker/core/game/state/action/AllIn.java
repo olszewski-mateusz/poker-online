@@ -16,12 +16,12 @@ public final class AllIn extends Action {
         Player player = gameState.getPlayerById(this.getPlayerId())
                 .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
 
-        int oldBid = gameState.getCurrentBet();
+        int oldBet = gameState.getCurrentBet();
 
-        player.moveMoneyToBet(player.getMoney());
+        player.transferMoneyToBet(player.getMoney());
 
-        int newBid = gameState.getCurrentBet();
-        if (newBid > oldBid) {
+        int newBet = gameState.getCurrentBet();
+        if (newBet > oldBet) {
             gameState.getPlayers().forEach(p -> {
                 if (p.getMoney() > 0) {
                     p.setReady(false);

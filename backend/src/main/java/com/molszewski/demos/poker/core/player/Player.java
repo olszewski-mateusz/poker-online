@@ -31,7 +31,7 @@ public class Player {
         this.hand = hand;
     }
 
-    public void moveMoneyToBet(int amount) {
+    public void transferMoneyToBet(int amount) {
         if (amount < 0) {
             throw new IllegalStateException("Amount can't be negative");
         }
@@ -49,7 +49,7 @@ public class Player {
         this.money += amount;
     }
 
-    public int collectBet() {
+    public int clearAndGetBet() {
         int amount = bet;
         bet = 0;
         return amount;

@@ -7,6 +7,7 @@ import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
 import com.molszewski.demos.poker.core.player.Player;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -18,6 +19,7 @@ class ReadyTest {
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();
 
     @Test
+    @DisplayName("1 of 3 players is ready")
     void onePlayerReady() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -32,6 +34,7 @@ class ReadyTest {
     }
 
     @Test
+    @DisplayName("3 of 4 players are ready")
     void morePlayerReady() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -49,6 +52,7 @@ class ReadyTest {
     }
 
     @Test
+    @DisplayName("Player ready again - throws error")
     void playerReadyTwoTimes() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -63,6 +67,7 @@ class ReadyTest {
     }
 
     @Test
+    @DisplayName("Player not ready again - throws error")
     void playerNotReady() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
@@ -76,6 +81,7 @@ class ReadyTest {
     }
 
     @Test
+    @DisplayName("Player is correctly not ready")
     void playerReadyThenNotReady() throws ActionException {
         GameState gameState = new GameState(new Deck(random));
         StateManager stateManager = new StateManagerImpl();
