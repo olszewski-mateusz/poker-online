@@ -28,17 +28,4 @@ public class Hand implements Comparable<Hand> {
     public int compareTo(Hand otherHand) {
         return handResult.compareTo(otherHand.handResult);
     }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Hand hand)) return false;
-
-        return handResult.equals(hand.handResult);
-    }
-
-    @Override
-    public int hashCode() {
-        return handResult.hashCode();
-    }
 }

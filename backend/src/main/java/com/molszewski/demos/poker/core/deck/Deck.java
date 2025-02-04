@@ -49,14 +49,11 @@ public class Deck {
     private void moveDiscardsToDeck() {
         Collections.shuffle(discards, random);
         cards.addAll(discards);
+        discards.clear();
     }
 
     public void addAllToDiscards(Collection<Card> cards) {
         discards.addAll(cards);
-    }
-
-    public void addToDiscards(Card card) {
-        discards.add(card);
     }
 
     public int cardsCount() {

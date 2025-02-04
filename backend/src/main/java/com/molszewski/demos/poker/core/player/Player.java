@@ -33,10 +33,10 @@ public class Player {
 
     public void transferMoneyToBet(int amount) {
         if (amount < 0) {
-            throw new IllegalStateException("Amount can't be negative");
+            throw new IllegalArgumentException("Amount can't be negative");
         }
         if (amount > this.money) {
-            throw new IllegalStateException("Can't have less than 0 money");
+            throw new IllegalArgumentException("Can't have less than 0 money");
         }
         this.money -= amount;
         this.bet += amount;
@@ -44,7 +44,7 @@ public class Player {
 
     public void addMoney(int amount) {
         if (amount < 0) {
-            throw new IllegalStateException("Amount can't be negative");
+            throw new IllegalArgumentException("Amount can't be negative");
         }
         this.money += amount;
     }
