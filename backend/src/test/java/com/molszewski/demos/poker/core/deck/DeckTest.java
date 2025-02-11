@@ -103,4 +103,18 @@ class DeckTest {
         assertEquals( 6, deck.getCards().size());
         assertEquals( 4, deck.getDiscards().size());
     }
+
+    @Test
+    @DisplayName("Correctly get cards count")
+    void getCardsCountTest() {
+        Deck deck = new Deck(sixCardsList, twoCardsList, random);
+        assertEquals( 6, deck.cardsCount());
+    }
+
+    @Test
+    @DisplayName("Correctly get discards count")
+    void getDiscardsCountTest() {
+        Deck deck = new Deck(sixCardsList, twoCardsList, random);
+        assertEquals( 2, deck.discardsCount());
+    }
 }
