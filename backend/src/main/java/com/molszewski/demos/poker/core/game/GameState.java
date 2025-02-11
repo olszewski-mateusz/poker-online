@@ -41,7 +41,7 @@ public class GameState {
             return players.stream()
                     .filter(p -> !p.isFolded() && p.getHand() != null)
                     .max(Comparator.comparing(Player::getHand));
-        } else if(gamePhase == GamePhase.FINISHED) {
+        } else if (gamePhase == GamePhase.FINISHED) {
             return players.stream().filter(p -> !p.isFolded()).findFirst();
         }
         return Optional.empty();
