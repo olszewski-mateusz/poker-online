@@ -6,6 +6,7 @@ import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
+import com.molszewski.demos.poker.core.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.core.player.Player;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,5 +95,20 @@ class ReadyTest {
         stateManager.executeAction(new Ready("2", false), gameState, configuration);
 
         assertFalse(gameState.getPlayerById("2").get().isReady());
+    }
+
+    @Test
+    @DisplayName("Unknown player is ready")
+    void unknownPlayerReady() throws ActionException {
+        GameState gameState = new GameState(new Deck(random));
+        StateManager stateManager = new StateManagerImpl();
+
+        stateManager.executeAction(new Join("1"), gameState, configuration);
+        stateManager.executeAction(new Join("2"), gameState, configuration);
+        stateManager.executeAction(new Join("3"), gameState, configuration);
+
+        assertThrows(PlayerNotFound.class, () -> {
+            stateManager.executeAction(new Ready("4", true), gameState, configuration);
+        });
     }
 }

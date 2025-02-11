@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class HandResultTest {
 
@@ -223,5 +222,33 @@ class HandResultTest {
         assertTrue(resultA.compareTo(resultB) < 0);
         assertTrue(resultB.compareTo(resultC) < 0);
         assertTrue(resultA.compareTo(resultC) < 0);
+    }
+
+    @Test
+    @DisplayName("Wrong hand - 4 cards")
+    void wrongHandFourCards() {
+        Set<Card> cards = Set.of(
+                new Card(Rank.TWO, Suit.HEARTS),
+                new Card(Rank.TWO, Suit.SPADES),
+                new Card(Rank.TEN, Suit.DIAMONDS),
+                new Card(Rank.FIVE, Suit.SPADES)
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> new HandResult(cards));
+    }
+
+    @Test
+    @DisplayName("Wrong hand - 6 cards")
+    void wrongHandSixCards() {
+        Set<Card> cards = Set.of(
+                new Card(Rank.TWO, Suit.HEARTS),
+                new Card(Rank.TWO, Suit.SPADES),
+                new Card(Rank.TEN, Suit.DIAMONDS),
+                new Card(Rank.FIVE, Suit.SPADES),
+                new Card(Rank.JACK, Suit.SPADES),
+                new Card(Rank.ACE, Suit.SPADES)
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> new HandResult(cards));
     }
 }
