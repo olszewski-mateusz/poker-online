@@ -11,11 +11,11 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 public class HistoryCollector {
 
     private GamePhase previousPhase = GamePhase.NOT_STARTED;
 
+    @Getter
     private final List<HistoryEntry> entries = new ArrayList<>();
 
     private HistoryCollector() {

@@ -141,7 +141,7 @@ class GameStateTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Add existing player - throws")
     void addPlayerThrowsTest() {
         GameState gameState = new GameState(null, List.of(
                 new Player("1", 100)
