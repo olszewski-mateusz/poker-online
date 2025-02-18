@@ -9,6 +9,7 @@ import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.hand.Hand;
 import com.molszewski.demos.poker.core.player.Player;
+import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UnitTest
 class ReplaceTest {
     private final Random random = new Random(17L);
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();

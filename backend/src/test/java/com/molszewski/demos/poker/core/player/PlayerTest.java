@@ -1,11 +1,13 @@
 package com.molszewski.demos.poker.core.player;
 
+import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UnitTest
 class PlayerTest {
 
     private Player player;

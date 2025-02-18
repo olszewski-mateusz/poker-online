@@ -5,6 +5,7 @@ import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.game.state.action.Action;
 import com.molszewski.demos.poker.core.game.state.action.Check;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
+import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UnitTest
 class CorrectPhaseTest {
 
     @Test

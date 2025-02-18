@@ -4,6 +4,7 @@ import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.card.Rank;
 import com.molszewski.demos.poker.core.card.Suit;
 import com.molszewski.demos.poker.core.hand.Hand;
+import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UnitTest
 class DeckTest {
     private final Random random = new Random(17L);
     private List<Card> sixCardsList;

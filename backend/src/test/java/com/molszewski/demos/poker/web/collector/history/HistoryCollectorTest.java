@@ -12,6 +12,7 @@ import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.persistence.entity.command.CheckCommand;
 import com.molszewski.demos.poker.persistence.entity.command.JoinCommand;
 import com.molszewski.demos.poker.persistence.entity.command.RaiseCommand;
+import com.molszewski.demos.poker.test.UnitTest;
 import com.molszewski.demos.poker.web.collector.history.entry.*;
 import com.molszewski.demos.poker.web.collector.metadata.MetadataCollector;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@UnitTest
 class HistoryCollectorTest {
 
     private HistoryCollector historyCollector;

@@ -10,6 +10,7 @@ import com.molszewski.demos.poker.core.game.state.action.Action;
 import com.molszewski.demos.poker.core.game.state.action.Join;
 import com.molszewski.demos.poker.core.game.state.exception.ActionException;
 import com.molszewski.demos.poker.core.player.Player;
+import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@UnitTest
 class GameTest {
 
     @Mock

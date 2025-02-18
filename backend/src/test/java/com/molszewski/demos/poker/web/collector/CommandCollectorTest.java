@@ -3,6 +3,7 @@ package com.molszewski.demos.poker.web.collector;
 import com.molszewski.demos.poker.core.game.Game;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.persistence.entity.command.JoinCommand;
+import com.molszewski.demos.poker.test.UnitTest;
 import com.molszewski.demos.poker.web.collector.history.HistoryCollector;
 import com.molszewski.demos.poker.web.collector.metadata.MetadataCollector;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@UnitTest
 class CommandCollectorTest {
 
     @Mock

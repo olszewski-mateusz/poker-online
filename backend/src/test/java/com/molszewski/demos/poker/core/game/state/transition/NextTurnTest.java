@@ -4,6 +4,7 @@ import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
+import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UnitTest
 class NextTurnTest {
 
     private final GameConfiguration gameConfiguration = GameConfiguration.defaultConfiguration();

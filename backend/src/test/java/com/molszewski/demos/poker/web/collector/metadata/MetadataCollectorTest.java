@@ -2,12 +2,14 @@ package com.molszewski.demos.poker.web.collector.metadata;
 
 import com.molszewski.demos.poker.persistence.entity.command.CheckCommand;
 import com.molszewski.demos.poker.persistence.entity.command.JoinCommand;
+import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UnitTest
 class MetadataCollectorTest {
 
     private MetadataCollector collector;

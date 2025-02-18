@@ -3,6 +3,7 @@ package com.molszewski.demos.poker.core.hand;
 import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.card.Rank;
 import com.molszewski.demos.poker.core.card.Suit;
+import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UnitTest
 class HandResultTest {
 
     @Test
