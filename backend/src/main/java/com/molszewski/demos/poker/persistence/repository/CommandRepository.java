@@ -19,12 +19,15 @@ import java.time.Duration;
 public class CommandRepository {
     private final ReactiveRedisTemplate<String, Command> redisCommandTemplate;
 
-    @Value("${poker.redis.expire-minutes}")
-    int expireMinutes;
+    @Value("${poker.redis.expire-duration}")
+    private Duration expireDuration;
+
+    @Value("${poker.redis.max-block}")
+    private Duration maxBlockDuration;
 
     public Mono<Void> send(final String gameId, final Command command) {
         return redisCommandTemplate.opsForStream().add(Record.of(command).withStreamKey(getStreamKey(gameId)))
-                .then(redisCommandTemplate.expire(getStreamKey(gameId), Duration.ofMinutes(expireMinutes)))
+                .then(redisCommandTemplate.expire(getStreamKey(gameId), expireDuration))
                 .then();
     }
 
@@ -34,7 +37,7 @@ public class CommandRepository {
     }
 
     public Flux<ObjectRecord<String, Command>> readFromOffsetWithBlock(final StreamOffset<String> stream) {
-        return redisCommandTemplate.opsForStream().read(Command.class, StreamReadOptions.empty().block(Duration.ofSeconds(1)), stream);
+        return redisCommandTemplate.opsForStream().read(Command.class, StreamReadOptions.empty().block(maxBlockDuration), stream);
     }
 
     public String getStreamKey(final String gameId) {

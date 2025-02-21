@@ -14,11 +14,11 @@ import java.time.Duration;
 public class GameSetupRepository {
     private final ReactiveRedisTemplate<String, GameSetup> redisGameTemplate;
 
-    @Value("${poker.redis.expire-minutes}")
-    int expireMinutes;
+    @Value("${poker.redis.expire-duration}")
+    private Duration expireDuration;
 
     public Mono<String> save(final GameSetup gameSetup) {
-        return redisGameTemplate.opsForValue().set(getGameKey(gameSetup.id()), gameSetup, Duration.ofMinutes(expireMinutes))
+        return redisGameTemplate.opsForValue().set(getGameKey(gameSetup.id()), gameSetup, expireDuration)
                 .thenReturn(gameSetup.id());
     }
 
@@ -27,7 +27,7 @@ public class GameSetupRepository {
             if (Boolean.FALSE.equals(keyExists)) {
                 return Mono.error(new IllegalArgumentException("Game not found"));
             }
-            return redisGameTemplate.opsForValue().getAndExpire(getGameKey(gameId), Duration.ofMinutes(expireMinutes));
+            return redisGameTemplate.opsForValue().getAndExpire(getGameKey(gameId), expireDuration);
         });
     }
 
