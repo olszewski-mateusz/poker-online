@@ -119,9 +119,9 @@
                         </exclude>
                     </excludes>
                     <image>
-                        <name>molszewski.demos/${project.name}</name>
+                        <name>molszewski.demos.${project.artifactId}/server</name>
                         <tags>
-                            molszewski.demos/${project.name}:${project.version},molszewski.demos/${project.name}:latest
+                            molszewski.demos.${project.artifactId}/server:${project.version},molszewski.demos.${project.artifactId}/server:latest
                         </tags>
                         <env>
                             <BP_SPRING_AOT_ENABLED>true</BP_SPRING_AOT_ENABLED>

@@ -1,0 +1,4 @@
+# .dockerignore
+dist
+.angular
+node_modules

@@ -1,11 +1,14 @@
 {
   "name": "poker",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0",
     "build": "ng build",
+    "clean": "rimraf dist",
+    "cross": "cross-var",
     "watch": "ng build --watch --configuration development",
+    "build-image": "cross-var docker build -t molszewski.demos.poker/app:$npm_package_version -t molszewski.demos.poker/app:latest .",
     "test": "ng test"
   },
   "private": true,
@@ -20,6 +23,7 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "cross-var": "^1.1.0",
     "ngx-device-detector": "^8.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
