@@ -86,6 +86,12 @@
             <version>2.2.2</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>fr.jcgay.maven.plugins</groupId>
+            <artifactId>buildplan-maven-plugin</artifactId>
+            <version>1.5</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -112,7 +118,28 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <image>
+                        <name>molszewski.demos/${project.name}</name>
+                        <tags>
+                            molszewski.demos/${project.name}:${project.version},molszewski.demos/${project.name}:latest
+                        </tags>
+                        <env>
+                            <BP_SPRING_AOT_ENABLED>true</BP_SPRING_AOT_ENABLED>
+                            <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
+                        </env>
+                    </image>
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process-aot</goal>
+                            <goal>build-image-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
