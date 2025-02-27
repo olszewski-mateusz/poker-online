@@ -1,0 +1,14 @@
+name: "poker"
+services:
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+  server:
+    image: 'molszewski.demos.poker/server:latest'
+    ports:
+      - '8080:8080'
+  app:
+    image: 'molszewski.demos.poker/app:latest'
+    ports:
+      - '4200:80'

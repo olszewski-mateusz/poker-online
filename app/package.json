@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0",
+    "start": "ng serve",
+    "start-open": "ng serve --host 0.0.0.0",
     "build": "ng build",
     "clean": "rimraf dist",
     "cross": "cross-var",
