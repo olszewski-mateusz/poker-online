@@ -1,0 +1,29 @@
+name: 'poker'
+services:
+  redis:
+    image: 'redis:latest'
+    container_name: 'poker-redis'
+    ports:
+      - '6379:6379'
+    networks:
+      - 'poker-network'
+  server:
+    image: 'molszewski.demos.poker/server:latest'
+    container_name: 'poker-server'
+    env_file: './config/server.env'
+    ports:
+      - '8080:8080'
+    networks:
+      - 'poker-network'
+  app:
+    image: 'molszewski.demos.poker/app:latest'
+    container_name: 'poker-app'
+    volumes:
+      - './config/app-properties.json:/usr/share/poker/browser/properties.json'
+    ports:
+      - '4200:80'
+    networks:
+      - 'poker-network'
+networks:
+  poker-network:
+    driver: bridge

@@ -126,6 +126,7 @@
                         <env>
                             <BP_SPRING_AOT_ENABLED>true</BP_SPRING_AOT_ENABLED>
                             <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
+                            <SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
                         </env>
                     </image>
                     <layers>
@@ -135,7 +136,6 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>process-aot</goal>
                             <goal>build-image-no-fork</goal>
                         </goals>
                     </execution>

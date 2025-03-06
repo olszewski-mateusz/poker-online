@@ -10,12 +10,12 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 @EnableWebFlux
 public class WebConfig implements WebFluxConfigurer {
 
-    @Value("${poker.frontend.host}")
-    String frontendHost;
+    @Value("${poker.cors.host}")
+    String allowedHost;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(frontendHost);
+                .allowedOrigins(allowedHost);
     }
 }
