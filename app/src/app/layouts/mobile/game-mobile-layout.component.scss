@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: flex-start;
+
+  .row {
+    display: flex;
+    flex-basis: 130px;
+    margin-bottom: 10px;
+
+    poker-game-player-selection, poker-game-player-properties {
+      flex-basis: 50%;
+    }
+  }
+
+  poker-game-state {
+    margin: 0 40px;
+  }
+
+  poker-game-history {
+    flex-grow: 1;
+    margin: 0 40px 15px;
+  }
+
+  poker-game-hand {
+    flex-basis: 125px;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  poker-game-actions {
+    flex-basis: 185px;
+  }
+}

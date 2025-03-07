@@ -1,0 +1,64 @@
+$outer-margin: 30px;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+  overflow-x: hidden;
+
+  .main-container {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-evenly;
+    gap: 20px;
+
+    margin-top: $outer-margin;
+
+    .left-column {
+      margin-left: $outer-margin;
+      flex-basis: 320px;
+      flex-shrink: 100;
+    }
+
+    .middle-column {
+      display: flex;
+      flex-basis: 620px;
+      flex-grow: 0;
+      flex-shrink: 1;
+      flex-direction: column;
+      justify-content: space-between;
+
+      poker-game-state, poker-game-hand {
+        flex-basis: 50%;
+      }
+
+      poker-game-hand {
+        margin-top: 10px;
+      }
+    }
+
+    .right-column {
+      display: flex;
+      flex-basis: 320px;
+      flex-shrink: 10;
+      flex-direction: column;
+      gap: 15px;
+
+      margin-right: $outer-margin;
+
+      poker-game-player-selection {
+        flex-grow: 1;
+      }
+
+      poker-game-player-properties {
+        flex-basis: 200px;
+      }
+    }
+  }
+
+  poker-game-actions {
+    flex-basis: 180px;
+    padding: 50px
+  }
+}

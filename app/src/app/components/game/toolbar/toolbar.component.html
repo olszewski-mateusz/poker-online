@@ -1,0 +1,51 @@
+<mat-toolbar
+  [class.mobile]="mobile()"
+  [class.desktop]="!mobile()"
+>
+  @if (myPlayer(); as myPlayer) {
+      <div class="start">
+        <div>
+          <mat-icon inline>account_circle</mat-icon>
+          <span>{{myPlayer.name}}</span>
+        </div>
+
+        @if (!mobile()) {
+          <div>
+            <mat-icon inline>paid</mat-icon>
+            <span>{{myPlayer.money}}</span>
+          </div>
+
+          <div>
+            <mat-icon inline>poker_chip</mat-icon>
+            <span>{{myPlayer.bet}}</span>
+          </div>
+        }
+      </div>
+
+      @if (mobile()) {
+        <div class="middle">
+          <div>
+            <mat-icon inline>playing_cards</mat-icon>
+            <span>{{game().gameId}}</span>
+          </div>
+        </div>
+      } @else {
+        <div class="middle">
+            Game ID: {{game().gameId}}
+        </div>
+      }
+
+      <div class="end">
+        @if (mobile()) {
+          <button mat-icon-button (click)="leave()">
+            <mat-icon>logout</mat-icon>
+          </button>
+        } @else {
+          <button mat-button (click)="leave()">
+            <mat-icon>logout</mat-icon>
+            <span>Leave</span>
+          </button>
+        }
+      </div>
+  }
+</mat-toolbar>

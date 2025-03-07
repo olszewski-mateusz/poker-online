@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>What's your name?</h2>
+<mat-dialog-content class="mat-typography">
+  <mat-form-field>
+    <input
+      matInput
+      #playerNameInput="ngModel"
+      required pattern="[\S\s]+[\S]+"
+      minlength="3" maxlength="32"
+      placeholder="name"
+      [(ngModel)]="playerName"
+      (keydown.enter)="submitBtn._elementRef.nativeElement.click()"
+    />
+    @if (playerNameInput.invalid && (playerNameInput.dirty || playerNameInput.touched)) {
+      <mat-error>
+      @if (playerNameInput.errors?.['required']) {
+        Name is required
+      } @else if (playerNameInput.errors?.['minlength']) {
+        Name must have at least 3 characters
+      } @else if (playerNameInput.errors?.['maxlength']) {
+        Name can't have more than 32 characters
+      } @else if (playerNameInput.errors?.['pattern']) {
+        Name cannot be blank
+      }
+      </mat-error>
+    }
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="button-large" mat-button #submitBtn
+          [disabled]="playerNameInput.invalid" [mat-dialog-close]="playerName()">
+    Join
+  </button>
+</mat-dialog-actions>

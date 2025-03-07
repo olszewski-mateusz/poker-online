@@ -1,0 +1,26 @@
+<mat-selection-list class="poker-panel" [multiple]="false"
+                    [class.mobile]="mobile()"
+                    [class.desktop]="!mobile()">
+  @for (player of game().players; track player.index) {
+    <mat-list-option color="primary"
+                     [value]="player.index" [selected]="playerSelected(player.index)"
+                     (click)="onOptionClicked(player)">
+      <span matListItemTitle>
+        @if (game().currentPlayerIndex === player.index) {
+          <mat-icon inline>chevron_right</mat-icon>
+        } @else if (showAllInIcon(player)) {
+          <mat-icon inline>done_all</mat-icon>
+        } @else if (player.ready) {
+          <mat-icon inline>check_small</mat-icon>
+        } @else if (player.folded) {
+          <mat-icon inline>close</mat-icon>
+        } @else if (showWinnerIcon(player)) {
+          <mat-icon inline>crown</mat-icon>
+        } @else {
+          <mat-icon inline class="empty-icon">check_small</mat-icon>
+        }
+        <span>{{player.name}}</span>
+      </span>
+    </mat-list-option>
+  }
+</mat-selection-list>

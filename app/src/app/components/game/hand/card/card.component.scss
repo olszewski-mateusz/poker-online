@@ -1,0 +1,127 @@
+@import "../../../../../colors";
+
+.card, .unknown-card {
+  font-family: "M PLUS Rounded 1c", serif;
+  font-weight: 600;
+  font-style: normal;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.unknown-card {
+  background-color: $poker-card-unknown-background;
+
+  .unknown-symbol {
+    text-align: center;
+    color: $poker-card-unknown-symbol;
+  }
+}
+
+.card {
+  background-color: $poker-card-background;
+  color: $poker-card-black;
+
+  .rank {
+    text-align: center;
+  }
+}
+
+.red {
+  color: $poker-card-red;
+}
+
+.interactive:hover {
+  background-color: $poker-card-background-hover;
+  cursor: pointer;
+}
+
+.size-big-desktop {
+  width: 100px;
+  height: 140px;
+  border-radius: 10px;
+  font-size: 48px;
+
+  .rank {
+    width: 90px;
+    transform: translate(-18%, 40%);
+  }
+
+  .suit {
+    width: 30px;
+    transform: translate(20%, 135%);
+  }
+
+  .big-suit {
+    font-size: 80px;
+    width: 50px;
+    transform: translate(55%, 190%);
+  }
+
+  .unknown-symbol {
+    padding-top: 55px;
+    font-size: 80px;
+  }
+}
+
+.size-big-mobile {
+  width: 55px;
+  height: 85px;
+  border-radius: 10px;
+  font-size: 42px;
+
+  .rank {
+    width: 80px;
+    transform: translate(-16%, 50%);
+  }
+
+  .suit {
+    transform: translate(14%, 120%);
+  }
+
+  .unknown-symbol {
+    padding-top: 32px;
+    font-size: 50px;
+  }
+}
+
+.size-small-desktop {
+  width: 50px;
+  height: 75px;
+  border-radius: 10px;
+  font-size: 36px;
+
+  .rank {
+    width: 78px;
+    transform: translate(-18%, 34%);
+  }
+
+  .suit {
+    transform: translate(17%, 84%);
+  }
+
+  .unknown-symbol {
+    padding-top: 25px;
+    font-size: 40px;
+  }
+}
+
+.size-small-mobile {
+  width: 30px;
+  height: 45px;
+  border-radius: 8px;
+  font-size: 22px;
+
+  .rank {
+    width: 34px;
+    transform: translate(-5%, 0%);
+  }
+
+  .suit {
+    transform: translate(15%, -10%);
+  }
+
+  .unknown-symbol {
+    padding-top: 10px;
+    font-size: 30px;
+  }
+}

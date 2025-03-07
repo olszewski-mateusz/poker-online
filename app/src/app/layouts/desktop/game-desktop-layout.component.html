@@ -1,0 +1,18 @@
+<poker-game-toolbar [game]="game()" [mobile]="false"/>
+
+<div class="main-container">
+  <poker-game-history class="left-column" [game]="game()" [mobile]="false"/>
+
+  <div class="middle-column">
+    <poker-game-state [game]="game()" [mobile]="false"/>
+    <poker-game-hand [game]="game()" [mobile]="false"/>
+  </div>
+
+  <div class="right-column">
+    <poker-game-player-selection [game]="game()" [mobile]="false"/>
+    <poker-game-player-properties [game]="game()" [mobile]="false"/>
+  </div>
+
+</div>
+
+<poker-game-actions [game]="game()" [mobile]="false"/>

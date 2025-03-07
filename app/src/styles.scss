@@ -1,0 +1,121 @@
+@import "colors";
+
+@mixin poker-panel-elevation {
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12)
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: $poker-background;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+[mat-button] {
+  --mdc-text-button-label-text-color: #{$poker-text-light};
+  --mat-text-button-ripple-color: #{$poker-button-ripple};
+  --mat-text-button-state-layer-color: #{$poker-button-ripple};
+
+  --mat-text-button-hover-state-layer-opacity: 0.08;
+  --mat-text-button-focus-state-layer-opacity: 0.12;
+  --mat-text-button-pressed-state-layer-opacity: 0.12;
+
+  --mdc-text-button-disabled-label-text-color: #{$poker-text-disabled};
+}
+
+.button-large {
+  font-size: 30px !important;
+  padding: 35px !important;
+}
+
+.button-medium {
+  font-size: 26px !important;
+  padding: 25px 30px !important;
+}
+
+mat-toolbar {
+  --mat-toolbar-container-background-color: #{$poker-toolbar};
+  --mat-toolbar-container-text-color: #{$poker-text-light};
+  @include poker-panel-elevation;
+}
+
+mat-list, mat-selection-list {
+  --mdc-list-list-item-label-text-color: #{$poker-text} !important;
+  --mdc-radio-selected-focus-icon-color: #{$poker-text-light};
+  --mdc-radio-selected-hover-icon-color: #{$poker-text-light};
+  --mdc-radio-selected-icon-color: #{$poker-text-light};
+  --mdc-radio-selected-pressed-icon-color: #{$poker-text-light};
+  --mat-radio-checked-ripple-color: #{$poker-text-light};
+}
+
+mat-form-field {
+  --mdc-filled-text-field-caret-color: #{$poker-text};
+  --mdc-filled-text-field-focus-active-indicator-color: #{$poker-text-light};
+  --mdc-filled-text-field-focus-label-text-color: #{$poker-text-light};
+  --mdc-filled-text-field-container-color: #{$poker-input-background}
+}
+
+mat-dialog-container {
+  --mdc-dialog-container-color: #{$poker-panel};
+}
+
+mat-snack-bar-container {
+  --mdc-snackbar-container-color: #{$poker-panel};
+  --mdc-snackbar-supporting-text-color: #{$poker-text};
+  --mat-snack-bar-button-color: #{$poker-text};
+}
+
+mat-slider {
+  --mdc-slider-handle-color: #{$poker-slider-active};
+  --mdc-slider-focus-handle-color: #{$poker-slider-active};
+  --mdc-slider-hover-handle-color: #{$poker-slider-active};
+  --mdc-slider-active-track-color: #{$poker-slider-active};
+  --mdc-slider-inactive-track-color: #{$poker-slider-inactive};
+  --mat-slider-hover-state-layer-color: #{$poker-slider-ripple-hover};
+  --mat-slider-focus-state-layer-color: #{$poker-slider-ripple-focus};
+}
+
+.poker-panel {
+  background-color: $poker-panel;
+  color: $poker-text;
+  @include poker-panel-elevation;
+}
+
+.poker-text {
+  color: $poker-text;
+}
+
+.poker-text-light {
+  color: $poker-text-light;
+}
+
+.poker-separator {
+  background-color: $poker-separator;
+}
+
+poker-game-history {
+  /* width */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: $poker-scrollbar-background;
+    border-radius: 3px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: $poker-scrollbar-thumb;
+    border-radius: 3px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: $poker-scrollbar-thumb-hover;
+  }
+}

@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+
+  .row-container {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+  }
+
+  mat-slider {
+    width: 300px;
+  }
+
+  .margin-bottom {
+    margin-bottom: 10px;
+  }
+}
+
+.mobile.amount-label {
+  font-size: 20px;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.desktop.amount-label {
+  font-size: 24px;
+  margin-bottom: 15px;
+  font-weight: 500;
+}

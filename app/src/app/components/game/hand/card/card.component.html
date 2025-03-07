@@ -1,0 +1,22 @@
+<div class="mat-elevation-z3"
+     [class.card]="unknownCard()"
+     [class.unknown-card]="!unknownCard()"
+     [class.red]="colorRed()"
+     [class.size-small-mobile]="mobileSmall()"
+     [class.size-small-desktop]="desktopSmall()"
+     [class.size-big-mobile]="mobileBig()"
+     [class.size-big-desktop]="desktopBig()"
+     [class.interactive]="interactive()"
+     (click)="onCardClick()">
+  @if (unknownCard()) {
+    <div class="rank">{{ rankValue() }}</div>
+    <div class="suit">{{ suitValue() }}</div>
+    @if (desktopBig()) {
+      <div class="big-suit">{{ suitValue() }}</div>
+    }
+  } @else {
+    <div class="unknown-symbol">?</div>
+  }
+</div>
+
+

@@ -1,0 +1,15 @@
+h2 {
+  font-size: 32px !important;
+  margin: 15px 15px 30px;
+  text-align: center;
+}
+
+mat-dialog-content {
+  display: flex;
+  justify-content: center;
+
+  mat-form-field {
+    padding: 30px;
+    font-size: 18px;
+  }
+}

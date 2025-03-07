@@ -1,0 +1,39 @@
+<div class="poker-panel"
+     [class.mobile]="mobile()"
+     [class.desktop]="!mobile()">
+  @if (selectedPlayer(); as selectedPlayer) {
+    <div class="properties">
+
+      @if (!mobile()) {
+        <div class="column">
+          <mat-icon inline>account_circle</mat-icon>
+          <span>{{selectedPlayer.name}}</span>
+        </div>
+      }
+
+      <div class="column">
+        @if (mobile()) {
+          <div>
+            <mat-icon inline>account_circle</mat-icon>
+            <span>{{selectedPlayer.name}}</span>
+          </div>
+        }
+        <div>
+          <mat-icon inline>paid</mat-icon>
+          <span>{{selectedPlayer.money}}</span>
+        </div>
+        <div>
+          <mat-icon inline>poker_chip</mat-icon>
+          <span>{{selectedPlayer.bet}}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="player-cards">
+      @for (card of selectedPlayerCards(); track (card.suit + card.rank)) {
+        <poker-game-card [rank]="card.rank" [suit]="card.suit" [size]="cardSize()"/>
+      }
+    </div>
+  }
+</div>

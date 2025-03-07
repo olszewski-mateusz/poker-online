@@ -1,0 +1,78 @@
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+
+  .start, .middle, .end {
+    display: flex;
+    flex-basis: calc(100% / 3);
+  }
+
+  .start {
+    gap: 50px;
+  }
+
+  .middle {
+    justify-content: center;
+  }
+
+  .end {
+    justify-content: end;
+  }
+}
+
+.mobile {
+  .start, .middle, .end {
+    font-size: 20px;
+  }
+
+  .start, .middle {
+    margin-bottom: 4px;
+    mat-icon {
+      transform: translateY(6px);
+      font-size: 24px;
+      margin-right: 5px;
+    }
+  }
+
+  .end {
+    [mat-icon-button] mat-icon {
+      font-size: 26px;
+      width: 30px;
+      height: 30px;
+    }
+  }
+}
+
+.desktop {
+  .start, .middle, .end {
+    font-size: 24px;
+  }
+
+  .start {
+    gap: 50px;
+    margin-bottom: 6px;
+
+    mat-icon {
+      transform: translateY(5px);
+      font-size: 28px;
+      margin-right: 5px;
+    }
+  }
+
+  .end {
+    [mat-button] {
+      height: 50px;
+
+      mat-icon {
+        font-size: 30px;
+        width: 30px;
+        height: 30px;
+      }
+      span {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+
