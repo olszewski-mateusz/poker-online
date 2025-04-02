@@ -3,6 +3,11 @@
 ## Overview
 This repository contains the code for a server and web application that allows players to play poker online. The game follows a variant of the Five-Card Draw rules and supports multiplayer gameplay (2+ players). The primary focus is on providing a seamless experience for friends who want to play together with minimal setup. The process for starting a game is straightforward:
 
+1. One player (Host) creates a game with a single click.
+2. The Host shares the generated game code with other players.
+3. Each player (including the Host) enters their name and marks themselves as ready.
+4. The game starts once all players are ready.
+
 The game consists of the following phases:
 
 1. **Not Started** - The game has not yet begun; players can mark or unmark themselves as ready.
