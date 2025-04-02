@@ -13,9 +13,9 @@ The game consists of the following phases:
 1. **Not Started** - The game has not yet begun; players can mark or unmark themselves as ready.
 2. **First Betting** - The first betting phase where players can bet, raise, fold, call, or check.
 3. **Drawing** - Players can exchange any number of cards.
-4. **Second Betting** - The final betting phase, with the same actions as the first round.
+4. **Second Betting** - The final betting phase, with the same actions as the first betting phase.
 5. **Showdown** - The round ends, and the player with the strongest hand wins. All hands are revealed, and players can mark themselves as ready for the next round.
-6. **Finished** - The game concludes when one player has collected all the chips.
+6. **Finished** - The game concludes when one player has gained all the chips.
 
 ## Screenshots
 
@@ -35,7 +35,7 @@ Poker is a full-stack application composed of three main components:
 
 ### Server
 
-The backend is built with Java using the Spring Framework. Spring Reactive Web was used as the Web Dependecy, which utilizes **Spring WebFlux** and **Netty**.
+The backend was written in Java using the Spring framework. Spring Reactive Web was used as the Web Dependecy, which utilizes **Spring WebFlux** and **Netty**.
 
 The server handles the game logic and maintains the correct game state. The two key responsibilities are handling player actions and asynchronously broadcasting game state updates.
 
@@ -43,7 +43,7 @@ The server handles the game logic and maintains the correct game state. The two 
 
 The process of handling a player's action follows these steps:
 
-1. Receiving an HTTP REST request with the action (e.g., raising the bet).
+1. Receiving an HTTP REST request with the action (e.g. raising the bet).
 2. Checking if the game with the specified ID exists.
 3. Retrieving and reconstructing the game state.
 4. Validating whether the action is legal based on the current game state.
@@ -57,7 +57,7 @@ GET /game/{gameId}/subscribe
 ```
 which returns a **text/event-stream** response containing live game updates.
 
-#### State Reconstruction
+#### State reconstruction
 
 Both action handling and game state broadcasting require reconstructing the current game state. This is achieved using the **Event Sourcing** pattern.
 
@@ -65,7 +65,7 @@ The game state consists of:
 1. **Initial game state** - game ID and seed.
 2. **Event stream** - a chronological sequence of all actions performed during the game.
 
-By applying all actions in order to the initial state, the current game state can be derived.
+By applying all actions in order to the initial state, the current game state can be reconstructed.
 
 #### API Documentation
 
@@ -86,16 +86,15 @@ The server is tested using unit, integration, and end-to-end tests with the foll
 
 ### Web App
 
-The web application is built using **TypeScript** with the **Angular** framework. Its main responsibilities are:
+The web application was written in **TypeScript** using the **Angular** framework. Its main responsibilities are:
 
 - Displaying the current game state.
 - Sending player actions to the server.
-- Allowing users to create or join a game effortlessly.
+- Allowing users to easily create or join a game.
 
-The UI is developed with **Angular Material** and supports **responsive design** with separate layouts for desktop and mobile.
+The UI was developed with **Angular Material** and supports **responsive design** with separate layouts for desktop and mobile devices.
 
-The application is available **only in English** and is served to users via **Nginx**.
-
+The built application files are served to users via **Nginx**.
 
 ## Installation & Deployment
 
