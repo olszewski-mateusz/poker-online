@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     
 jobs:
-  build:
+  job-server:
     name: Build and push Server image
     runs-on: ubuntu-latest
     
@@ -44,5 +44,5 @@ jobs:
         IMAGE_TAG: latest
       run: | 
         IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^molszewski' | head -n 1)
-        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $IMAGE_NAME
+        docker tag $IMAGE_NAME $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
