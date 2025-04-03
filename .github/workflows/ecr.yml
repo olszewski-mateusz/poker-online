@@ -40,7 +40,7 @@ jobs:
     - name: Push image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: opencms
+        ECR_REPOSITORY: poker/server
         IMAGE_TAG: latest
       run: | 
         IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^molszewski' | head -n 1)
