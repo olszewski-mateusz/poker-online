@@ -20,10 +20,10 @@ The game consists of the following phases:
 ## Screenshots
 
 ### Game panel (desktop)
-![Game panel (desktop)](screen1.png)
+![Game panel (desktop)](images/game_desktop.png)
 
 ### Game panel (mobile)
-![Game panel (mobile)](screen2.png)
+![Game panel (mobile)](images/game_mobile.png)
 
 ## Architecture
 
@@ -32,6 +32,9 @@ Poker is a full-stack application composed of three main components:
 - **Server** (Spring Framework)
 - **Web App** (Angular, served by Nginx)
 - **Database** (Redis)
+
+### Core architecture diagram
+![Core architecture)](images/architecture.png)
 
 ### Server
 
@@ -57,6 +60,8 @@ GET /game/{gameId}/subscribe
 ```
 which returns a **text/event-stream** response containing live game updates.
 
+![Server-Sent Events)](images/sse.png)
+
 #### State reconstruction
 
 Both action handling and game state broadcasting require reconstructing the current game state. This is achieved using the **Event Sourcing** pattern.
@@ -66,6 +71,8 @@ The game state consists of:
 2. **Event stream** - a chronological sequence of all actions performed during the game.
 
 By applying all actions in order to the initial state, the current game state can be reconstructed.
+
+![Game state reconstruction](images/game_state.png)
 
 #### API Documentation
 
