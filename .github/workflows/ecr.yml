@@ -1,4 +1,4 @@
-name: Deploy to ECR
+name: Build and push images to Amazon ECR
 
 on:
   push:
@@ -42,6 +42,6 @@ jobs:
         ECR_REPOSITORY: opencms
         IMAGE_TAG: latest
       run: | 
-        IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^molszewski' | head -n 1) .
-        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $IMAGE_NAME .
+        IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^molszewski' | head -n 1)
+        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $IMAGE_NAME
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
