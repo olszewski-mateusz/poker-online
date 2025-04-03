@@ -2,9 +2,9 @@ name: Deploy to ECR
 
 on:
   push:
-    branches: [main, github-actions]
+    branches: [main, actions]
   pull_request:
-    branches: [main, github-actions]
+    branches: [main, actions]
   workflow_dispatch:
     
 jobs:
