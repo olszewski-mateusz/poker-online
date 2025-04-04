@@ -61,7 +61,7 @@ jobs:
         cache-dependency-path: app/package-lock.json
         
     - name: Build docker image
-      run: npm --prefix ./app run build-imgage
+      run: npm --prefix ./app run build-image
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
