@@ -44,6 +44,8 @@ jobs:
         IMAGE_TAG: latest
       run: | 
         IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^molszewski' | head -n 1)
+        docker tag $IMAGE_NAME $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   job-app:
     name: Build and push App image
@@ -61,7 +63,9 @@ jobs:
         cache-dependency-path: app/package-lock.json
         
     - name: Build docker image
-      run: npm --prefix ./app run build-image
+      run: |
+        npm --prefix ./app install
+        npm --prefix ./app run build-image
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
