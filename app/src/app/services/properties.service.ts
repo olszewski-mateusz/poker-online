@@ -1,14 +1,21 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable, signal, WritableSignal} from '@angular/core';
 import {AppProperties} from '../model';
-import * as properties from '../../../public/properties/properties.json';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PropertiesService {
-  private readonly properties: AppProperties = properties;
+  private readonly http: HttpClient = inject(HttpClient);
+  private readonly properties: WritableSignal<AppProperties | undefined> = signal<AppProperties| undefined>(undefined);
+
+  constructor() {
+    this.http.get<AppProperties>('/properties/properties.json').subscribe(value => {
+      this.properties.set(value);
+    })
+  }
 
   get serverHost(): string {
-    return this.properties.serverHost;
+    return this.properties()?.serverHost ?? location.host;
   }
 }
