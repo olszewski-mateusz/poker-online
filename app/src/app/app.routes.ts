@@ -5,9 +5,9 @@ import {GamePageComponent} from './pages/game/game-page.component';
 import {GameNotFoundComponent} from './pages/errors/game-not-found/game-not-found.component';
 
 export const routes: Routes = [
-  { path: 'start', component: HomePageComponent, title: 'First component',},
+  { path: 'start', component: HomePageComponent, title: 'Poker online',},
   { path: 'game/not-found', component: GameNotFoundComponent },
   { path: 'game/:gameId', component: GamePageComponent },
-  { path: '',   redirectTo: '/start', pathMatch: 'full' }, // redirect to `HomePageComponent`
-  { path: '**', component: PageNotFoundComponent },  // Wildcard route for a 404 page
+  { path: '',   redirectTo: '/start', pathMatch: 'full' },
+  { path: '**', component: PageNotFoundComponent },
 ];
