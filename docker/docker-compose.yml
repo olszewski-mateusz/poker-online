@@ -19,7 +19,7 @@ services:
     image: 'molszewski.demos.poker/app:latest'
     container_name: 'poker-app'
     volumes:
-      - './config/app-properties.json:/usr/share/poker/browser/properties.json'
+      - './config/app-properties.json:/usr/share/poker/browser/properties/properties.json'
     ports:
       - '4200:80'
     networks:
