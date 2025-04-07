@@ -2,9 +2,9 @@ name: Build and push images to Amazon ECR
 
 on:
   push:
-    branches: [main, actions]
+    branches: [main]
   pull_request:
-    branches: [main, actions]
+    branches: [main]
   workflow_dispatch:
     
 jobs:
