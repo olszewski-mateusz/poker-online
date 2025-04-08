@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.molszewski.demos</groupId>
     <artifactId>poker</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <name>poker</name>
     <description>poker</description>
     <url/>
@@ -123,18 +123,23 @@
                     </excludes>
                     <image>
                         <name>molszewski.demos.${project.artifactId}/server</name>
+                        <builder>paketobuildpacks/builder-jammy-base:latest</builder>
+                        <buildpacks>
+                            <buildpack>urn:cnb:builder:paketo-buildpacks/java</buildpack>
+                            <buildpack>gcr.io/paketo-buildpacks/health-checker:latest</buildpack>
+                        </buildpacks>
                         <tags>
                             molszewski.demos.${project.artifactId}/server:${project.version},molszewski.demos.${project.artifactId}/server:latest
                         </tags>
                         <env>
+                            <BP_SPRING_CLOUD_BINDINGS_DISABLED>true</BP_SPRING_CLOUD_BINDINGS_DISABLED>
+                            <BP_HEALTH_CHECKER_ENABLED>true</BP_HEALTH_CHECKER_ENABLED>
                             <BP_SPRING_AOT_ENABLED>true</BP_SPRING_AOT_ENABLED>
                             <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
                             <SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
                         </env>
+                        <createdDate>${maven.build.timestamp}</createdDate>
                     </image>
-                    <layers>
-                        <enabled>true</enabled>
-                    </layers>
                 </configuration>
                 <executions>
                     <execution>
