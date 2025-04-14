@@ -38,7 +38,7 @@ class GameControllerTest {
         String gameId = "test";
         when(gameService.createGame()).thenReturn(Mono.just(new NewGameResponse(gameId)));
 
-        webClient.post().uri("/game")
+        webClient.post().uri("/api/game")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -53,7 +53,7 @@ class GameControllerTest {
     void createBadRequestTest() {
         when(gameService.createGame()).thenReturn(Mono.error(new IllegalArgumentException()));
 
-        webClient.post().uri("/game")
+        webClient.post().uri("/api/game")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isBadRequest();
@@ -73,7 +73,7 @@ class GameControllerTest {
         when(gameService.subscribeToGameChanges(anyString(), anyString()))
                 .thenReturn(Flux.just(gameResponse1, gameResponse2, gameResponse3));
 
-        webClient.get().uri("/game/" + gameId + "/subscribe?myId=" + myId)
+        webClient.get().uri("/api/game/" + gameId + "/subscribe?myId=" + myId)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .exchange()
                 .expectStatus().isOk()
@@ -102,7 +102,7 @@ class GameControllerTest {
         when(gameService.subscribeToGameChanges(anyString(), anyString()))
                 .thenReturn(Flux.error(new IllegalArgumentException()));
 
-        webClient.get().uri("/game/test/subscribe?myId=test")
+        webClient.get().uri("/api/game/test/subscribe?myId=test")
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .exchange()
                 .expectStatus().is5xxServerError()
@@ -128,7 +128,7 @@ class GameControllerTest {
         when(gameService.subscribeToGameChanges(anyString(), anyString()))
                 .thenReturn(testPublisher);
 
-        FluxExchangeResult<GameResponse> result = webClient.get().uri("/game/test/subscribe?myId=test")
+        FluxExchangeResult<GameResponse> result = webClient.get().uri("/api/game/test/subscribe?myId=test")
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .exchange()
                 .expectStatus().isOk()
@@ -149,7 +149,7 @@ class GameControllerTest {
 
         when(gameService.exists(anyString())).thenReturn(Mono.just(true));
 
-        webClient.get().uri("/game/" + gameId + "/exists")
+        webClient.get().uri("/api/game/" + gameId + "/exists")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -166,7 +166,7 @@ class GameControllerTest {
 
         when(gameService.exists(anyString())).thenReturn(Mono.error(new IllegalArgumentException()));
 
-        webClient.get().uri("/game/" + gameId + "/exists")
+        webClient.get().uri("/api/game/" + gameId + "/exists")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isBadRequest();
@@ -182,7 +182,7 @@ class GameControllerTest {
         GameResponse gameResponse = GameResponse.builder().gameId(gameId).myId(myId).build();
         when(gameService.getCurrentGame(anyString(), anyString())).thenReturn(Mono.just(gameResponse));
 
-        webClient.get().uri("/game/" + gameId + "?myId=" + myId)
+        webClient.get().uri("/api/game/" + gameId + "?myId=" + myId)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -200,7 +200,7 @@ class GameControllerTest {
     void getBadRequestTest() {
         when(gameService.getCurrentGame(anyString(), anyString())).thenReturn(Mono.error(new IllegalArgumentException()));
 
-        webClient.get().uri("/game/test?myId=test")
+        webClient.get().uri("/api/game/test?myId=test")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isBadRequest();

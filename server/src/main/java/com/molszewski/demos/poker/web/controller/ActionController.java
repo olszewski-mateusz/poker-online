@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/game/{gameId}/action")
+@RequestMapping("/api/game/{gameId}/action")
 public class ActionController {
     private final GameService gameService;
 

@@ -42,7 +42,7 @@ class ActionControllerTest {
 
         String displayName = "display-name";
         JoinRequest joinRequest = new JoinRequest(displayName);
-        webClient.post().uri("/game/test/action/join")
+        webClient.post().uri("/api/game/test/action/join")
                 .bodyValue(joinRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -68,7 +68,7 @@ class ActionControllerTest {
 
         String displayName = "display-name";
         JoinRequest joinRequest = new JoinRequest(displayName);
-        webClient.post().uri("/game/test/action/join")
+        webClient.post().uri("/api/game/test/action/join")
                 .bodyValue(joinRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -89,7 +89,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
 
         ReadyRequest readyRequest = new ReadyRequest(playerId, true);
-        webClient.post().uri("/game/test/action/ready")
+        webClient.post().uri("/api/game/test/action/ready")
                 .bodyValue(readyRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -113,7 +113,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
 
         ReadyRequest readyRequest = new ReadyRequest(playerId, true);
-        webClient.post().uri("/game/test/action/ready")
+        webClient.post().uri("/api/game/test/action/ready")
                 .bodyValue(readyRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -134,7 +134,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
 
         CheckRequest checkRequest = new CheckRequest(playerId);
-        webClient.post().uri("/game/test/action/check")
+        webClient.post().uri("/api/game/test/action/check")
                 .bodyValue(checkRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -157,7 +157,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
 
         CheckRequest checkRequest = new CheckRequest(playerId);
-        webClient.post().uri("/game/test/action/check")
+        webClient.post().uri("/api/game/test/action/check")
                 .bodyValue(checkRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -177,7 +177,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
 
         AllInRequest allInRequest = new AllInRequest(playerId);
-        webClient.post().uri("/game/test/action/all-in")
+        webClient.post().uri("/api/game/test/action/all-in")
                 .bodyValue(allInRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -200,7 +200,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
 
         AllInRequest allInRequest = new AllInRequest(playerId);
-        webClient.post().uri("/game/test/action/all-in")
+        webClient.post().uri("/api/game/test/action/all-in")
                 .bodyValue(allInRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -220,7 +220,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
 
         FoldRequest foldRequest = new FoldRequest(playerId);
-        webClient.post().uri("/game/test/action/fold")
+        webClient.post().uri("/api/game/test/action/fold")
                 .bodyValue(foldRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -243,7 +243,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
 
         FoldRequest foldRequest = new FoldRequest(playerId);
-        webClient.post().uri("/game/test/action/fold")
+        webClient.post().uri("/api/game/test/action/fold")
                 .bodyValue(foldRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -264,7 +264,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
 
         RaiseRequest raiseRequest = new RaiseRequest(playerId, amount);
-        webClient.post().uri("/game/test/action/raise")
+        webClient.post().uri("/api/game/test/action/raise")
                 .bodyValue(raiseRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -289,7 +289,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
 
         RaiseRequest raiseRequest = new RaiseRequest(playerId, amount);
-        webClient.post().uri("/game/test/action/raise")
+        webClient.post().uri("/api/game/test/action/raise")
                 .bodyValue(raiseRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -314,7 +314,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
 
         ReplaceRequest replaceRequest = new ReplaceRequest(playerId, cards);
-        webClient.post().uri("/game/test/action/replace")
+        webClient.post().uri("/api/game/test/action/replace")
                 .bodyValue(replaceRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -342,7 +342,7 @@ class ActionControllerTest {
         when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
 
         ReplaceRequest replaceRequest = new ReplaceRequest(playerId, cards);
-        webClient.post().uri("/game/test/action/replace")
+        webClient.post().uri("/api/game/test/action/replace")
                 .bodyValue(replaceRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()

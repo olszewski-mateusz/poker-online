@@ -44,7 +44,7 @@ class PokerEndToEndTest {
     void simpleStory() {
         assertTrue(redis.isRunning());
 
-        String gameId = webClient.post().uri("/game")
+        String gameId = webClient.post().uri("/api/game")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -52,7 +52,7 @@ class PokerEndToEndTest {
                 .returnResult()
                 .getResponseBody().gameId();
 
-        String playerIdA = webClient.post().uri("/game/" + gameId + "/action/join")
+        String playerIdA = webClient.post().uri("/api/game/" + gameId + "/action/join")
                 .bodyValue(new JoinRequest("Test A"))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -61,7 +61,7 @@ class PokerEndToEndTest {
                 .returnResult()
                 .getResponseBody().myId();
 
-        String playerIdB = webClient.post().uri("/game/" + gameId + "/action/join")
+        String playerIdB = webClient.post().uri("/api/game/" + gameId + "/action/join")
                 .bodyValue(new JoinRequest("Test B"))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
@@ -70,19 +70,19 @@ class PokerEndToEndTest {
                 .returnResult()
                 .getResponseBody().myId();
 
-        webClient.post().uri("/game/" + gameId + "/action/ready")
+        webClient.post().uri("/api/game/" + gameId + "/action/ready")
                 .bodyValue(new ReadyRequest(playerIdA, true))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk();
 
-        webClient.post().uri("/game/" + gameId + "/action/ready")
+        webClient.post().uri("/api/game/" + gameId + "/action/ready")
                 .bodyValue(new ReadyRequest(playerIdB, true))
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk();
 
-        GameResponse gameResponse = webClient.get().uri("/game/" + gameId + "?myId=" + playerIdA)
+        GameResponse gameResponse = webClient.get().uri("/api/game/" + gameId + "?myId=" + playerIdA)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -94,7 +94,7 @@ class PokerEndToEndTest {
         assertEquals(playerIdA, gameResponse.myId());
         assertEquals(2, gameResponse.players().size());
 
-        FluxExchangeResult<String> result = webClient.get().uri("/game/" + gameId + "/subscribe?myId=" + playerIdB)
+        FluxExchangeResult<String> result = webClient.get().uri("/api/game/" + gameId + "/subscribe?myId=" + playerIdB)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .exchange()
                 .expectStatus().isOk()
@@ -103,14 +103,14 @@ class PokerEndToEndTest {
         StepVerifier.create(result.getResponseBody())
                 .expectNextCount(1)
                 .then(() -> {
-                    webClient.post().uri("/game/" + gameId + "/action/check")
+                    webClient.post().uri("/api/game/" + gameId + "/action/check")
                             .bodyValue(new CheckRequest(playerIdA))
                             .accept(MediaType.APPLICATION_JSON)
                             .exchange()
                             .expectStatus().isOk();
                 })
                 .then(() -> {
-                    webClient.post().uri("/game/" + gameId + "/action/check")
+                    webClient.post().uri("/api/game/" + gameId + "/action/check")
                             .bodyValue(new CheckRequest(playerIdB))
                             .accept(MediaType.APPLICATION_JSON)
                             .exchange()
@@ -119,7 +119,7 @@ class PokerEndToEndTest {
                 .expectNextCount(2)
                 .verifyTimeout(Duration.ofSeconds(2));
 
-        gameResponse = webClient.get().uri("/game/" + gameId + "?myId=" + playerIdB)
+        gameResponse = webClient.get().uri("/api/game/" + gameId + "?myId=" + playerIdB)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -130,7 +130,7 @@ class PokerEndToEndTest {
         assertEquals(gameId, gameResponse.gameId());
         assertEquals(playerIdB, gameResponse.myId());
 
-        webClient.get().uri("/game/" + gameId + "/exists")
+        webClient.get().uri("/api/game/" + gameId + "/exists")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
