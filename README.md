@@ -137,6 +137,8 @@ cd docker
 docker compose up -d
 ```
 
+## AWS deployment diagram
+![AWS diagram](images/aws.png)
 ## License
 This project is licensed under the MIT License.
 
