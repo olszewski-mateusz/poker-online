@@ -8,7 +8,7 @@
         <version>3.4.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.molszewski.demos</groupId>
+    <groupId>io.olszewski.demo</groupId>
     <artifactId>poker</artifactId>
     <version>0.1.3</version>
     <name>poker</name>
@@ -126,10 +126,10 @@
                         <builder>paketobuildpacks/builder-jammy-base:latest</builder>
                         <buildpacks>
                             <buildpack>urn:cnb:builder:paketo-buildpacks/java</buildpack>
-                            <buildpack>gcr.io/paketo-buildpacks/health-checker:latest</buildpack>
+                            <buildpack>paketobuildpacks/health-checker:latest</buildpack>
                         </buildpacks>
                         <tags>
-                            molszewski.demos.${project.artifactId}/server:${project.version},molszewski.demos.${project.artifactId}/server:latest
+                            ${project.groupId}.${project.artifactId}/server:${project.version},${project.groupId}.${project.artifactId}/server:latest
                         </tags>
                         <env>
                             <BP_SPRING_CLOUD_BINDINGS_DISABLED>true</BP_SPRING_CLOUD_BINDINGS_DISABLED>

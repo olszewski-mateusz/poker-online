@@ -1,15 +1,13 @@
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {Game} from '../../model';
-import {PropertiesService} from '../properties.service';
-
-
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiStreamService {
-  private readonly properties: PropertiesService = inject(PropertiesService);
+  private readonly serverHost: string = environment.serverHost;
 
   private eventSource?: EventSource;
   private _game?: Subject<Game>;
@@ -24,7 +22,7 @@ export class ApiStreamService {
       throw new Error('EventSource already created');
     }
 
-    const url: string = `${this.properties.serverHost}/game/${gameId}/subscribe?myId=${myId}`;
+    const url: string = `${this.serverHost}/game/${gameId}/subscribe?myId=${myId}`;
     this.eventSource = new EventSource(url);
     this._game = new Subject<Game>();
 
