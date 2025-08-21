@@ -41,7 +41,7 @@ jobs:
         ECR_REPOSITORY: poker/server
         IMAGE_TAG: latest
       run: | 
-        IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^molszewski' | head -n 1)
+        IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^io.olszewski' | head -n 1)
         docker tag $IMAGE_NAME $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
@@ -82,6 +82,6 @@ jobs:
         ECR_REPOSITORY: poker/app
         IMAGE_TAG: latest
       run: | 
-        IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^molszewski' | head -n 1)
+        IMAGE_NAME=$(docker images --format "{{.Repository}}" | grep '^io.olszewski' | head -n 1)
         docker tag $IMAGE_NAME $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
