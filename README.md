@@ -124,7 +124,7 @@ cd server && ./mvnw package
 
 #### Web App
 ```sh
-cd app && npm run build-image
+cd app && npm run build-image-dev
 ```
 
 ### 3. Run the project with Docker Compose on localhost

@@ -7,8 +7,8 @@
     "build": "ng build",
     "clean": "rimraf dist",
     "watch": "ng build --watch --configuration dev",
-    "docker-prod": "cross-var docker build --build-arg ENVIRONMENT=prod -t io.olszewski.demo.poker/app:$npm_package_version -t io.olszewski.demo.poker/app:latest .",
-    "docker-dev": "cross-var docker build --build-arg ENVIRONMENT=dev -t io.olszewski.demo.poker/app:$npm_package_version -t io.olszewski.demo.poker/app:latest .",
+    "build-image-prod": "cross-var docker build --build-arg ENVIRONMENT=prod -t io.olszewski.demo.poker/app:$npm_package_version -t io.olszewski.demo.poker/app:latest .",
+    "build-image-dev": "cross-var docker build --build-arg ENVIRONMENT=dev -t io.olszewski.demo.poker/app:$npm_package_version -t io.olszewski.demo.poker/app:latest .",
     "test": "ng test"
   },
   "private": true,
