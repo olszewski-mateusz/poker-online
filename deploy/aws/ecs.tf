@@ -1,0 +1,53 @@
+resource "aws_lb" "poker-alb" {
+  name               = "poker-alb"
+  internal           = false
+  load_balancer_type = "application"
+  subnets = [
+    "subnet-08db0a05a64550cac",
+    "subnet-0437151ed5a78d59e",
+    "subnet-0d4f86e8c159691d2"
+  ]
+}
+
+resource "aws_lb_listener" "poker-alb-listener" {
+  load_balancer_arn = aws_lb.poker-alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:eu-central-1:108782071445:certificate/35a2c24c-0765-4cd0-a756-76a690cdbaa7" // todo: make this as variable
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.poker-app-target-group.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "poker-alb-listener-api-rule" {
+  listener_arn = aws_lb_listener.poker-alb-listener.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.poker-server-target-group.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/*"]
+    }
+  }
+}
+
+resource "aws_ecs_cluster" "poker_cluster" {
+  name = "poker-online"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
+
+resource "aws_service_discovery_http_namespace" "poker-namespace" {
+  name        = "poker"
+  description = "Poker online namespace"
+}
