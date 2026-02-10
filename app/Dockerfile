@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-RUN npm run build --configuration=${ENVIRONMENT}
+RUN npm run build -- --configuration=${ENVIRONMENT}
 
 # Stage 2: Run
 
