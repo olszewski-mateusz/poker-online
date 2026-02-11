@@ -9,12 +9,16 @@ resource "aws_lb" "poker-alb" {
   ]
 }
 
+data "aws_acm_certificate" "cert" {
+  domain = "olszewski.io"
+}
+
 resource "aws_lb_listener" "poker-alb-listener" {
   load_balancer_arn = aws_lb.poker-alb.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:eu-central-1:108782071445:certificate/35a2c24c-0765-4cd0-a756-76a690cdbaa7" // todo: make this as variable
+  certificate_arn   = data.aws_acm_certificate.cert.arn
 
   default_action {
     type             = "forward"

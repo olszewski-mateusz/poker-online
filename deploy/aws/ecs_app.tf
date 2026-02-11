@@ -1,3 +1,8 @@
+data "aws_ecr_image" "app_image" {
+  repository_name = "poker/app"
+  image_tag       = "latest"
+}
+
 resource "aws_lb_target_group" "poker-app-target-group" {
   name        = "poker-app-target-group"
   port        = 80 // required, but not used
@@ -59,15 +64,15 @@ resource "aws_ecs_task_definition" "app" {
   }
 
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = "arn:aws:iam::108782071445:role/CUSTOM_ECS_TASK_ROLE"
-  task_role_arn            = "arn:aws:iam::108782071445:role/CUSTOM_ECS_TASK_ROLE"
+  execution_role_arn       = aws_iam_role.role.arn
+  task_role_arn            = aws_iam_role.role.arn
 
   enable_fault_injection = false
 
   container_definitions = jsonencode(
     [{
       name = "poker-app"
-      image = "108782071445.dkr.ecr.eu-central-1.amazonaws.com/poker/app:latest"
+      image = data.aws_ecr_image.app_image.image_uri
       essential   = true
       portMappings = [{
         appProtocol   = "http"

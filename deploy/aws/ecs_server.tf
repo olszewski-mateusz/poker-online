@@ -1,3 +1,8 @@
+data "aws_ecr_image" "server_image" {
+  repository_name = "poker/server"
+  image_tag       = "latest"
+}
+
 resource "aws_lb_target_group" "poker-server-target-group" {
   name        = "poker-server-target-group"
   port        = 80 // required, but not used
@@ -64,15 +69,15 @@ resource "aws_ecs_task_definition" "server" {
   }
 
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = "arn:aws:iam::108782071445:role/CUSTOM_ECS_TASK_ROLE"
-  task_role_arn            = "arn:aws:iam::108782071445:role/CUSTOM_ECS_TASK_ROLE"
+  execution_role_arn       = aws_iam_role.role.arn
+  task_role_arn            = aws_iam_role.role.arn
 
   enable_fault_injection = false
 
   container_definitions = jsonencode(
     [{
       name = "poker-server"
-      image = "108782071445.dkr.ecr.eu-central-1.amazonaws.com/poker/server:latest"
+      image = data.aws_ecr_image.server_image.image_uri
       essential   = true
       portMappings = [{
         appProtocol   = "http"
@@ -104,7 +109,7 @@ resource "aws_ecs_task_definition" "server" {
           value = "8080"
         }
       ]
-      healthCheck = {
+      healthCheck = { // use /actuator/health healthcheck
         command = [
           "CMD",
           "/workspace/health-check",

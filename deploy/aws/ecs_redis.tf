@@ -1,3 +1,8 @@
+data "aws_ecr_image" "redis_image" {
+  repository_name = "poker/redis"
+  image_tag       = "latest"
+}
+
 resource "aws_ecs_service" "poker-redis" {
   name            = "poker-redis"
   cluster         = aws_ecs_cluster.poker_cluster.id
@@ -41,15 +46,15 @@ resource "aws_ecs_task_definition" "redis" {
   }
 
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = "arn:aws:iam::108782071445:role/CUSTOM_ECS_TASK_ROLE"
-  task_role_arn            = "arn:aws:iam::108782071445:role/CUSTOM_ECS_TASK_ROLE"
+  execution_role_arn       = aws_iam_role.role.arn
+  task_role_arn            = aws_iam_role.role.arn
 
   enable_fault_injection = false
 
   container_definitions = jsonencode(
     [{
       name = "poker-redis"
-      image = "108782071445.dkr.ecr.eu-central-1.amazonaws.com/poker/redis:latest"
+      image = data.aws_ecr_image.redis_image.image_uri
       essential   = true
       portMappings = [{
         containerPort = 6379
