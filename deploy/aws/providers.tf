@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.9.0"
+      version = "~> 6.33.0"
     }
     cloudflare = {
       source  = "cloudflare/cloudflare"
@@ -16,7 +16,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project = "Poker Online"
-      Managed = "Terraform"
+      ManagedBy = "Terraform"
     }
   }
 }

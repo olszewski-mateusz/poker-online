@@ -8,7 +8,7 @@ resource "aws_lb_target_group" "poker-app-target-group" {
   port        = 80 // required, but not used
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id = "vpc-0ab0997a500618150"
+  vpc_id = aws_vpc.main.id
 
   target_group_health {
     dns_failover {
@@ -42,13 +42,12 @@ resource "aws_ecs_service" "poker-app" {
     container_port   = 80
   }
 
+  availability_zone_rebalancing = "ENABLED"
+  force_new_deployment = true
+
   network_configuration {
-    subnets = [
-      "subnet-08db0a05a64550cac",
-      "subnet-0437151ed5a78d59e",
-      "subnet-0d4f86e8c159691d2"
-    ]
-    assign_public_ip = true // todo: create nat later?
+    security_groups = [aws_security_group.private.id]
+    subnets = [for az in aws_subnet.private : az.id]
   }
 }
 

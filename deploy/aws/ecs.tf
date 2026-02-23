@@ -2,11 +2,8 @@ resource "aws_lb" "poker-alb" {
   name               = "poker-alb"
   internal           = false
   load_balancer_type = "application"
-  subnets = [
-    "subnet-08db0a05a64550cac",
-    "subnet-0437151ed5a78d59e",
-    "subnet-0d4f86e8c159691d2"
-  ]
+  subnets            = [for az in aws_subnet.public : az.id]
+  security_groups = [aws_security_group.public.id]
 }
 
 data "aws_acm_certificate" "cert" {

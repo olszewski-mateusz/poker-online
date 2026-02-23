@@ -11,13 +11,12 @@ resource "aws_ecs_service" "poker-redis" {
   desired_count   = 1
   launch_type = "FARGATE"
 
+  availability_zone_rebalancing = "ENABLED"
+  force_new_deployment = true
+
   network_configuration {
-    subnets = [
-      "subnet-08db0a05a64550cac",
-      "subnet-0437151ed5a78d59e",
-      "subnet-0d4f86e8c159691d2"
-    ]
-    assign_public_ip = true // todo: create nat later?
+    security_groups = [aws_security_group.private.id]
+    subnets = [for az in aws_subnet.private : az.id]
   }
 
   service_connect_configuration {
