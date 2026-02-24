@@ -3,7 +3,7 @@ resource "aws_lb" "poker-alb" {
   internal           = false
   load_balancer_type = "application"
   subnets            = [for az in aws_subnet.public : az.id]
-  security_groups = [aws_security_group.public.id]
+  security_groups = [aws_security_group.public_alb.id]
 }
 
 data "aws_acm_certificate" "cert" {

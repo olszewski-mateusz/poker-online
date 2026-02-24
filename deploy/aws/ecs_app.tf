@@ -47,7 +47,8 @@ resource "aws_ecs_service" "poker-app" {
 
   network_configuration {
     security_groups = [aws_security_group.private.id]
-    subnets = [for az in aws_subnet.private : az.id]
+    subnets          = [for az in aws_subnet.private : az.id]
+    assign_public_ip = false
   }
 }
 
