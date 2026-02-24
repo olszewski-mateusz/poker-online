@@ -67,9 +67,17 @@ resource "aws_route_table_association" "private" {
 }
 
 resource "aws_security_group" "public_alb" {
-  description = "Security group allowing traffic on port 443"
+  description = "Security group allowing traffic on ports 443 and 80"
   name        = "public-http-traffic"
   vpc_id      = aws_vpc.main.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "http" {
+  security_group_id = aws_security_group.public_alb.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "https" {
