@@ -8,7 +8,7 @@ services:
     networks:
       - 'poker-network'
   server:
-    image: 'molszewski.demos.poker/server:latest'
+    image: 'io.olszewski.demo.poker/server:latest'
     container_name: 'poker-server'
     env_file: './config/server.env'
     ports:
@@ -16,10 +16,8 @@ services:
     networks:
       - 'poker-network'
   app:
-    image: 'molszewski.demos.poker/app:latest'
+    image: 'io.olszewski.demo.poker/app:latest'
     container_name: 'poker-app'
-    volumes:
-      - './config/app-properties.json:/usr/share/poker/browser/properties/properties.json'
     ports:
       - '4200:80'
     networks:

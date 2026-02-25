@@ -4,12 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start-open": "ng serve --host 0.0.0.0",
     "build": "ng build",
     "clean": "rimraf dist",
-    "cross": "cross-var",
-    "watch": "ng build --watch --configuration development",
-    "build-image": "cross-var docker build -t molszewski.demos.poker/app:$npm_package_version -t molszewski.demos.poker/app:latest .",
+    "watch": "ng build --watch --configuration dev",
+    "build-image-prod": "cross-var docker build --build-arg ENVIRONMENT=prod -t io.olszewski.demo.poker/app:$npm_package_version -t io.olszewski.demo.poker/app:latest .",
+    "build-image-dev": "cross-var docker build --build-arg ENVIRONMENT=dev -t io.olszewski.demo.poker/app:$npm_package_version -t io.olszewski.demo.poker/app:latest .",
     "test": "ng test"
   },
   "private": true,

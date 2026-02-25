@@ -119,22 +119,17 @@ git clone https://github.com/olszewski-mateusz/poker-online.git
 
 #### Server
 ```sh
-cd server
-./mvnw package
-cd ..
+cd server && ./mvnw package
 ```
 
 #### Web App
 ```sh
-cd app
-npm run build-image
-cd ..
+cd app && npm run build-image-dev
 ```
 
-### 3. Start the project with Docker Compose
+### 3. Run the project with Docker Compose on localhost
 ```sh
-cd docker
-docker compose up -d
+cd deploy/local && docker compose up -d
 ```
 
 ## AWS deployment diagram
