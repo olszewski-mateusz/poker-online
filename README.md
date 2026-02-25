@@ -129,7 +129,7 @@ cd app && npm run build-image-dev
 
 ### 3. Run the project with Docker Compose on localhost
 ```sh
-cd deploy/docker-localhost && docker compose up -d
+cd deploy/local && docker compose up -d
 ```
 
 ## AWS deployment diagram
