@@ -53,7 +53,7 @@ resource "aws_ecs_service" "poker-app" {
 }
 
 resource "aws_ecs_task_definition" "app" {
-  family = "poker2-app"
+  family = "poker-app"
 
   cpu          = "512"
   memory       = "1024"
@@ -64,8 +64,8 @@ resource "aws_ecs_task_definition" "app" {
   }
 
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.role.arn
-  task_role_arn            = aws_iam_role.role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
 
   enable_fault_injection = false
 

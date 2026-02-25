@@ -35,7 +35,7 @@ resource "aws_ecs_service" "poker-redis" {
 }
 
 resource "aws_ecs_task_definition" "redis" {
-  family = "poker2-redis"
+  family = "poker-redis"
 
   cpu          = "512"
   memory       = "1024"
@@ -46,8 +46,8 @@ resource "aws_ecs_task_definition" "redis" {
   }
 
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.role.arn
-  task_role_arn            = aws_iam_role.role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
 
   enable_fault_injection = false
 
