@@ -24,9 +24,9 @@ class GameStateTest {
     @DisplayName("Get player by id")
     void getPlayerByIdTest() {
         List<Player> players = List.of(
-                new Player("A", 100),
-                new Player("B", 100),
-                new Player("C", 100)
+                new Player("A", "A", 100),
+                new Player("B", "B", 100),
+                new Player("C", "C", 100)
         );
         GameState gameState = new GameState(null, players);
 
@@ -38,9 +38,9 @@ class GameStateTest {
     @DisplayName("Get not existing player by id")
     void getPlayerByIdEmptyTest() {
         List<Player> players = List.of(
-                new Player("A", 100),
-                new Player("B", 100),
-                new Player("C", 100)
+                new Player("A", "A", 100),
+                new Player("B", "B", 100),
+                new Player("C", "C", 100)
         );
         GameState gameState = new GameState(null, players);
 
@@ -51,9 +51,9 @@ class GameStateTest {
     @DisplayName("Get current bet")
     void getCurrentBetTest() {
         List<Player> players = List.of(
-                new Player("A", 100, 10, false, false, null),
-                new Player("B", 100, 100, false, false, null),
-                new Player("C", 100, 10, false, false, null)
+                new Player("A", "A", 100, 10, false, false, null),
+                new Player("B", "B", 100, 100, false, false, null),
+                new Player("C", "C", 100, 10, false, false, null)
         );
         GameState gameState = new GameState(null, players);
 
@@ -87,9 +87,9 @@ class GameStateTest {
                 new Card(Rank.EIGHT, Suit.CLUBS)
         ));
 
-        Player winnerPlayer = new Player("1", 100, 100, false, false, winnerHand);
-        Player foldedPlayer = new Player("2", 100, 100, false, true, winnerHand);
-        Player loserPlayer = new Player("3", 100, 100, false, false, loserHand);
+        Player winnerPlayer = new Player("1", "1", 100, 100, false, false, winnerHand);
+        Player foldedPlayer = new Player("2", "2", 100, 100, false, true, winnerHand);
+        Player loserPlayer = new Player("3", "3", 100, 100, false, false, loserHand);
 
         GameState gameState = new GameState(null, List.of(winnerPlayer, foldedPlayer, loserPlayer));
         gameState.setGamePhase(GamePhase.SHOWDOWN);
@@ -102,13 +102,13 @@ class GameStateTest {
     @Test
     @DisplayName("Get winner when finished phase")
     void getWinnerFinishedTest() {
-        Player winner = new Player("winner", 100, 100, false, false, null);
+        Player winner = new Player("winner", "winner", 100, 100, false, false, null);
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, false, true, null),
-                new Player("2", 100, 100, false, true, null),
-                new Player("3", 100, 100, false, true, null),
+                new Player("1", "1", 100, 100, false, true, null),
+                new Player("2", "2", 100, 100, false, true, null),
+                new Player("3", "3", 100, 100, false, true, null),
                 winner,
-                new Player("4", 100, 100, false, true, null)
+                new Player("4", "4", 100, 100, false, true, null)
         ));
         gameState.setGamePhase(GamePhase.FINISHED);
 
@@ -130,10 +130,10 @@ class GameStateTest {
     @DisplayName("Add player correctly")
     void addPlayerTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100)
+                new Player("1", "1", 100)
         ));
 
-        gameState.addPlayer("2", 100);
+        gameState.addPlayer("2", "2", 100);
 
         assertEquals(2, gameState.getPlayers().size());
         assertEquals("2", gameState.getPlayerById("2").getId());
@@ -143,10 +143,11 @@ class GameStateTest {
     @DisplayName("Add existing player - throws")
     void addPlayerThrowsTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100)
+                new Player("1", "1", 100)
         ));
 
-        assertThrows(IllegalStateException.class, () -> gameState.addPlayer("1", 100));
+        assertThrows(IllegalStateException.class, () -> gameState.addPlayer("1", "1", 100));
     }
 
 }
+

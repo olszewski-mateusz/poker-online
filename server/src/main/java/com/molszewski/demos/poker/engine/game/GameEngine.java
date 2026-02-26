@@ -1,16 +1,13 @@
 package com.molszewski.demos.poker.engine.game;
 
-import com.molszewski.demos.poker.engine.game.state.GamePhase;
 import com.molszewski.demos.poker.engine.game.state.action.Action;
 import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
-import com.molszewski.demos.poker.engine.player.Player;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
 @Slf4j
 public class GameEngine {
+
     @Getter
     private final GameState gameState;
     @Getter
@@ -21,10 +18,6 @@ public class GameEngine {
         this.configuration = configuration;
     }
 
-    public Player getCurrentPlayer() {
-        return gameState.getCurrentPlayer();
-    }
-
     public boolean applyAction(Action action) {
         try {
             action.apply(gameState, configuration);
@@ -33,21 +26,5 @@ public class GameEngine {
             log.warn(e.getMessage());
             return false;
         }
-    }
-
-    public GamePhase getPhase() {
-        return this.gameState.getGamePhase();
-    }
-
-    public List<Player> getPlayers() {
-        return this.gameState.getPlayers().stream().map(Player::copy).toList();
-    }
-
-    public int getCardsInDeck() {
-        return this.gameState.getDeck().cardsCount();
-    }
-
-    public int getDiscardedCards() {
-        return this.gameState.getDeck().discardsCount();
     }
 }

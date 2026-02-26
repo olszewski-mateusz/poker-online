@@ -25,9 +25,9 @@ class RaiseTest {
 
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -48,9 +48,9 @@ class RaiseTest {
 
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -68,9 +68,9 @@ class RaiseTest {
 
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -88,9 +88,9 @@ class RaiseTest {
 
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -110,9 +110,9 @@ class RaiseTest {
     void raiseNotChangesReadyStatus() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -130,3 +130,4 @@ class RaiseTest {
         assertTrue(player.isReady());
     }
 }
+

@@ -27,9 +27,9 @@ class ReplaceTest {
     void simpleReplace() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -61,9 +61,9 @@ class ReplaceTest {
     void replaceIllegalCard() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -87,9 +87,9 @@ class ReplaceTest {
     void replaceAll() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -124,9 +124,9 @@ class ReplaceTest {
     void replaceNone() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -151,3 +151,4 @@ class ReplaceTest {
         assertEquals(cardsInDeckBeforeReplace, gameState.getDeck().getCards().size());
     }
 }
+

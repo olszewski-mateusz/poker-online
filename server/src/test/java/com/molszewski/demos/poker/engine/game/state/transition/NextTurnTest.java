@@ -18,10 +18,10 @@ class NextTurnTest {
     @DisplayName("Next turn without new phase from betting phase")
     void nextTurnNoNewPhaseBettingPhaseTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, false, true, null),
-                new Player("2", 0, 100, false, false, null),
-                new Player("3", 100, 100, false, false, null),
-                new Player("4", 100, 100, false, false, null)
+                new Player("1", "1", 100, 100, false, true, null),
+                new Player("2", "2", 0, 100, false, false, null),
+                new Player("3", "3", 100, 100, false, false, null),
+                new Player("4", "4", 100, 100, false, false, null)
         ));
         gameState.setCurrentPlayer(gameState.getPlayerById("4"));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
@@ -35,10 +35,10 @@ class NextTurnTest {
     @DisplayName("Next turn without new phase from drawing phase")
     void nextTurnNoNewPhaseDrawingPhaseTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, false, true, null),
-                new Player("2", 0, 100, false, false, null),
-                new Player("3", 100, 100, false, false, null),
-                new Player("4", 100, 100, false, false, null)
+                new Player("1", "1", 100, 100, false, true, null),
+                new Player("2", "2", 0, 100, false, false, null),
+                new Player("3", "3", 100, 100, false, false, null),
+                new Player("4", "4", 100, 100, false, false, null)
         ));
         gameState.setCurrentPlayer(gameState.getPlayerById("4"));
         gameState.setGamePhase(GamePhase.DRAWING);
@@ -59,8 +59,8 @@ class NextTurnTest {
     @DisplayName("Next turn without new phase no current player throws")
     void nextTurnNoNewPhaseNoCurrentPlayerThrowsTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100),
-                new Player("2", 0)
+                new Player("1", "1", 100),
+                new Player("2", "2", 0)
         ));
 
         assertThrows(IllegalStateException.class, () -> ActionFlow.nextTurn(gameState));
@@ -70,9 +70,9 @@ class NextTurnTest {
     @DisplayName("Next turn with new phase from first betting phase")
     void nextTurnNewPhaseFromFirstBettingTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, true, false, null),
-                new Player("2", 100, 100, true, false, null),
-                new Player("3", 100, 100, false, true, null)
+                new Player("1", "1", 100, 100, true, false, null),
+                new Player("2", "2", 100, 100, true, false, null),
+                new Player("3", "3", 100, 100, false, true, null)
         ));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
@@ -87,10 +87,10 @@ class NextTurnTest {
     @DisplayName("Next turn with new phase from drawing phase")
     void nextTurnNewPhaseFromDrawingTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, true, false, null),
-                new Player("2", 0, 100, true, false, null),
-                new Player("3", 100, 100, false, true, null),
-                new Player("4", 100, 100, true, false, null)
+                new Player("1", "1", 100, 100, true, false, null),
+                new Player("2", "2", 0, 100, true, false, null),
+                new Player("3", "3", 100, 100, false, true, null),
+                new Player("4", "4", 100, 100, true, false, null)
         ));
         gameState.setGamePhase(GamePhase.DRAWING);
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
@@ -108,10 +108,10 @@ class NextTurnTest {
     @DisplayName("Next turn with new phase from second betting phase")
     void nextTurnNewPhaseFromSecondBettingTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, true, false, null),
-                new Player("2", 0, 100, true, false, null),
-                new Player("3", 100, 100, false, true, null),
-                new Player("4", 100, 100, true, false, null)
+                new Player("1", "1", 100, 100, true, false, null),
+                new Player("2", "2", 0, 100, true, false, null),
+                new Player("3", "3", 100, 100, false, true, null),
+                new Player("4", "4", 100, 100, true, false, null)
         ));
         gameState.setGamePhase(GamePhase.SECOND_BETTING);
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
@@ -127,8 +127,8 @@ class NextTurnTest {
     @DisplayName("Next turn from unexpected phase throws")
     void nextTurnNewPhaseFromUnexpectedThrowsTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, true, false, null),
-                new Player("2", 100, 100, true, false, null)
+                new Player("1", "1", 100, 100, true, false, null),
+                new Player("2", "2", 100, 100, true, false, null)
         ));
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
         gameState.setGamePhase(GamePhase.FINISHED);
@@ -140,9 +140,9 @@ class NextTurnTest {
     @DisplayName("Next turn from first betting phase skip to showdown")
     void nextTurnNewPhaseFromBettingAllFoldedTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, true, false, null),
-                new Player("2", 0, 100, true, true, null),
-                new Player("3", 100, 100, false, true, null)
+                new Player("1", "1", 100, 100, true, false, null),
+                new Player("2", "2", 0, 100, true, true, null),
+                new Player("3", "3", 100, 100, false, true, null)
         ));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
@@ -158,9 +158,9 @@ class NextTurnTest {
     @DisplayName("Next turn from drawing phase skip to showdown")
     void nextTurnNewPhaseFromDrawingAllFoldedTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 100, true, false, null),
-                new Player("2", 0, 100, true, false, null),
-                new Player("3", 100, 100, false, true, null)
+                new Player("1", "1", 100, 100, true, false, null),
+                new Player("2", "2", 0, 100, true, false, null),
+                new Player("3", "3", 100, 100, false, true, null)
         ));
         gameState.setGamePhase(GamePhase.DRAWING);
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
@@ -172,3 +172,4 @@ class NextTurnTest {
         assertNull(gameState.getCurrentPlayer());
     }
 }
+

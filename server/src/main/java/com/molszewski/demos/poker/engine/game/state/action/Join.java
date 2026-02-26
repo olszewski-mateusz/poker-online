@@ -8,9 +8,11 @@ import com.molszewski.demos.poker.engine.game.state.exception.GameStateException
 import java.util.Set;
 
 public final class Join extends Action {
+    private final String displayName;
 
-    public Join(String playerId) {
+    public Join(String playerId, String displayName) {
         super(playerId);
+        this.displayName = displayName;
     }
 
     @Override
@@ -24,6 +26,6 @@ public final class Join extends Action {
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
         gameState.getHistory().addAction(this);
-        gameState.addPlayer(this.getPlayerId(), configuration.startMoney());
+        gameState.addPlayer(this.getPlayerId(), this.displayName, configuration.startMoney());
     }
 }

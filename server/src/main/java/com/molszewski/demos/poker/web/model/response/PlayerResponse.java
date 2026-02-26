@@ -4,7 +4,6 @@ import com.molszewski.demos.poker.engine.card.Card;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.hand.HandType;
 import com.molszewski.demos.poker.engine.player.Player;
-import com.molszewski.demos.poker.web.collector.metadata.PlayerMetadata;
 import lombok.Builder;
 
 import java.util.Optional;
@@ -21,10 +20,10 @@ public record PlayerResponse(
         Set<Card> cards,
         HandType handType
 ) {
-    public static PlayerResponse fromPlayer(Player player, PlayerMetadata metadata, boolean hideCards) {
+    public static PlayerResponse fromPlayer(Player player, int index, boolean hideCards) {
         return  PlayerResponse.builder()
-                .index(metadata.index())
-                .name(metadata.name())
+                .index(index)
+                .name(player.getName())
                 .money(player.getMoney())
                 .bet(player.getBet())
                 .ready(player.isReady())

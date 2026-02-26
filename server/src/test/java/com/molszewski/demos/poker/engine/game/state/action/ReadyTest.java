@@ -24,9 +24,9 @@ class ReadyTest {
     void onePlayerReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("2", true).apply(gameState, configuration);
 
@@ -38,10 +38,10 @@ class ReadyTest {
     void morePlayerReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
-        new Join("4").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
+        new Join("4", "4").apply(gameState, configuration);
 
         new Ready("4", true).apply(gameState, configuration);
         new Ready("1", true).apply(gameState, configuration);
@@ -55,9 +55,9 @@ class ReadyTest {
     void playerReadyTwoTimes() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("2", true).apply(gameState, configuration);
         assertThrows(GameStateException.class,
@@ -69,9 +69,9 @@ class ReadyTest {
     void playerNotReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         assertThrows(GameStateException.class,
                 () -> { new Ready("2", false).apply(gameState, configuration); });
@@ -82,9 +82,9 @@ class ReadyTest {
     void playerReadyThenNotReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("2", true).apply(gameState, configuration);
         new Ready("2", false).apply(gameState, configuration);
@@ -97,12 +97,13 @@ class ReadyTest {
     void unknownPlayerReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         assertThrows(PlayerNotFound.class, () -> {
             new Ready("4", true).apply(gameState, configuration);
         });
     }
 }
+

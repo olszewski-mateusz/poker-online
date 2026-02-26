@@ -14,7 +14,7 @@ public final class JoinCommand extends Command {
 
     @Override
     public Action toAction() {
-        return new Join(this.getPlayerId());
+        return new Join(this.getPlayerId(), this.displayName);
     }
 
     JoinCommand(final String playerId, final String displayName) {

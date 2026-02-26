@@ -1,21 +1,20 @@
 package com.molszewski.demos.poker.engine.game.state.history;
 
+import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
 import com.molszewski.demos.poker.engine.game.state.action.Action;
 import com.molszewski.demos.poker.engine.game.state.action.AllIn;
 import com.molszewski.demos.poker.engine.game.state.action.Raise;
-import com.molszewski.demos.poker.engine.hand.HandType;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 public class History {
 
+    @Getter
     private final List<HistoryEntry> entries = new ArrayList<>();
-    private GamePhase previousPhase = GamePhase.NOT_STARTED;
+
     @Getter
     private boolean betPlacedInCurrentPhase = false;
 
@@ -30,29 +29,23 @@ public class History {
         entries.add(new FlowStepEntry(step));
     }
 
-    public void onPhaseChanged(GamePhase phase, Optional<WinnerData> winnerData) {
-        if (phase.equals(this.previousPhase)) {
+    public void onPhaseChanged(GameState state, GamePhase newPhase) {
+
+        GamePhase previousPhase = state.getGamePhase();
+        if (newPhase.equals(previousPhase)) {
             return;
         }
 
-        this.previousPhase = phase;
-        this.entries.add(new PhaseChangeEntry(phase));
+        this.entries.add(new PhaseChangeEntry(newPhase));
 
-        if (phase.equals(GamePhase.SHOWDOWN)) {
-            winnerData
-                    .filter(winner -> winner.handType() != null)
-                    .ifPresent(winner -> this.entries.add(new WinnerEntry(winner.playerId(), winner.handType())));
-        } else if (phase.equals(GamePhase.FINISHED)) {
-            winnerData.ifPresent(winner -> this.entries.add(new GameWinnerEntry(winner.playerId())));
+        if (newPhase.equals(GamePhase.SHOWDOWN)) {
+            state.getWinner()
+                    .filter(winner -> winner.getHand().getHandType() != null)
+                    .ifPresent(winner -> this.entries.add(new WinnerEntry(winner.getId(), winner.getHand().getHandType())));
+        } else if (newPhase.equals(GamePhase.FINISHED)) {
+            state.getWinner().ifPresent(winner -> this.entries.add(new GameWinnerEntry(winner.getId())));
         }
 
         this.betPlacedInCurrentPhase = false;
-    }
-
-    public List<HistoryEntry> getSortedEntries() {
-        return entries.stream().sorted(Comparator.comparingLong(HistoryEntry::getTs)).toList();
-    }
-
-    public record WinnerData(String playerId, HandType handType) {
     }
 }

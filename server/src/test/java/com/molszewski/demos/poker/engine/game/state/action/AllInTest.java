@@ -23,9 +23,9 @@ class AllInTest {
     void simpleAllIn() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1", true).apply(gameState, configuration);
         new Ready("2", true).apply(gameState, configuration);
@@ -44,9 +44,9 @@ class AllInTest {
     void allInNotChangingReadyZeroChips() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -67,9 +67,9 @@ class AllInTest {
     void allInNotChangingReadyNoNewMaxBet() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -89,9 +89,9 @@ class AllInTest {
     void allInChangingReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -105,3 +105,4 @@ class AllInTest {
         assertFalse(player.isReady());
     }
 }
+

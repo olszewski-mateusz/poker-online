@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Getter
 public class GameState {
@@ -57,11 +58,11 @@ public class GameState {
         return Optional.empty();
     }
 
-    public void addPlayer(String playerId, int startMoney) {
+    public void addPlayer(String playerId, String displayName, int startMoney) {
         if (playerExists(playerId)) {
             throw new IllegalStateException("Player already in game");
         }
-        players.add(new Player(playerId, startMoney));
+        players.add(new Player(playerId, displayName, startMoney));
     }
 
     public void validatePhase(Set<GamePhase> correctPhases) throws GameStateException {
@@ -71,13 +72,13 @@ public class GameState {
     }
 
     public void validateCurrentPlayer(String playerId) throws GameStateException {
-        Player currentPlayer = getCurrentPlayer();
-        if (currentPlayer.getId().equals(playerId)) {
-            if (currentPlayer.isReady()) {
-                throw new GameStateException(String.format("Player %s is ready", currentPlayer.getId()));
+        Player player = getCurrentPlayer();
+        if (player.getId().equals(playerId)) {
+            if (player.isReady()) {
+                throw new GameStateException(String.format("Player %s is ready", player.getId()));
             }
-            if (currentPlayer.isFolded()) {
-                throw new GameStateException(String.format("Player %s folded", currentPlayer.getId()));
+            if (player.isFolded()) {
+                throw new GameStateException(String.format("Player %s folded", player.getId()));
             }
         } else {
             throw new GameStateException("It's not player " + playerId + "turn");
@@ -85,14 +86,17 @@ public class GameState {
     }
 
     public void setGamePhase(GamePhase gamePhase) {
+        this.history.onPhaseChanged(this, gamePhase);
+
         this.gamePhase = gamePhase;
+    }
 
-        Optional<History.WinnerData> winnerData = this.getWinner()
-                .map(player -> new History.WinnerData(
-                        player.getId(),
-                        player.getHand() == null ? null : player.getHand().getHandType())
-                );
+    public int getPlayerIndex(String playerId) {
+        if (!playerExists(playerId)) {
+            throw new IllegalStateException("Player not found");
+        }
 
-        this.history.onPhaseChanged(gamePhase, winnerData);
+        Player player = getPlayerById(playerId);
+        return players.indexOf(player);
     }
 }

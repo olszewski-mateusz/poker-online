@@ -14,7 +14,7 @@ class PlayerTest {
 
     @BeforeEach
     void setUp() {
-        player = new Player("1", 100, 10, false, false, null);
+        player = new Player("1", "1", 100, 10, false, false, null);
     }
 
     @Test
@@ -77,6 +77,7 @@ class PlayerTest {
 
         assertNotSame(player, copy);
         assertEquals(player.getId(), copy.getId());
+        assertEquals(player.getName(), copy.getName());
         assertEquals(player.getMoney(), copy.getMoney());
         assertEquals(player.getBet(), copy.getBet());
         assertEquals(player.isReady(), copy.isReady());
@@ -84,3 +85,4 @@ class PlayerTest {
         assertEquals(player.getHand(), copy.getHand());
     }
 }
+

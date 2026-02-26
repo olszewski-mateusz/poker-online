@@ -23,9 +23,9 @@ class CheckTest {
     void simpleCheck() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("1",true).apply(gameState, configuration);
         new Ready("2",true).apply(gameState, configuration);
@@ -46,9 +46,9 @@ class CheckTest {
 
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("3",true).apply(gameState, configuration);
         new Ready("1",true).apply(gameState, configuration);
@@ -69,9 +69,9 @@ class CheckTest {
     void playerNotFound() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("3",true).apply(gameState, configuration);
         new Ready("1",true).apply(gameState, configuration);
@@ -87,9 +87,9 @@ class CheckTest {
 
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         new Ready("3",true).apply(gameState, configuration);
         new Ready("1",true).apply(gameState, configuration);
@@ -104,3 +104,4 @@ class CheckTest {
         assertThrows(GameStateException.class, () -> { new Check("2").apply(gameState, configuration); });
     }
 }
+

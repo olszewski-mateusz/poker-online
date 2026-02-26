@@ -28,9 +28,9 @@ class StartRoundTest {
     @DisplayName("Apply without start round")
     void applyNoStartTest() {
         GameState gameState = new GameState(null, List.of(
-                new Player("1", 100, 0, true, false, null),
-                new Player("2", 100, 0, false, false, null),
-                new Player("3", 100, 0, true, false, null)
+                new Player("1", "1", 100, 0, true, false, null),
+                new Player("2", "2", 100, 0, false, false, null),
+                new Player("3", "3", 100, 0, true, false, null)
         ));
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
         gameState.setGamePhase(GamePhase.NOT_STARTED);
@@ -44,9 +44,9 @@ class StartRoundTest {
     @DisplayName("Apply with round start")
     void applyStartTest() {
         Deck deck = new Deck(new Random(17));
-        Player player1 = new Player("1", gameConfiguration.startMoney(), 0, true, false, null);
-        Player player2 = new Player("2", gameConfiguration.startMoney(), 0, true, false, null);
-        Player player3 = new Player("3", 0, 0, true, false, null);
+        Player player1 = new Player("1", "1", gameConfiguration.startMoney(), 0, true, false, null);
+        Player player2 = new Player("2", "2", gameConfiguration.startMoney(), 0, true, false, null);
+        Player player3 = new Player("3", "3", 0, 0, true, false, null);
 
         GameState gameState = new GameState(deck, List.of(player1, player2, player3));
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
@@ -92,9 +92,9 @@ class StartRoundTest {
         ));
         int betAmount = 50;
         Deck deck = new Deck(new Random(17));
-        Player player1 = new Player("1", gameConfiguration.startMoney(), betAmount, true, false, loseHand);
-        Player player2 = new Player("2", gameConfiguration.startMoney(), betAmount, true, false, winHand);
-        Player player3 = new Player("3", 0, betAmount, true, false, loseHand);
+        Player player1 = new Player("1", "1", gameConfiguration.startMoney(), betAmount, true, false, loseHand);
+        Player player2 = new Player("2", "2", gameConfiguration.startMoney(), betAmount, true, false, winHand);
+        Player player3 = new Player("3", "3", 0, betAmount, true, false, loseHand);
 
         GameState gameState = new GameState(deck, List.of(player1, player2, player3));
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
@@ -127,8 +127,8 @@ class StartRoundTest {
     @Test
     @DisplayName("Apply with round restart without winner")
     void applyRestartNoWinnerThrowsTest() {
-        Player player1 = new Player("1", gameConfiguration.startMoney(), 0, true, true, null);
-        Player player2 = new Player("2", gameConfiguration.startMoney(), 0, true, true, null);
+        Player player1 = new Player("1", "1", gameConfiguration.startMoney(), 0, true, true, null);
+        Player player2 = new Player("2", "2", gameConfiguration.startMoney(), 0, true, true, null);
 
         GameState gameState = new GameState(null, List.of(player1, player2));
         gameState.setGamePhase(GamePhase.SHOWDOWN);
@@ -156,8 +156,8 @@ class StartRoundTest {
 
         int betAmount = 40;
         Deck deck = new Deck(new Random(17));
-        Player player1 = new Player("1", 0, betAmount, true, false, winHand);
-        Player player2 = new Player("2", 0, betAmount, true, false, loseHand);
+        Player player1 = new Player("1", "1", 0, betAmount, true, false, winHand);
+        Player player2 = new Player("2", "2", 0, betAmount, true, false, loseHand);
 
         GameState gameState = new GameState(deck, List.of(player1, player2));
         gameState.setCurrentPlayer(gameState.getPlayerById("1"));
@@ -171,3 +171,4 @@ class StartRoundTest {
     }
 
 }
+

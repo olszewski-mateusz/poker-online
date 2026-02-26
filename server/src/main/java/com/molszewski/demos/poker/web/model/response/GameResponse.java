@@ -2,14 +2,15 @@ package com.molszewski.demos.poker.web.model.response;
 
 import com.molszewski.demos.poker.engine.game.GameEngine;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
+import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.history.entry.HistoryEntry;
 import com.molszewski.demos.poker.engine.player.Player;
-import com.molszewski.demos.poker.web.collector.metadata.MetadataCollector;
 import lombok.Builder;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Builder
 public record GameResponse(
@@ -20,54 +21,58 @@ public record GameResponse(
         Integer currentPlayerIndex,
         Integer winnerIndex,
         List<PlayerResponse> players,
-        List<HistoryEntry> history,
+        List<HistoryEntryResponse> history,
         int cardsInDeck,
         int discardedCards,
         boolean betPlacedInCurrentPhase,
         GameConfiguration configuration
 ) {
-    public static GameResponse fromParams(Params params) {
+    public static GameResponse fromParams(GameContext context) {
+        List<Player> players = context.state.getPlayers();
 
-        boolean isShowdown = params.gameEngine.getPhase().equals(GamePhase.SHOWDOWN);
+        boolean isShowdown = context.state.getGamePhase().equals(GamePhase.SHOWDOWN);
 
-        Integer currentPlayerIndex = Optional.ofNullable(params.gameEngine.getCurrentPlayer())
+        Integer currentPlayerIndex = Optional.ofNullable(context.state.getCurrentPlayer())
                 .map(Player::getId)
-                .map(params.metadataCollector::getPlayerIndex)
+                .map(context.state::getPlayerIndex)
                 .orElse(null);
 
-        Integer winnerIndex = params.gameEngine.getGameState().getWinner()
+        Integer winnerIndex = context.state.getWinner()
                 .map(Player::getId)
-                .map(params.metadataCollector::getPlayerIndex)
+                .map(context.state::getPlayerIndex)
                 .orElse(null);
 
         return GameResponse.builder()
-                .gameId(params.gameId)
-                .myId(params.myId)
-                .myIndex(params.metadataCollector.getPlayerIndex(params.myId))
-                .phase(params.gameEngine.getPhase())
+                .gameId(context.gameId)
+                .myId(context.myId)
+                .myIndex(context.state.getPlayerIndex(context.myId))
+                .phase(context.state.getGamePhase())
                 .currentPlayerIndex(currentPlayerIndex)
                 .winnerIndex(winnerIndex)
-                .players(params.gameEngine.getPlayers().stream()
-                        .map(player -> {
-                            boolean hideCards = !(isShowdown || player.getId().equals(params.myId));
-                            return PlayerResponse.fromPlayer(player, params.metadataCollector.getPlayerMetadata(player.getId()), hideCards);
+                .players(IntStream.range(0, players.size())
+                        .mapToObj(index -> {
+                            Player player = players.get(index);
+                            boolean hideCards = !(isShowdown || player.getId().equals(context.myId));
+                            return PlayerResponse.fromPlayer(player, index + 1, hideCards);
                         })
                         .toList())
-                .cardsInDeck(params.gameEngine.getCardsInDeck())
-                .discardedCards(params.gameEngine.getDiscardedCards())
-                .history(params.history)
-                .betPlacedInCurrentPhase(params.gameEngine.getGameState().getHistory().isBetPlacedInCurrentPhase())
-                .configuration(params.gameEngine.getConfiguration())
+                .cardsInDeck(context.state.getDeck().cardsCount())
+                .discardedCards(context.state.getDeck().discardsCount())
+                .history(context.state.getHistory().getEntries().stream()
+                        .map(entry -> HistoryEntryResponse.fromHistoryEntry(entry, context.state))
+                        .filter(Objects::nonNull)
+                        .toList())
+                .betPlacedInCurrentPhase(context.state.getHistory().isBetPlacedInCurrentPhase())
+                .configuration(context.configuration)
                 .build();
     }
 
     @Builder
-    public record Params(
+    public record GameContext(
             String gameId,
             String myId,
-            GameEngine gameEngine,
-            MetadataCollector metadataCollector,
-            List<HistoryEntry> history
+            GameState state,
+            GameConfiguration configuration
     ) {
     }
 }

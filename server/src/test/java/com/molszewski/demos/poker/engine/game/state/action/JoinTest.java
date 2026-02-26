@@ -23,7 +23,7 @@ class JoinTest {
     void onePlayerCorrectlyAdded() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
 
         assertEquals(1, gameState.getPlayers().size());
         Player player = gameState.getPlayers().getFirst();
@@ -31,8 +31,20 @@ class JoinTest {
         assertNull(player.getHand());
         assertEquals(0, player.getBet());
         assertEquals("1", player.getId());
+        assertEquals("1", player.getName());
         assertFalse(player.isReady());
         assertFalse(player.isFolded());
+    }
+
+    @Test
+    @DisplayName("One player joins with display name")
+    void onePlayerWithDisplayNameAdded() throws GameStateException {
+        GameState gameState = new GameState(new Deck(random));
+
+        new Join("1", "Alice").apply(gameState, configuration);
+
+        Player player = gameState.getPlayers().getFirst();
+        assertEquals("Alice", player.getName());
     }
 
     @Test
@@ -40,9 +52,9 @@ class JoinTest {
     void threePlayerCorrectlyAdded() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
-        new Join("2").apply(gameState, configuration);
-        new Join("3").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
+        new Join("2", "2").apply(gameState, configuration);
+        new Join("3", "3").apply(gameState, configuration);
 
         assertEquals(3, gameState.getPlayers().size());
     }
@@ -52,8 +64,9 @@ class JoinTest {
     void samePlayerAddedTwoTimes() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
 
-        new Join("1").apply(gameState, configuration);
+        new Join("1", "1").apply(gameState, configuration);
         assertThrows(GameStateException.class,
-                () -> { new Join("1").apply(gameState, configuration); });
+                () -> { new Join("1", "1").apply(gameState, configuration); });
     }
 }
+
