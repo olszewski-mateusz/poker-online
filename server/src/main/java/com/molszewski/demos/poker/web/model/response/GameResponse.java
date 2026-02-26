@@ -3,8 +3,8 @@ package com.molszewski.demos.poker.web.model.response;
 import com.molszewski.demos.poker.engine.game.GameEngine;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
+import com.molszewski.demos.poker.engine.game.state.history.entry.HistoryEntry;
 import com.molszewski.demos.poker.engine.player.Player;
-import com.molszewski.demos.poker.web.collector.history.entry.HistoryEntry;
 import com.molszewski.demos.poker.web.collector.metadata.MetadataCollector;
 import lombok.Builder;
 
@@ -56,7 +56,7 @@ public record GameResponse(
                 .cardsInDeck(params.gameEngine.getCardsInDeck())
                 .discardedCards(params.gameEngine.getDiscardedCards())
                 .history(params.history)
-                .betPlacedInCurrentPhase(params.metadataCollector.isBetPlacedInCurrentPhase())
+                .betPlacedInCurrentPhase(params.gameEngine.getGameState().getHistory().isBetPlacedInCurrentPhase())
                 .configuration(params.gameEngine.getConfiguration())
                 .build();
     }

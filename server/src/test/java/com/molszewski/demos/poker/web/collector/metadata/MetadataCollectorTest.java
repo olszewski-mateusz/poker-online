@@ -35,7 +35,6 @@ class MetadataCollectorTest {
         assertEquals(id, metadata.id());
         assertEquals(name, metadata.name());
         assertEquals(1, metadata.index());
-        assertFalse(collector.isBetPlacedInCurrentPhase());
     }
 
     @Test

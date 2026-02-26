@@ -8,12 +8,14 @@ import com.molszewski.demos.poker.engine.game.state.exception.GameStateException
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
+import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public final class Replace extends Action{
 
+    @Getter
     private final Set<Card> cardsToReplace;
 
     public Replace(String playerId, Set<Card> cardsToReplace) {

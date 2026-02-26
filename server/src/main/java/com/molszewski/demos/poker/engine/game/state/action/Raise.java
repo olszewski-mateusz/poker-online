@@ -18,6 +18,10 @@ public final class Raise extends Action {
         this.amount = amount;
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
     @Override
     protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
         gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING));

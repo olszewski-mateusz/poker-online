@@ -16,7 +16,6 @@ public class GameState {
     private final List<Player> players;
     @Setter
     private Player currentPlayer;
-    @Setter
     private GamePhase gamePhase = GamePhase.NOT_STARTED;
 
     private final History history;
@@ -83,5 +82,17 @@ public class GameState {
         } else {
             throw new GameStateException("It's not player " + playerId + "turn");
         }
+    }
+
+    public void setGamePhase(GamePhase gamePhase) {
+        this.gamePhase = gamePhase;
+
+        Optional<History.WinnerData> winnerData = this.getWinner()
+                .map(player -> new History.WinnerData(
+                        player.getId(),
+                        player.getHand() == null ? null : player.getHand().getHandType())
+                );
+
+        this.history.onPhaseChanged(gamePhase, winnerData);
     }
 }

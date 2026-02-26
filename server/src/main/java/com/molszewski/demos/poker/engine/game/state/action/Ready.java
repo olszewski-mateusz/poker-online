@@ -17,6 +17,10 @@ public final class Ready extends Action {
         this.isReady = isReady;
     }
 
+    public boolean isReady() {
+        return isReady;
+    }
+
     @Override
     protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
         gameState.validatePhase(Set.of(GamePhase.NOT_STARTED, GamePhase.SHOWDOWN));

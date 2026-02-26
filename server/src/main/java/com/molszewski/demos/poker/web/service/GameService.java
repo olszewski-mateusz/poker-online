@@ -6,7 +6,6 @@ import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.persistence.repository.CommandRepository;
 import com.molszewski.demos.poker.persistence.repository.GameSetupRepository;
 import com.molszewski.demos.poker.web.collector.CommandCollector;
-import com.molszewski.demos.poker.web.collector.history.entry.HistoryEntry;
 import com.molszewski.demos.poker.web.model.response.ActionResponse;
 import com.molszewski.demos.poker.web.model.response.GameResponse;
 import com.molszewski.demos.poker.web.model.response.NewGameResponse;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -79,7 +77,7 @@ public class GameService {
                                                 .gameId(gameId)
                                                 .myId(myId)
                                                 .gameEngine(game)
-                                                .history(commandCollector.getHistory())
+                                                .history(commandCollector.getHistory(game))
                                                 .metadataCollector(commandCollector.getMetadataCollector())
                                                 .build()
                                 ));
@@ -95,13 +93,13 @@ public class GameService {
                         .collectList()
                         .flatMap(commands -> {
                                     CommandCollector commandCollector = CommandCollector.newInstance();
-                                    List<HistoryEntry> history = this.processCommands(game, commands, commandCollector);
+                                    this.processCommands(game, commands, commandCollector);
                                     return Mono.just(GameResponse.fromParams(
                                             GameResponse.Params.builder()
                                                     .gameId(gameId)
                                                     .myId(myId)
                                                     .gameEngine(game)
-                                                    .history(history)
+                                                    .history(commandCollector.getHistory(game))
                                                     .metadataCollector(commandCollector.getMetadataCollector())
                                                     .build()
                                     ));
@@ -110,17 +108,15 @@ public class GameService {
                 );
     }
 
-    private List<HistoryEntry> processCommands(GameEngine gameEngine, List<Command> commands, CommandCollector commandCollector) {
-        List<HistoryEntry> history = new ArrayList<>();
+    private void processCommands(GameEngine gameEngine, List<Command> commands, CommandCollector commandCollector) {
         for (Command command : commands) {
             boolean success = gameEngine.applyAction(command.toAction());
             if (success) {
-                commandCollector.processCommand(command, gameEngine);
+                commandCollector.processCommand(command);
             } else {
                 log.warn("Illegal command found in stream");
             }
         }
-        return history;
     }
 
     public String generatePlayerId() {
