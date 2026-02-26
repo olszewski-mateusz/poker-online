@@ -3,9 +3,7 @@ package com.molszewski.demos.poker.core.game.state.action;
 import com.molszewski.demos.poker.core.deck.Deck;
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
-import com.molszewski.demos.poker.core.game.state.StateManager;
-import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.core.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
@@ -23,94 +21,88 @@ class ReadyTest {
 
     @Test
     @DisplayName("1 of 3 players is ready")
-    void onePlayerReady() throws ActionException {
+    void onePlayerReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("2", true), gameState, configuration);
+        new Ready("2", true).apply(gameState, configuration);
 
         assertEquals(1, gameState.getPlayers().stream().filter(Player::isReady).count());
     }
 
     @Test
     @DisplayName("3 of 4 players are ready")
-    void morePlayerReady() throws ActionException {
+    void morePlayerReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
-        stateManager.executeAction(new Join("4"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
+        new Join("4").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("4", true), gameState, configuration);
-        stateManager.executeAction(new Ready("1", true), gameState, configuration);
-        stateManager.executeAction(new Ready("3", true), gameState, configuration);
+        new Ready("4", true).apply(gameState, configuration);
+        new Ready("1", true).apply(gameState, configuration);
+        new Ready("3", true).apply(gameState, configuration);
 
         assertEquals(3, gameState.getPlayers().stream().filter(Player::isReady).count());
     }
 
     @Test
     @DisplayName("Player ready again - throws error")
-    void playerReadyTwoTimes() throws ActionException {
+    void playerReadyTwoTimes() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("2", true), gameState, configuration);
-        assertThrows(ActionException.class,
-                () -> stateManager.executeAction(new Ready("2", true), gameState, configuration));
+        new Ready("2", true).apply(gameState, configuration);
+        assertThrows(GameStateException.class,
+                () -> { new Ready("2", true).apply(gameState, configuration); });
     }
 
     @Test
     @DisplayName("Player not ready again - throws error")
-    void playerNotReady() throws ActionException {
+    void playerNotReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        assertThrows(ActionException.class,
-                () -> stateManager.executeAction(new Ready("2", false), gameState, configuration));
+        assertThrows(GameStateException.class,
+                () -> { new Ready("2", false).apply(gameState, configuration); });
     }
 
     @Test
     @DisplayName("Player is correctly not ready")
-    void playerReadyThenNotReady() throws ActionException {
+    void playerReadyThenNotReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("2", true), gameState, configuration);
-        stateManager.executeAction(new Ready("2", false), gameState, configuration);
+        new Ready("2", true).apply(gameState, configuration);
+        new Ready("2", false).apply(gameState, configuration);
 
-        assertFalse(gameState.getPlayerById("2").get().isReady());
+        assertFalse(gameState.getPlayerById("2").isReady());
     }
 
     @Test
     @DisplayName("Unknown player is ready")
-    void unknownPlayerReady() throws ActionException {
+    void unknownPlayerReady() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
         assertThrows(PlayerNotFound.class, () -> {
-            stateManager.executeAction(new Ready("4", true), gameState, configuration);
+            new Ready("4", true).apply(gameState, configuration);
         });
     }
 }

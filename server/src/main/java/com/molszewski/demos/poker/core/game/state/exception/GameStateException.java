@@ -1,8 +1,8 @@
 package com.molszewski.demos.poker.core.game.state.exception;
 
-public class ActionException
+public class GameStateException
         extends Exception {
-    public ActionException(String message) {
+    public GameStateException(String message) {
         super(message);
     }
 }

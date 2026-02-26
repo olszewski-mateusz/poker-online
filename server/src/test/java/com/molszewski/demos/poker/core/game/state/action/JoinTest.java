@@ -3,9 +3,7 @@ package com.molszewski.demos.poker.core.game.state.action;
 import com.molszewski.demos.poker.core.deck.Deck;
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
-import com.molszewski.demos.poker.core.game.state.StateManager;
-import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
@@ -22,11 +20,10 @@ class JoinTest {
 
     @Test
     @DisplayName("One player joins")
-    void onePlayerCorrectlyAdded() throws ActionException {
+    void onePlayerCorrectlyAdded() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
 
         assertEquals(1, gameState.getPlayers().size());
         Player player = gameState.getPlayers().getFirst();
@@ -40,25 +37,23 @@ class JoinTest {
 
     @Test
     @DisplayName("Three players join")
-    void threePlayerCorrectlyAdded() throws ActionException {
+    void threePlayerCorrectlyAdded() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
         assertEquals(3, gameState.getPlayers().size());
     }
 
     @Test
     @DisplayName("One player added two times - throws error")
-    void samePlayerAddedTwoTimes() throws ActionException {
+    void samePlayerAddedTwoTimes() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        assertThrows(ActionException.class,
-                () -> stateManager.executeAction(new Join("1"), gameState, configuration));
+        new Join("1").apply(gameState, configuration);
+        assertThrows(GameStateException.class,
+                () -> { new Join("1").apply(gameState, configuration); });
     }
 }

@@ -1,4 +1,4 @@
-package com.molszewski.demos.poker.core.game.state.transition;
+package com.molszewski.demos.poker.core.game.state.action;
 
 import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.card.Rank;
@@ -32,12 +32,10 @@ class StartRoundTest {
                 new Player("2", 100, 0, false, false, null),
                 new Player("3", 100, 0, true, false, null)
         ));
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
         gameState.setGamePhase(GamePhase.NOT_STARTED);
 
-        StartRound transition = StartRound.of();
-
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.tryStartRound(gameState, gameConfiguration);
 
         assertEquals(GamePhase.NOT_STARTED, gameState.getGamePhase());
     }
@@ -51,12 +49,10 @@ class StartRoundTest {
         Player player3 = new Player("3", 0, 0, true, false, null);
 
         GameState gameState = new GameState(deck, List.of(player1, player2, player3));
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
         gameState.setGamePhase(GamePhase.NOT_STARTED);
 
-        StartRound transition = StartRound.of();
-
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.tryStartRound(gameState, gameConfiguration);
 
         assertEquals(GamePhase.FIRST_BETTING, gameState.getGamePhase());
 
@@ -101,12 +97,10 @@ class StartRoundTest {
         Player player3 = new Player("3", 0, betAmount, true, false, loseHand);
 
         GameState gameState = new GameState(deck, List.of(player1, player2, player3));
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
         gameState.setGamePhase(GamePhase.SHOWDOWN);
 
-        StartRound transition = StartRound.of();
-
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.tryStartRound(gameState, gameConfiguration);
 
         assertEquals(GamePhase.FIRST_BETTING, gameState.getGamePhase());
 
@@ -139,9 +133,7 @@ class StartRoundTest {
         GameState gameState = new GameState(null, List.of(player1, player2));
         gameState.setGamePhase(GamePhase.SHOWDOWN);
 
-        StartRound transition = StartRound.of();
-
-        assertThrows(IllegalStateException.class, () -> transition.apply(gameState, gameConfiguration));
+        assertThrows(IllegalStateException.class, () -> ActionFlow.tryStartRound(gameState, gameConfiguration));
     }
 
     @Test
@@ -168,12 +160,10 @@ class StartRoundTest {
         Player player2 = new Player("2", 0, betAmount, true, false, loseHand);
 
         GameState gameState = new GameState(deck, List.of(player1, player2));
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
         gameState.setGamePhase(GamePhase.SHOWDOWN);
 
-        StartRound transition = StartRound.of();
-
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.tryStartRound(gameState, gameConfiguration);
 
         assertEquals(GamePhase.FINISHED, gameState.getGamePhase());
         assertEquals(2 * betAmount, player1.getMoney());

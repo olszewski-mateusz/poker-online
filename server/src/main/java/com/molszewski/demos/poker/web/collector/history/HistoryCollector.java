@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.collector.history;
 
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameEngine;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
@@ -25,7 +25,7 @@ public class HistoryCollector {
         return new HistoryCollector();
     }
 
-    public void includeCommand(Command command, MetadataCollector metadataCollector, Game game) {
+    public void includeCommand(Command command, MetadataCollector metadataCollector, GameEngine gameEngine) {
 
         ActionEntry actionEntry = ActionEntry.fromCommand(command, metadataCollector.getPlayerMetadata(command.getPlayerId()).name());
         this.entries.add(actionEntry);
@@ -34,15 +34,15 @@ public class HistoryCollector {
             metadataCollector.setBetPlacedInCurrentPhase(true);
         }
 
-        if (this.phaseChanged(game.getPhase())) {
-            this.entries.add(PhaseChangeEntry.fromPhase(game.getPhase()));
+        if (this.phaseChanged(gameEngine.getPhase())) {
+            this.entries.add(PhaseChangeEntry.fromPhase(gameEngine.getPhase()));
 
-            if (game.getPhase().equals(GamePhase.SHOWDOWN)) {
-                Player winner = game.getGameState().getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
+            if (gameEngine.getPhase().equals(GamePhase.SHOWDOWN)) {
+                Player winner = gameEngine.getGameState().getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
                 String winnerName = metadataCollector.getPlayerMetadata(winner.getId()).name();
                 this.entries.add(WinnerEntry.create(winnerName, winner.getHand().getHandType()));
-            } else if (game.getPhase().equals(GamePhase.FINISHED)) {
-                Player winner = game.getGameState().getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
+            } else if (gameEngine.getPhase().equals(GamePhase.FINISHED)) {
+                Player winner = gameEngine.getGameState().getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
                 String winnerName = metadataCollector.getPlayerMetadata(winner.getId()).name();
                 this.entries.add(GameWinnerEntry.create(winnerName));
             }

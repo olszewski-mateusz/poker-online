@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.model.response;
 
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameEngine;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
@@ -28,14 +28,14 @@ public record GameResponse(
 ) {
     public static GameResponse fromParams(Params params) {
 
-        boolean isShowdown = params.game.getPhase().equals(GamePhase.SHOWDOWN);
+        boolean isShowdown = params.gameEngine.getPhase().equals(GamePhase.SHOWDOWN);
 
-        Integer currentPlayerIndex = Optional.ofNullable(params.game.getCurrentPlayer())
+        Integer currentPlayerIndex = Optional.ofNullable(params.gameEngine.getCurrentPlayer())
                 .map(Player::getId)
                 .map(params.metadataCollector::getPlayerIndex)
                 .orElse(null);
 
-        Integer winnerIndex = params.game.getGameState().getWinner()
+        Integer winnerIndex = params.gameEngine.getGameState().getWinner()
                 .map(Player::getId)
                 .map(params.metadataCollector::getPlayerIndex)
                 .orElse(null);
@@ -44,20 +44,20 @@ public record GameResponse(
                 .gameId(params.gameId)
                 .myId(params.myId)
                 .myIndex(params.metadataCollector.getPlayerIndex(params.myId))
-                .phase(params.game.getPhase())
+                .phase(params.gameEngine.getPhase())
                 .currentPlayerIndex(currentPlayerIndex)
                 .winnerIndex(winnerIndex)
-                .players(params.game.getPlayers().stream()
+                .players(params.gameEngine.getPlayers().stream()
                         .map(player -> {
                             boolean hideCards = !(isShowdown || player.getId().equals(params.myId));
                             return PlayerResponse.fromPlayer(player, params.metadataCollector.getPlayerMetadata(player.getId()), hideCards);
                         })
                         .toList())
-                .cardsInDeck(params.game.getCardsInDeck())
-                .discardedCards(params.game.getDiscardedCards())
+                .cardsInDeck(params.gameEngine.getCardsInDeck())
+                .discardedCards(params.gameEngine.getDiscardedCards())
                 .history(params.history)
                 .betPlacedInCurrentPhase(params.metadataCollector.isBetPlacedInCurrentPhase())
-                .configuration(params.game.getConfiguration())
+                .configuration(params.gameEngine.getConfiguration())
                 .build();
     }
 
@@ -65,7 +65,7 @@ public record GameResponse(
     public record Params(
             String gameId,
             String myId,
-            Game game,
+            GameEngine gameEngine,
             MetadataCollector metadataCollector,
             List<HistoryEntry> history
     ) {

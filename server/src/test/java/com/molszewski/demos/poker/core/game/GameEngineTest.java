@@ -5,15 +5,13 @@ import com.molszewski.demos.poker.core.card.Rank;
 import com.molszewski.demos.poker.core.card.Suit;
 import com.molszewski.demos.poker.core.deck.Deck;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
-import com.molszewski.demos.poker.core.game.state.StateManager;
 import com.molszewski.demos.poker.core.game.state.action.Action;
 import com.molszewski.demos.poker.core.game.state.action.Join;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -24,46 +22,47 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @UnitTest
-class GameTest {
+class GameEngineTest {
 
     @Mock
     private GameState gameState;
 
     @Mock
-    private StateManager stateManager;
-
-    @InjectMocks
-    private Game game;
+    private GameConfiguration configuration;
 
     @Test
     void getCurrentPlayerTest() {
-        game.getCurrentPlayer();
+        GameEngine gameEngine = new GameEngine(gameState, configuration);
+        gameEngine.getCurrentPlayer();
         verify(gameState, times(1)).getCurrentPlayer();
     }
 
     @Test
-    void applyActionTest() throws ActionException {
-        Action action = new Join("1");
-        boolean success = game.applyAction(action);
-        verify(stateManager, times(1)).executeAction(eq(action), eq(gameState), any());
+    void applyActionTest() throws GameStateException {
+        Action action = mock(Join.class);
+        GameEngine gameEngine = new GameEngine(gameState, configuration);
+        boolean success = gameEngine.applyAction(action);
+        verify(action, times(1)).apply(eq(gameState), eq(configuration));
         assertTrue(success);
     }
 
     @Test
-    void applyActionThrows() throws ActionException {
-        doThrow(new ActionException("")).when(stateManager).executeAction(any(), any(), any());
+    void applyActionThrows() throws GameStateException {
+        Action action = mock(Join.class);
+        GameEngine gameEngine = new GameEngine(gameState, configuration);
+        doThrow(new GameStateException("")).when(action).apply(any(), any());
 
-        Action action = new Join("1");
-        boolean success = game.applyAction(action);
-        verify(stateManager, times(1)).executeAction(eq(action), eq(gameState), any());
+        boolean success = gameEngine.applyAction(action);
+        verify(action, times(1)).apply(eq(gameState), eq(configuration));
         assertFalse(success);
     }
 
     @Test
     void getPhaseTest() {
+        GameEngine gameEngine = new GameEngine(gameState, configuration);
         when(gameState.getGamePhase()).thenReturn(GamePhase.SECOND_BETTING);
 
-        GamePhase gamePhase = game.getPhase();
+        GamePhase gamePhase = gameEngine.getPhase();
 
         verify(gameState, times(1)).getGamePhase();
         assertEquals(GamePhase.SECOND_BETTING, gamePhase);
@@ -71,6 +70,7 @@ class GameTest {
 
     @Test
     void getPlayersTest() {
+        GameEngine gameEngine = new GameEngine(gameState, configuration);
         List<Player> players = List.of(
                 new Player("1", 0),
                 new Player("2", 0)
@@ -78,7 +78,7 @@ class GameTest {
 
         when(gameState.getPlayers()).thenReturn(players);
 
-        List<Player> returnedPlayers = game.getPlayers();
+        List<Player> returnedPlayers = gameEngine.getPlayers();
 
         verify(gameState, times(1)).getPlayers();
         assertNotSame(players.get(0), returnedPlayers.get(0));
@@ -89,6 +89,7 @@ class GameTest {
 
     @Test
     void getCardsTest() {
+        GameEngine gameEngine = new GameEngine(gameState, configuration);
         List<Card> cards = List.of(
                 new Card(Rank.TWO, Suit.CLUBS),
                 new Card(Rank.THREE, Suit.HEARTS)
@@ -96,7 +97,7 @@ class GameTest {
 
         when(gameState.getDeck()).thenReturn(new Deck(cards, List.of(), null));
 
-        int amount = game.getCardsInDeck();
+        int amount = gameEngine.getCardsInDeck();
 
         verify(gameState, times(1)).getDeck();
         assertEquals(cards.size(), amount);
@@ -104,6 +105,7 @@ class GameTest {
 
     @Test
     void getDiscardsTest() {
+        GameEngine gameEngine = new GameEngine(gameState, configuration);
         List<Card> cards = List.of(
                 new Card(Rank.TWO, Suit.CLUBS),
                 new Card(Rank.THREE, Suit.HEARTS)
@@ -111,7 +113,7 @@ class GameTest {
 
         when(gameState.getDeck()).thenReturn(new Deck(List.of(), cards, null));
 
-        int amount = game.getDiscardedCards();
+        int amount = gameEngine.getDiscardedCards();
 
         verify(gameState, times(1)).getDeck();
         assertEquals(cards.size(), amount);

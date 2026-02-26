@@ -1,11 +1,9 @@
 package com.molszewski.demos.poker.persistence.entity;
 
 import com.molszewski.demos.poker.core.deck.Deck;
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameEngine;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.GameState;
-import com.molszewski.demos.poker.core.game.state.StateManager;
-import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
 import lombok.Builder;
 
 import java.util.Random;
@@ -24,10 +22,9 @@ public record GameSetup(
                 .build();
     }
 
-    public Game toGame() {
+    public GameEngine toGame() {
         Random random = new Random(seed);
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
-        return new Game(gameState, stateManager, configuration);
+        return new GameEngine(gameState, configuration);
     }
 }

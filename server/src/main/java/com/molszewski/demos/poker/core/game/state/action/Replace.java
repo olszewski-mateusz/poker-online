@@ -3,7 +3,8 @@ package com.molszewski.demos.poker.core.game.state.action;
 import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
+import com.molszewski.demos.poker.core.game.state.GamePhase;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.core.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.core.hand.Hand;
 import com.molszewski.demos.poker.core.player.Player;
@@ -21,15 +22,26 @@ public final class Replace extends Action{
     }
 
     @Override
-    public void execute(GameState gameState, GameConfiguration configuration) throws ActionException {
-        Player player = gameState.getPlayerById(this.getPlayerId())
-                .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
-        player.setReady(true);
+    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+        gameState.validatePhase(Set.of(GamePhase.DRAWING));
+        if (!gameState.playerExists(getPlayerId())) {
+            throw new PlayerNotFound(getPlayerId());
+        }
+        gameState.validateCurrentPlayer(getPlayerId());
+
+        Player player = gameState.getPlayerById(this.getPlayerId());
         Set<Card> cardsInHand = new HashSet<>(player.getHand().getCards());
         if (!cardsInHand.containsAll(cardsToReplace)) {
-            throw new ActionException("Cards to replace are not in hand");
+            throw new GameStateException("Cards to replace are not in hand");
         }
+    }
 
+    @Override
+    protected void execute(GameState gameState, GameConfiguration configuration)  {
+        gameState.getHistory().addAction(this);
+        Player player = gameState.getPlayerById(this.getPlayerId());
+        player.setReady(true);
+        Set<Card> cardsInHand = new HashSet<>(player.getHand().getCards());
         cardsInHand.removeAll(cardsToReplace);
         gameState.getDeck().addAllToDiscards(cardsToReplace);
 
@@ -38,5 +50,6 @@ public final class Replace extends Action{
         }
 
         player.setHand(new Hand(cardsInHand));
+        ActionFlow.nextTurn(gameState);
     }
 }

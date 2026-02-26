@@ -2,16 +2,16 @@ package com.molszewski.demos.poker.core.game.state.validator;
 
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
-import com.molszewski.demos.poker.core.game.state.action.Action;
-import com.molszewski.demos.poker.core.game.state.action.Check;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @UnitTest
 class CorrectPhaseTest {
@@ -22,9 +22,7 @@ class CorrectPhaseTest {
         GameState gameState = new GameState(null, List.of());
         gameState.setGamePhase(GamePhase.SECOND_BETTING);
 
-        Action action = new Check("2");
-        CorrectPhase validator = CorrectPhase.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING);
-        assertDoesNotThrow(() -> validator.validate(action, gameState));
+        assertDoesNotThrow(() -> gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING)));
     }
 
     @Test
@@ -33,8 +31,6 @@ class CorrectPhaseTest {
         GameState gameState = new GameState(null, List.of());
         gameState.setGamePhase(GamePhase.SECOND_BETTING);
 
-        Action action = new Check("2");
-        CorrectPhase validator = CorrectPhase.of(GamePhase.FIRST_BETTING);
-        assertThrows(ActionException.class, () -> validator.validate(action, gameState));
+        assertThrows(GameStateException.class, () -> gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING)));
     }
 }

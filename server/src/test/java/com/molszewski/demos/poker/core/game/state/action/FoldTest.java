@@ -3,9 +3,7 @@ package com.molszewski.demos.poker.core.game.state.action;
 import com.molszewski.demos.poker.core.deck.Deck;
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.StateManager;
-import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
@@ -22,21 +20,20 @@ class FoldTest {
 
     @Test
     @DisplayName("Player correctly folds")
-    void simpleRaise() throws ActionException {
+    void simpleRaise() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("1",true), gameState, configuration);
-        stateManager.executeAction(new Ready("2",true), gameState, configuration);
-        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+        new Ready("1",true).apply(gameState, configuration);
+        new Ready("2",true).apply(gameState, configuration);
+        new Ready("3",true).apply(gameState, configuration);
 
         Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
-        stateManager.executeAction(new Fold("1"), gameState, configuration);
+        new Fold("1").apply(gameState, configuration);
         assertFalse(player.isReady());
         assertTrue(player.isFolded());
     }

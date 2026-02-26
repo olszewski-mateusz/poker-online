@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.collector;
 
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameEngine;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.web.collector.history.HistoryCollector;
 import com.molszewski.demos.poker.web.collector.history.entry.HistoryEntry;
@@ -23,9 +23,9 @@ public class CommandCollector {
         return new CommandCollector(MetadataCollector.newInstance(), HistoryCollector.newInstance());
     }
 
-    public void processCommand(Command command, Game game) {
+    public void processCommand(Command command, GameEngine gameEngine) {
         this.metadataCollector.includeCommand(command);
-        this.historyCollector.includeCommand(command, this.metadataCollector, game);
+        this.historyCollector.includeCommand(command, this.metadataCollector, gameEngine);
     }
 
     public List<HistoryEntry> getHistory() {

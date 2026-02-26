@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,10 +30,8 @@ class GameStateTest {
         );
         GameState gameState = new GameState(null, players);
 
-        Optional<Player> player = gameState.getPlayerById("B");
-
-        assertTrue(player.isPresent());
-        assertSame(players.get(1), player.get());
+        Player player = gameState.getPlayerById("B");
+        assertSame(players.get(1), player);
     }
 
     @Test
@@ -45,9 +44,7 @@ class GameStateTest {
         );
         GameState gameState = new GameState(null, players);
 
-        Optional<Player> player = gameState.getPlayerById("D");
-
-        assertTrue(player.isEmpty());
+        assertThrows(NoSuchElementException.class, () -> gameState.getPlayerById("D"));
     }
 
     @Test
@@ -139,7 +136,7 @@ class GameStateTest {
         gameState.addPlayer("2", 100);
 
         assertEquals(2, gameState.getPlayers().size());
-        assertTrue(gameState.getPlayerById("2").isPresent());
+        assertEquals("2", gameState.getPlayerById("2").getId());
     }
 
     @Test

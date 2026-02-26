@@ -2,28 +2,42 @@ package com.molszewski.demos.poker.core.game.state.action;
 
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
+import com.molszewski.demos.poker.core.game.state.GamePhase;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.core.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.core.player.Player;
 
-public final class Ready extends Action {
-    private final boolean ready;
+import java.util.Set;
 
-    public Ready(String playerId, boolean ready) {
+public final class Ready extends Action {
+    private final boolean isReady;
+
+    public Ready(String playerId, boolean isReady) {
         super(playerId);
-        this.ready = ready;
+        this.isReady = isReady;
     }
 
     @Override
-    public void execute(GameState gameState, GameConfiguration configuration) throws ActionException {
-        Player player = gameState.getPlayerById(this.getPlayerId())
-                .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
-        if (ready && player.isReady()) {
-            throw new ActionException(String.format("Player %s is already ready", player.getId()));
+    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+        gameState.validatePhase(Set.of(GamePhase.NOT_STARTED, GamePhase.SHOWDOWN));
+        if (!gameState.playerExists(getPlayerId())) {
+            throw new PlayerNotFound(getPlayerId());
         }
-        if (!ready && !player.isReady()) {
-            throw new ActionException(String.format("Player %s is already not ready", player.getId()));
+
+        Player player = gameState.getPlayerById(this.getPlayerId());
+        if (isReady && player.isReady()) {
+            throw new GameStateException(String.format("Player %s is already ready", player.getId()));
         }
-        player.setReady(ready);
+        if (!isReady && !player.isReady()) {
+            throw new GameStateException(String.format("Player %s is already not ready", player.getId()));
+        }
+    }
+
+    @Override
+    protected void execute(GameState gameState, GameConfiguration configuration)  {
+        gameState.getHistory().addAction(this);
+        Player player = gameState.getPlayerById(this.getPlayerId());
+        player.setReady(isReady);
+        ActionFlow.tryStartRound(gameState, configuration);
     }
 }

@@ -2,9 +2,12 @@ package com.molszewski.demos.poker.core.game.state.action;
 
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
+import com.molszewski.demos.poker.core.game.state.GamePhase;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.core.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.core.player.Player;
+
+import java.util.Set;
 
 public final class Raise extends Action {
 
@@ -16,23 +19,34 @@ public final class Raise extends Action {
     }
 
     @Override
-    public void execute(GameState gameState, GameConfiguration configuration) throws ActionException {
-        Player player = gameState.getPlayerById(this.getPlayerId())
-                .orElseThrow(() -> new PlayerNotFound(this.getPlayerId()));
+    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+        gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING));
+        if (!gameState.playerExists(getPlayerId())) {
+            throw new PlayerNotFound(getPlayerId());
+        }
+        gameState.validateCurrentPlayer(getPlayerId());
+
+        Player player = gameState.getPlayerById(this.getPlayerId());
+        int currentBet = gameState.getCurrentBet();
+        if (amount < 2 * currentBet) {
+            throw new GameStateException("Must raise at least double of the current bet");
+        }
+        if (amount - player.getBet() > player.getMoney()) {
+            throw new GameStateException("Must have money for raise.");
+        }
+    }
+
+    @Override
+    protected void execute(GameState gameState, GameConfiguration configuration) {
+        gameState.getHistory().addAction(this);
+        Player player = gameState.getPlayerById(this.getPlayerId());
         gameState.getPlayers().forEach(p -> {
             if (p.getMoney() > 0) {
                 p.setReady(false);
             }
         });
         player.setReady(true);
-
-        int currentBet = gameState.getCurrentBet();
-        if (amount < 2 * currentBet) {
-            throw new ActionException("Must raise at least double of the current bet");
-        }
-        if (amount - player.getBet() > player.getMoney()) {
-            throw new ActionException("Must have money for raise.");
-        }
         player.transferMoneyToBet(amount - player.getBet());
+        ActionFlow.nextTurn(gameState);
     }
 }

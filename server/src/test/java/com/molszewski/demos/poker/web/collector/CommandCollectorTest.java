@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.collector;
 
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameEngine;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.persistence.entity.command.JoinCommand;
 import com.molszewski.demos.poker.test.UnitTest;
@@ -32,12 +32,12 @@ class CommandCollectorTest {
     @Test
     @DisplayName("Process command")
     void processCommandTest() {
-        Game game = new Game(null, null, null);
+        GameEngine gameEngine = new GameEngine(null, null);
         Command command = new JoinCommand();
-        commandCollector.processCommand(command, game);
+        commandCollector.processCommand(command, gameEngine);
 
         verify(metadataCollector, times(1)).includeCommand(command);
-        verify(historyCollector, times(1)).includeCommand(command, metadataCollector, game);
+        verify(historyCollector, times(1)).includeCommand(command, metadataCollector, gameEngine);
     }
 
     @Test

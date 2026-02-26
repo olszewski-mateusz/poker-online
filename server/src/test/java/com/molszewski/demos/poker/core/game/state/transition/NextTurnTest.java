@@ -1,6 +1,5 @@
-package com.molszewski.demos.poker.core.game.state.transition;
+package com.molszewski.demos.poker.core.game.state.action;
 
-import com.molszewski.demos.poker.core.game.GameConfiguration;
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.player.Player;
@@ -15,8 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @UnitTest
 class NextTurnTest {
 
-    private final GameConfiguration gameConfiguration = GameConfiguration.defaultConfiguration();
-
     @Test
     @DisplayName("Next turn without new phase from betting phase")
     void nextTurnNoNewPhaseBettingPhaseTest() {
@@ -26,12 +23,10 @@ class NextTurnTest {
                 new Player("3", 100, 100, false, false, null),
                 new Player("4", 100, 100, false, false, null)
         ));
-        gameState.setCurrentPlayer(gameState.getPlayerById("4").get());
+        gameState.setCurrentPlayer(gameState.getPlayerById("4"));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
 
-        NextTurn transition = NextTurn.of();
-
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.nextTurn(gameState);
 
         assertEquals("3", gameState.getCurrentPlayer().getId());
     }
@@ -45,12 +40,10 @@ class NextTurnTest {
                 new Player("3", 100, 100, false, false, null),
                 new Player("4", 100, 100, false, false, null)
         ));
-        gameState.setCurrentPlayer(gameState.getPlayerById("4").get());
+        gameState.setCurrentPlayer(gameState.getPlayerById("4"));
         gameState.setGamePhase(GamePhase.DRAWING);
 
-        NextTurn transition = NextTurn.of();
-
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.nextTurn(gameState);
 
         assertEquals("2", gameState.getCurrentPlayer().getId());
     }
@@ -59,10 +52,7 @@ class NextTurnTest {
     @DisplayName("Next turn without new phase no players throws")
     void nextTurnNoNewPhaseNoPlayersThrowsTest() {
         GameState gameState = new GameState(null, List.of());
-
-        NextTurn transition = NextTurn.of();
-
-        assertThrows(IllegalStateException.class, () -> transition.apply(gameState, gameConfiguration));
+        assertThrows(IllegalStateException.class, () -> ActionFlow.nextTurn(gameState));
     }
 
     @Test
@@ -73,9 +63,7 @@ class NextTurnTest {
                 new Player("2", 0)
         ));
 
-        NextTurn transition = NextTurn.of();
-
-        assertThrows(IllegalStateException.class, () -> transition.apply(gameState, gameConfiguration));
+        assertThrows(IllegalStateException.class, () -> ActionFlow.nextTurn(gameState));
     }
 
     @Test
@@ -87,10 +75,9 @@ class NextTurnTest {
                 new Player("3", 100, 100, false, true, null)
         ));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
-        NextTurn transition = NextTurn.of();
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
 
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.nextTurn(gameState);
 
         assertEquals(GamePhase.DRAWING, gameState.getGamePhase());
         assertTrue(gameState.getPlayers().stream().noneMatch(Player::isReady));
@@ -106,16 +93,15 @@ class NextTurnTest {
                 new Player("4", 100, 100, true, false, null)
         ));
         gameState.setGamePhase(GamePhase.DRAWING);
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
-        NextTurn transition = NextTurn.of();
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
 
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.nextTurn(gameState);
 
         assertEquals(GamePhase.SECOND_BETTING, gameState.getGamePhase());
-        assertFalse(gameState.getPlayerById("1").get().isReady());
-        assertTrue(gameState.getPlayerById("2").get().isReady());
-        assertFalse(gameState.getPlayerById("3").get().isReady());
-        assertFalse(gameState.getPlayerById("3").get().isReady());
+        assertFalse(gameState.getPlayerById("1").isReady());
+        assertTrue(gameState.getPlayerById("2").isReady());
+        assertFalse(gameState.getPlayerById("3").isReady());
+        assertFalse(gameState.getPlayerById("4").isReady());
     }
 
     @Test
@@ -128,10 +114,9 @@ class NextTurnTest {
                 new Player("4", 100, 100, true, false, null)
         ));
         gameState.setGamePhase(GamePhase.SECOND_BETTING);
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
-        NextTurn transition = NextTurn.of();
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
 
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.nextTurn(gameState);
 
         assertEquals(GamePhase.SHOWDOWN, gameState.getGamePhase());
         assertTrue(gameState.getPlayers().stream().noneMatch(Player::isReady));
@@ -145,11 +130,10 @@ class NextTurnTest {
                 new Player("1", 100, 100, true, false, null),
                 new Player("2", 100, 100, true, false, null)
         ));
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
         gameState.setGamePhase(GamePhase.FINISHED);
-        NextTurn transition = NextTurn.of();
 
-        assertThrows(IllegalStateException.class, () -> transition.apply(gameState, gameConfiguration));
+        assertThrows(IllegalStateException.class, () -> ActionFlow.nextTurn(gameState));
     }
 
     @Test
@@ -161,10 +145,9 @@ class NextTurnTest {
                 new Player("3", 100, 100, false, true, null)
         ));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
-        NextTurn transition = NextTurn.of();
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
 
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.nextTurn(gameState);
 
         assertEquals(GamePhase.SHOWDOWN, gameState.getGamePhase());
         assertTrue(gameState.getPlayers().stream().noneMatch(Player::isReady));
@@ -180,10 +163,9 @@ class NextTurnTest {
                 new Player("3", 100, 100, false, true, null)
         ));
         gameState.setGamePhase(GamePhase.DRAWING);
-        gameState.setCurrentPlayer(gameState.getPlayerById("1").get());
-        NextTurn transition = NextTurn.of();
+        gameState.setCurrentPlayer(gameState.getPlayerById("1"));
 
-        transition.apply(gameState, gameConfiguration);
+        ActionFlow.nextTurn(gameState);
 
         assertEquals(GamePhase.SHOWDOWN, gameState.getGamePhase());
         assertTrue(gameState.getPlayers().stream().noneMatch(Player::isReady));

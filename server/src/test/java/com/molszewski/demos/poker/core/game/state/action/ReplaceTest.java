@@ -4,9 +4,7 @@ import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.deck.Deck;
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.StateManager;
-import com.molszewski.demos.poker.core.game.state.StateManagerImpl;
-import com.molszewski.demos.poker.core.game.state.exception.ActionException;
+import com.molszewski.demos.poker.core.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.core.hand.Hand;
 import com.molszewski.demos.poker.core.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
@@ -26,21 +24,20 @@ class ReplaceTest {
 
     @Test
     @DisplayName("Player correctly replaces 2 cards")
-    void simpleReplace() throws ActionException {
+    void simpleReplace() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("1",true), gameState, configuration);
-        stateManager.executeAction(new Ready("2",true), gameState, configuration);
-        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+        new Ready("1",true).apply(gameState, configuration);
+        new Ready("2",true).apply(gameState, configuration);
+        new Ready("3",true).apply(gameState, configuration);
 
-        stateManager.executeAction(new Check("1"), gameState, configuration);
-        stateManager.executeAction(new Check("2"), gameState, configuration);
-        stateManager.executeAction(new Check("3"), gameState, configuration);
+        new Check("1").apply(gameState, configuration);
+        new Check("2").apply(gameState, configuration);
+        new Check("3").apply(gameState, configuration);
 
         Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
@@ -48,7 +45,7 @@ class ReplaceTest {
         int cardsInDeckBeforeReplace = gameState.getDeck().getCards().size();
 
         List<Card> cards = List.copyOf(player.getHand().getCards());
-        stateManager.executeAction(new Replace("1", Set.of(cards.get(0), cards.get(1))), gameState, configuration);
+        new Replace("1", Set.of(cards.get(0), cards.get(1))).apply(gameState, configuration);
         assertTrue(player.isReady());
         Hand hand = player.getHand();
         assertTrue(hand.getCards().containsAll(Set.of(cards.get(2), cards.get(3), cards.get(4))));
@@ -61,21 +58,20 @@ class ReplaceTest {
 
     @Test
     @DisplayName("Player replaces card which he doesn't have - throws error")
-    void replaceIllegalCard() throws ActionException {
+    void replaceIllegalCard() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("1",true), gameState, configuration);
-        stateManager.executeAction(new Ready("2",true), gameState, configuration);
-        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+        new Ready("1",true).apply(gameState, configuration);
+        new Ready("2",true).apply(gameState, configuration);
+        new Ready("3",true).apply(gameState, configuration);
 
-        stateManager.executeAction(new Check("1"), gameState, configuration);
-        stateManager.executeAction(new Check("2"), gameState, configuration);
-        stateManager.executeAction(new Check("3"), gameState, configuration);
+        new Check("1").apply(gameState, configuration);
+        new Check("2").apply(gameState, configuration);
+        new Check("3").apply(gameState, configuration);
 
         Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
@@ -83,26 +79,25 @@ class ReplaceTest {
         Card wrongCard = gameState.getDeck().pop();
 
         List<Card> cards = List.copyOf(player.getHand().getCards());
-        assertThrows(ActionException.class, () -> stateManager.executeAction(new Replace("1", Set.of(wrongCard, cards.get(1))), gameState, configuration));
+        assertThrows(GameStateException.class, () -> { new Replace("1", Set.of(wrongCard, cards.get(1))).apply(gameState, configuration); });
     }
 
     @Test
     @DisplayName("Player correctly replaces all cards")
-    void replaceAll() throws ActionException {
+    void replaceAll() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("1",true), gameState, configuration);
-        stateManager.executeAction(new Ready("2",true), gameState, configuration);
-        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+        new Ready("1",true).apply(gameState, configuration);
+        new Ready("2",true).apply(gameState, configuration);
+        new Ready("3",true).apply(gameState, configuration);
 
-        stateManager.executeAction(new Check("1"), gameState, configuration);
-        stateManager.executeAction(new Check("2"), gameState, configuration);
-        stateManager.executeAction(new Check("3"), gameState, configuration);
+        new Check("1").apply(gameState, configuration);
+        new Check("2").apply(gameState, configuration);
+        new Check("3").apply(gameState, configuration);
 
         Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
@@ -110,7 +105,7 @@ class ReplaceTest {
         int cardsInDeckBeforeReplace = gameState.getDeck().getCards().size();
 
         List<Card> cards = List.copyOf(player.getHand().getCards());
-        stateManager.executeAction(new Replace("1", Set.of(cards.get(0), cards.get(1), cards.get(2), cards.get(3), cards.get(4))), gameState, configuration);
+        new Replace("1", Set.of(cards.get(0), cards.get(1), cards.get(2), cards.get(3), cards.get(4))).apply(gameState, configuration);
         assertTrue(player.isReady());
         Hand hand = player.getHand();
         assertFalse(hand.getCards().contains(cards.get(0)));
@@ -126,21 +121,20 @@ class ReplaceTest {
 
     @Test
     @DisplayName("Player correctly replaces zero cards")
-    void replaceNone() throws ActionException {
+    void replaceNone() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
-        StateManager stateManager = new StateManagerImpl();
 
-        stateManager.executeAction(new Join("1"), gameState, configuration);
-        stateManager.executeAction(new Join("2"), gameState, configuration);
-        stateManager.executeAction(new Join("3"), gameState, configuration);
+        new Join("1").apply(gameState, configuration);
+        new Join("2").apply(gameState, configuration);
+        new Join("3").apply(gameState, configuration);
 
-        stateManager.executeAction(new Ready("1",true), gameState, configuration);
-        stateManager.executeAction(new Ready("2",true), gameState, configuration);
-        stateManager.executeAction(new Ready("3",true), gameState, configuration);
+        new Ready("1",true).apply(gameState, configuration);
+        new Ready("2",true).apply(gameState, configuration);
+        new Ready("3",true).apply(gameState, configuration);
 
-        stateManager.executeAction(new Check("1"), gameState, configuration);
-        stateManager.executeAction(new Check("2"), gameState, configuration);
-        stateManager.executeAction(new Check("3"), gameState, configuration);
+        new Check("1").apply(gameState, configuration);
+        new Check("2").apply(gameState, configuration);
+        new Check("3").apply(gameState, configuration);
 
         Player player = gameState.getCurrentPlayer();
         assertEquals("1", player.getId());
@@ -148,7 +142,7 @@ class ReplaceTest {
         int cardsInDeckBeforeReplace = gameState.getDeck().getCards().size();
 
         List<Card> cards = List.copyOf(player.getHand().getCards());
-        stateManager.executeAction(new Replace("1", Set.of()), gameState, configuration);
+        new Replace("1", Set.of()).apply(gameState, configuration);
         assertTrue(player.isReady());
         Hand hand = player.getHand();
         assertTrue(hand.getCards().containsAll(Set.of(cards.get(0), cards.get(1), cards.get(2), cards.get(3), cards.get(4))));

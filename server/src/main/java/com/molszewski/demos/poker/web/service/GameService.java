@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.service;
 
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameEngine;
 import com.molszewski.demos.poker.persistence.entity.GameSetup;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.persistence.repository.CommandRepository;
@@ -42,14 +42,14 @@ public class GameService {
                         .map(Record::getValue)
                         .collectList()
                         .flatMap(commands -> {
-                            Game game = gameSetup.toGame();
+                            GameEngine gameEngine = gameSetup.toGame();
                             for (Command command : commands) {
-                                boolean success = game.applyAction(command.toAction());
+                                boolean success = gameEngine.applyAction(command.toAction());
                                 if (!success) {
                                     log.warn("Illegal command found in stream");
                                 }
                             }
-                            boolean success = game.applyAction(newCommand.toAction());
+                            boolean success = gameEngine.applyAction(newCommand.toAction());
                             if (success) {
                                 return commandRepository.send(gameId, newCommand).thenReturn(new ActionResponse(newCommand.getPlayerId()));
                             }
@@ -78,7 +78,7 @@ public class GameService {
                                         GameResponse.Params.builder()
                                                 .gameId(gameId)
                                                 .myId(myId)
-                                                .game(game)
+                                                .gameEngine(game)
                                                 .history(commandCollector.getHistory())
                                                 .metadataCollector(commandCollector.getMetadataCollector())
                                                 .build()
@@ -100,7 +100,7 @@ public class GameService {
                                             GameResponse.Params.builder()
                                                     .gameId(gameId)
                                                     .myId(myId)
-                                                    .game(game)
+                                                    .gameEngine(game)
                                                     .history(history)
                                                     .metadataCollector(commandCollector.getMetadataCollector())
                                                     .build()
@@ -110,12 +110,12 @@ public class GameService {
                 );
     }
 
-    private List<HistoryEntry> processCommands(Game game, List<Command> commands, CommandCollector commandCollector) {
+    private List<HistoryEntry> processCommands(GameEngine gameEngine, List<Command> commands, CommandCollector commandCollector) {
         List<HistoryEntry> history = new ArrayList<>();
         for (Command command : commands) {
-            boolean success = game.applyAction(command.toAction());
+            boolean success = gameEngine.applyAction(command.toAction());
             if (success) {
-                commandCollector.processCommand(command, game);
+                commandCollector.processCommand(command, gameEngine);
             } else {
                 log.warn("Illegal command found in stream");
             }

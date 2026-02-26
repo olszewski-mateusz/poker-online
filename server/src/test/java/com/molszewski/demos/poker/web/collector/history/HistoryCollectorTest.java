@@ -3,7 +3,7 @@ package com.molszewski.demos.poker.web.collector.history;
 import com.molszewski.demos.poker.core.card.Card;
 import com.molszewski.demos.poker.core.card.Rank;
 import com.molszewski.demos.poker.core.card.Suit;
-import com.molszewski.demos.poker.core.game.Game;
+import com.molszewski.demos.poker.core.game.GameEngine;
 import com.molszewski.demos.poker.core.game.GameState;
 import com.molszewski.demos.poker.core.game.state.GamePhase;
 import com.molszewski.demos.poker.core.hand.Hand;
@@ -36,7 +36,7 @@ class HistoryCollectorTest {
     private MetadataCollector metadataCollector;
 
     @Mock
-    private Game game;
+    private GameEngine gameEngine;
 
     @Mock
     private GameState gameState;
@@ -50,14 +50,14 @@ class HistoryCollectorTest {
     @Test
     @DisplayName("Include command")
     void includeCommandTest() {
-        when(game.getPhase()).thenReturn(GamePhase.NOT_STARTED);
+        when(gameEngine.getPhase()).thenReturn(GamePhase.NOT_STARTED);
 
         JoinCommand command = new JoinCommand();
         command.setPlayerId("1");
         command.setDisplayName("test");
 
         metadataCollector.includeCommand(command);
-        historyCollector.includeCommand(command, metadataCollector, game);
+        historyCollector.includeCommand(command, metadataCollector, gameEngine);
         ActionEntry entry = (ActionEntry) historyCollector.getEntries().getFirst();
 
         assertEquals(1, historyCollector.getEntries().size());
@@ -68,21 +68,21 @@ class HistoryCollectorTest {
     @Test
     @DisplayName("Include raise command")
     void includeRaiseCommandTest() {
-        when(game.getPhase()).thenReturn(GamePhase.NOT_STARTED);
+        when(gameEngine.getPhase()).thenReturn(GamePhase.NOT_STARTED);
 
         JoinCommand joinCommand = new JoinCommand();
         joinCommand.setPlayerId("1");
         joinCommand.setDisplayName("test");
 
         metadataCollector.includeCommand(joinCommand);
-        historyCollector.includeCommand(joinCommand, metadataCollector, game);
+        historyCollector.includeCommand(joinCommand, metadataCollector, gameEngine);
 
         RaiseCommand raiseCommand = new RaiseCommand();
         raiseCommand.setPlayerId("1");
         raiseCommand.setAmount(100);
 
         metadataCollector.includeCommand(raiseCommand);
-        historyCollector.includeCommand(raiseCommand, metadataCollector, game);
+        historyCollector.includeCommand(raiseCommand, metadataCollector, gameEngine);
 
         ActionEntry entry = (ActionEntry) historyCollector.getEntries().get(1);
 
@@ -96,7 +96,7 @@ class HistoryCollectorTest {
     @Test
     @DisplayName("Include command phase changed")
     void includeCommandPhaseChangedTest() {
-        when(game.getPhase()).thenReturn(GamePhase.FIRST_BETTING);
+        when(gameEngine.getPhase()).thenReturn(GamePhase.FIRST_BETTING);
         metadataCollector.setBetPlacedInCurrentPhase(true);
 
         JoinCommand joinCommand = new JoinCommand();
@@ -104,7 +104,7 @@ class HistoryCollectorTest {
         joinCommand.setDisplayName("test");
 
         metadataCollector.includeCommand(joinCommand);
-        historyCollector.includeCommand(joinCommand, metadataCollector, game);
+        historyCollector.includeCommand(joinCommand, metadataCollector, gameEngine);
         ActionEntry actionEntry = (ActionEntry) historyCollector.getEntries().get(0);
         PhaseChangeEntry phaseChangeEntry = (PhaseChangeEntry) historyCollector.getEntries().get(1);
 
@@ -134,20 +134,20 @@ class HistoryCollectorTest {
         joinCommand.setPlayerId(id);
         joinCommand.setDisplayName(name);
 
-        when(game.getPhase()).thenReturn(GamePhase.NOT_STARTED);
+        when(gameEngine.getPhase()).thenReturn(GamePhase.NOT_STARTED);
 
         metadataCollector.includeCommand(joinCommand);
-        historyCollector.includeCommand(joinCommand, metadataCollector, game);
+        historyCollector.includeCommand(joinCommand, metadataCollector, gameEngine);
 
         when(gameState.getWinner()).thenReturn(Optional.of(winner));
-        when(game.getPhase()).thenReturn(GamePhase.SHOWDOWN);
-        when(game.getGameState()).thenReturn(gameState);
+        when(gameEngine.getPhase()).thenReturn(GamePhase.SHOWDOWN);
+        when(gameEngine.getGameState()).thenReturn(gameState);
 
         CheckCommand checkCommand = new CheckCommand();
         checkCommand.setPlayerId(id);
 
         metadataCollector.includeCommand(checkCommand);
-        historyCollector.includeCommand(checkCommand, metadataCollector, game);
+        historyCollector.includeCommand(checkCommand, metadataCollector, gameEngine);
 
         ActionEntry actionEntry = (ActionEntry) historyCollector.getEntries().get(1);
         PhaseChangeEntry phaseChangeEntry = (PhaseChangeEntry) historyCollector.getEntries().get(2);
@@ -175,20 +175,20 @@ class HistoryCollectorTest {
         joinCommand.setPlayerId(id);
         joinCommand.setDisplayName(name);
 
-        when(game.getPhase()).thenReturn(GamePhase.NOT_STARTED);
+        when(gameEngine.getPhase()).thenReturn(GamePhase.NOT_STARTED);
 
         metadataCollector.includeCommand(joinCommand);
-        historyCollector.includeCommand(joinCommand, metadataCollector, game);
+        historyCollector.includeCommand(joinCommand, metadataCollector, gameEngine);
 
         when(gameState.getWinner()).thenReturn(Optional.of(winner));
-        when(game.getPhase()).thenReturn(GamePhase.FINISHED);
-        when(game.getGameState()).thenReturn(gameState);
+        when(gameEngine.getPhase()).thenReturn(GamePhase.FINISHED);
+        when(gameEngine.getGameState()).thenReturn(gameState);
 
         CheckCommand checkCommand = new CheckCommand();
         checkCommand.setPlayerId(id);
 
         metadataCollector.includeCommand(checkCommand);
-        historyCollector.includeCommand(checkCommand, metadataCollector, game);
+        historyCollector.includeCommand(checkCommand, metadataCollector, gameEngine);
 
         ActionEntry actionEntry = (ActionEntry) historyCollector.getEntries().get(1);
         PhaseChangeEntry phaseChangeEntry = (PhaseChangeEntry) historyCollector.getEntries().get(2);
