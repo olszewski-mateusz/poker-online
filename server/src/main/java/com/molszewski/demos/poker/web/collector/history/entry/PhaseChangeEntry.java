@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.collector.history.entry;
 
-import com.molszewski.demos.poker.core.game.state.GamePhase;
+import com.molszewski.demos.poker.engine.game.state.GamePhase;
 import lombok.Getter;
 
 @Getter

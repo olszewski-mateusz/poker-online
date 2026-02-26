@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web;
 
-import com.molszewski.demos.poker.core.game.state.GamePhase;
+import com.molszewski.demos.poker.engine.game.state.GamePhase;
 import com.molszewski.demos.poker.test.EndToEndTest;
 import com.molszewski.demos.poker.web.model.request.CheckRequest;
 import com.molszewski.demos.poker.web.model.request.JoinRequest;

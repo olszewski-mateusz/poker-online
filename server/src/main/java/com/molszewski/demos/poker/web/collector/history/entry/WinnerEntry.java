@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.collector.history.entry;
 
-import com.molszewski.demos.poker.core.hand.HandType;
+import com.molszewski.demos.poker.engine.hand.HandType;
 import lombok.Getter;
 
 @Getter

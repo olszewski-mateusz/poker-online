@@ -1,8 +1,8 @@
 package com.molszewski.demos.poker.web.controller;
 
-import com.molszewski.demos.poker.core.card.Card;
-import com.molszewski.demos.poker.core.card.Rank;
-import com.molszewski.demos.poker.core.card.Suit;
+import com.molszewski.demos.poker.engine.card.Card;
+import com.molszewski.demos.poker.engine.card.Rank;
+import com.molszewski.demos.poker.engine.card.Suit;
 import com.molszewski.demos.poker.persistence.entity.command.*;
 import com.molszewski.demos.poker.test.IntegrationTest;
 import com.molszewski.demos.poker.web.model.request.*;

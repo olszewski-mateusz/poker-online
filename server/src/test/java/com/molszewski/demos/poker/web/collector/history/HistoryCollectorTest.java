@@ -1,14 +1,14 @@
 package com.molszewski.demos.poker.web.collector.history;
 
-import com.molszewski.demos.poker.core.card.Card;
-import com.molszewski.demos.poker.core.card.Rank;
-import com.molszewski.demos.poker.core.card.Suit;
-import com.molszewski.demos.poker.core.game.GameEngine;
-import com.molszewski.demos.poker.core.game.GameState;
-import com.molszewski.demos.poker.core.game.state.GamePhase;
-import com.molszewski.demos.poker.core.hand.Hand;
-import com.molszewski.demos.poker.core.hand.HandType;
-import com.molszewski.demos.poker.core.player.Player;
+import com.molszewski.demos.poker.engine.card.Card;
+import com.molszewski.demos.poker.engine.card.Rank;
+import com.molszewski.demos.poker.engine.card.Suit;
+import com.molszewski.demos.poker.engine.game.GameEngine;
+import com.molszewski.demos.poker.engine.game.GameState;
+import com.molszewski.demos.poker.engine.game.state.GamePhase;
+import com.molszewski.demos.poker.engine.hand.Hand;
+import com.molszewski.demos.poker.engine.hand.HandType;
+import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.persistence.entity.command.CheckCommand;
 import com.molszewski.demos.poker.persistence.entity.command.JoinCommand;
 import com.molszewski.demos.poker.persistence.entity.command.RaiseCommand;

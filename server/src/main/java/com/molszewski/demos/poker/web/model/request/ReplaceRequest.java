@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.model.request;
 
-import com.molszewski.demos.poker.core.card.Card;
+import com.molszewski.demos.poker.engine.card.Card;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 
 import java.util.Set;

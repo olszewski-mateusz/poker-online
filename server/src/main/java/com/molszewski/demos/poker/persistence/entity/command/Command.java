@@ -1,7 +1,7 @@
 package com.molszewski.demos.poker.persistence.entity.command;
 
-import com.molszewski.demos.poker.core.card.Card;
-import com.molszewski.demos.poker.core.game.state.action.Action;
+import com.molszewski.demos.poker.engine.card.Card;
+import com.molszewski.demos.poker.engine.game.state.action.Action;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

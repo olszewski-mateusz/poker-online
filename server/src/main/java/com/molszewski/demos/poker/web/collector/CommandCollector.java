@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.collector;
 
-import com.molszewski.demos.poker.core.game.GameEngine;
+import com.molszewski.demos.poker.engine.game.GameEngine;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.web.collector.history.HistoryCollector;
 import com.molszewski.demos.poker.web.collector.history.entry.HistoryEntry;

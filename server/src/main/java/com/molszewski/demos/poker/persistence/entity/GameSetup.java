@@ -1,9 +1,9 @@
 package com.molszewski.demos.poker.persistence.entity;
 
-import com.molszewski.demos.poker.core.deck.Deck;
-import com.molszewski.demos.poker.core.game.GameEngine;
-import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.GameState;
+import com.molszewski.demos.poker.engine.deck.Deck;
+import com.molszewski.demos.poker.engine.game.GameEngine;
+import com.molszewski.demos.poker.engine.game.GameConfiguration;
+import com.molszewski.demos.poker.engine.game.GameState;
 import lombok.Builder;
 
 import java.util.Random;

@@ -1,9 +1,9 @@
 package com.molszewski.demos.poker.web.model.response;
 
-import com.molszewski.demos.poker.core.card.Card;
-import com.molszewski.demos.poker.core.hand.Hand;
-import com.molszewski.demos.poker.core.hand.HandType;
-import com.molszewski.demos.poker.core.player.Player;
+import com.molszewski.demos.poker.engine.card.Card;
+import com.molszewski.demos.poker.engine.hand.Hand;
+import com.molszewski.demos.poker.engine.hand.HandType;
+import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.web.collector.metadata.PlayerMetadata;
 import lombok.Builder;
 

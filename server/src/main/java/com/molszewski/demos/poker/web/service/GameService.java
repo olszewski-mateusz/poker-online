@@ -1,6 +1,6 @@
 package com.molszewski.demos.poker.web.service;
 
-import com.molszewski.demos.poker.core.game.GameEngine;
+import com.molszewski.demos.poker.engine.game.GameEngine;
 import com.molszewski.demos.poker.persistence.entity.GameSetup;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
 import com.molszewski.demos.poker.persistence.repository.CommandRepository;

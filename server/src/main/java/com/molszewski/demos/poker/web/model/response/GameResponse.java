@@ -1,9 +1,9 @@
 package com.molszewski.demos.poker.web.model.response;
 
-import com.molszewski.demos.poker.core.game.GameEngine;
-import com.molszewski.demos.poker.core.game.GameConfiguration;
-import com.molszewski.demos.poker.core.game.state.GamePhase;
-import com.molszewski.demos.poker.core.player.Player;
+import com.molszewski.demos.poker.engine.game.GameEngine;
+import com.molszewski.demos.poker.engine.game.GameConfiguration;
+import com.molszewski.demos.poker.engine.game.state.GamePhase;
+import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.web.collector.history.entry.HistoryEntry;
 import com.molszewski.demos.poker.web.collector.metadata.MetadataCollector;
 import lombok.Builder;
