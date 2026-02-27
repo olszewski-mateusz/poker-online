@@ -68,6 +68,42 @@ class GameStateTest {
     }
 
     @Test
+    @DisplayName("No open bet when active players have equal committed bets")
+    void isBetPlacedInCurrentPhaseFalseForEqualActiveBets() {
+        GameState gameState = new GameState(null, List.of(
+                new Player("1", "1", 100, 5, false, false, null),
+                new Player("2", "2", 100, 5, false, false, null),
+                new Player("3", "3", 0, 2, true, false, null)
+        ));
+
+        assertFalse(gameState.isBetPlacedInCurrentPhase());
+    }
+
+    @Test
+    @DisplayName("Open bet when active players have different committed bets")
+    void isBetPlacedInCurrentPhaseTrueForDifferentActiveBets() {
+        GameState gameState = new GameState(null, List.of(
+                new Player("1", "1", 100, 5, false, false, null),
+                new Player("2", "2", 100, 10, false, false, null),
+                new Player("3", "3", 0, 10, true, false, null)
+        ));
+
+        assertTrue(gameState.isBetPlacedInCurrentPhase());
+    }
+
+    @Test
+    @DisplayName("Open bet when highest committed bet belongs to all in player")
+    void isBetPlacedInCurrentPhaseTrueWhenHighestBetIsAllInPlayer() {
+        GameState gameState = new GameState(null, List.of(
+                new Player("1", "1", 0, 30, true, false, null),
+                new Player("2", "2", 100, 20, false, false, null),
+                new Player("3", "3", 100, 30, false, false, null)
+        ));
+
+        assertTrue(gameState.isBetPlacedInCurrentPhase());
+    }
+
+    @Test
     @DisplayName("Get winners when showdown phase")
     void getWinnersShowdownTest() {
         Hand winnerHand = new Hand(Set.of(

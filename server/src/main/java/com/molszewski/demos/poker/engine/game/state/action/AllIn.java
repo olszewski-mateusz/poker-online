@@ -25,7 +25,7 @@ public final class AllIn extends Action {
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
-        boolean aggressiveActionAlreadyPlaced = gameState.getHistory().isBetPlacedInCurrentPhase();
+        boolean aggressiveActionAlreadyPlaced = gameState.isBetPlacedInCurrentPhase();
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
 

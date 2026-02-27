@@ -102,14 +102,28 @@ class JoinTest {
     }
 
     @Test
-    @DisplayName("Player joins in finished game and can ready up")
+    @DisplayName("Player joins in finished game folded and can ready up")
     void playerJoinsInFinishedGame() throws GameStateException {
         GameState gameState = new GameState(new Deck(random));
         gameState.setGamePhase(GamePhase.FINISHED);
 
         new Join("3", "3").apply(gameState, configuration);
         Player player = gameState.getPlayerById("3");
-        assertFalse(player.isFolded());
+        assertTrue(player.isFolded());
+        assertFalse(player.isReady());
+
+        assertDoesNotThrow(() -> new Ready("3", true).apply(gameState, configuration));
+    }
+
+    @Test
+    @DisplayName("Player joins in showdown folded and can ready up")
+    void playerJoinsInShowdownGame() throws GameStateException {
+        GameState gameState = new GameState(new Deck(random));
+        gameState.setGamePhase(GamePhase.SHOWDOWN);
+
+        new Join("3", "3").apply(gameState, configuration);
+        Player player = gameState.getPlayerById("3");
+        assertTrue(player.isFolded());
         assertFalse(player.isReady());
 
         assertDoesNotThrow(() -> new Ready("3", true).apply(gameState, configuration));

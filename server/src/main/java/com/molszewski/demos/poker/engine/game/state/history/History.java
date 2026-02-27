@@ -19,15 +19,10 @@ public class History {
     private final List<HistoryEntry> entries = new ArrayList<>();
 
     @Getter
-    private boolean betPlacedInCurrentPhase = false;
-    @Getter
     private int lastFullRaiseSizeInCurrentPhase = 0;
 
     public void addAction(Action action) {
         entries.add(new ActionEntry(action));
-        if (action instanceof Raise || action instanceof AllIn || action instanceof Bet) {
-            this.betPlacedInCurrentPhase = true;
-        }
     }
 
     public void addFlowStep(FlowStep step) {
@@ -53,8 +48,23 @@ public class History {
         if (raiseSize <= 0) {
             throw new IllegalArgumentException("raiseSize must be positive");
         }
-        this.betPlacedInCurrentPhase = true;
         this.lastFullRaiseSizeInCurrentPhase = raiseSize;
+    }
+
+    public boolean isBetPlacedInCurrentPhase() {
+        for (int i = entries.size() - 1; i >= 0; i--) {
+            HistoryEntry entry = entries.get(i);
+            if (entry instanceof PhaseChangeEntry) {
+                return false;
+            }
+            if (entry instanceof ActionEntry actionEntry) {
+                Action action = actionEntry.getAction();
+                if (action instanceof Raise || action instanceof AllIn || action instanceof Bet) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void onPhaseChanged(GameState state, GamePhase newPhase) {
@@ -73,7 +83,6 @@ public class History {
                     .ifPresent(winner -> this.entries.add(new GameWinnerEntry(winner.getId())));
         }
 
-        this.betPlacedInCurrentPhase = false;
         this.lastFullRaiseSizeInCurrentPhase = 0;
     }
 }

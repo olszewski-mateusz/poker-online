@@ -28,15 +28,9 @@ public final class Join extends Action {
     protected void execute(GameState gameState, GameConfiguration configuration) {
         gameState.getHistory().addAction(this);
         gameState.addPlayer(this.getPlayerId(), this.displayName, configuration.startChips());
-        if (isActiveRound(gameState.getGamePhase())) {
+        if (gameState.getGamePhase() != GamePhase.NOT_STARTED) {
             Player player = gameState.getPlayerById(this.getPlayerId());
             player.setFolded(true);
         }
-    }
-
-    private boolean isActiveRound(GamePhase gamePhase) {
-        return gamePhase == GamePhase.FIRST_BETTING
-                || gamePhase == GamePhase.DRAWING
-                || gamePhase == GamePhase.SECOND_BETTING;
     }
 }

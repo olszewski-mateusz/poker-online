@@ -47,6 +47,20 @@ public class GameState {
                 .orElseThrow(() -> new IllegalStateException("No player in game"));
     }
 
+    public boolean isBetPlacedInCurrentPhase() {
+        int highestCommittedBet = players.stream()
+                .filter(player -> !player.isFolded())
+                .mapToInt(Player::getBet)
+                .max()
+                .orElse(0);
+        if (highestCommittedBet == 0) {
+            return false;
+        }
+        return players.stream()
+                .filter(player -> !player.isFolded() && player.getChips() > 0)
+                .anyMatch(player -> player.getBet() < highestCommittedBet);
+    }
+
     public List<Player> getWinners() {
         if (gamePhase == GamePhase.SHOWDOWN) {
             List<Player> activePlayers = players.stream()

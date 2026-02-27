@@ -81,7 +81,7 @@ class HistoryTest {
     void registerFullRaiseSizeTest() {
         history.registerFullRaiseSize(15);
 
-        assertTrue(history.isBetPlacedInCurrentPhase());
+        assertFalse(history.isBetPlacedInCurrentPhase());
         assertEquals(15, history.getLastFullRaiseSizeInCurrentPhase());
     }
 

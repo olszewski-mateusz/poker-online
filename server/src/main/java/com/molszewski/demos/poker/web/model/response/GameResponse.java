@@ -61,7 +61,7 @@ public record GameResponse(
                         .map(entry -> HistoryEntryResponse.fromHistoryEntry(entry, context.state))
                         .filter(Objects::nonNull)
                         .toList())
-                .betPlacedInCurrentPhase(context.state.getHistory().isBetPlacedInCurrentPhase())
+                .betPlacedInCurrentPhase(context.state.isBetPlacedInCurrentPhase())
                 .configuration(context.configuration)
                 .build();
     }

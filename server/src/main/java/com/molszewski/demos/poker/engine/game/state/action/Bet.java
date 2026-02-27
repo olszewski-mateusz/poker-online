@@ -31,7 +31,7 @@ public final class Bet extends Action {
 
         Player player = gameState.getPlayerById(this.getPlayerId());
         int currentBet = gameState.getCurrentBet();
-        if (gameState.getHistory().isBetPlacedInCurrentPhase()) {
+        if (gameState.isBetPlacedInCurrentPhase()) {
             throw new GameStateException("Bet already placed in this phase. Use raise.");
         }
         if (currentBet != player.getBet()) {

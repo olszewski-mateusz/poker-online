@@ -3,6 +3,7 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
+import com.molszewski.demos.poker.engine.game.state.GamePhase;
 import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
@@ -122,25 +123,15 @@ class RaiseTest {
     @Test
     @DisplayName("When player raises - others are still ready (when they don't have chips)")
     void raiseNotChangesReadyStatus() throws GameStateException {
-        int betAmount = 2 * configuration.ante();
-        int raiseAmount = 4 * configuration.ante();
-        GameState gameState = new GameState(new Deck(random));
+        Player playerWithoutChips = new Player("1", "1", 0, 20, true, false, null);
+        Player raiser = new Player("2", "2", 100, 10, false, false, null);
+        Player otherPlayer = new Player("3", "3", 100, 20, true, false, null);
+        GameState gameState = new GameState(new Deck(random), java.util.List.of(playerWithoutChips, raiser, otherPlayer));
+        gameState.setGamePhase(GamePhase.FIRST_BETTING);
+        gameState.setCurrentPlayer(raiser);
 
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
-
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        Player player = gameState.getCurrentPlayer();
-        new Bet("1", betAmount).apply(gameState, configuration);
-
-        player.transferChipsToBet(player.getChips());
-        player.clearAndGetBet();
-        new Raise("2", raiseAmount).apply(gameState, configuration);
-        assertTrue(player.isReady());
+        new Raise("2", 30).apply(gameState, configuration);
+        assertTrue(playerWithoutChips.isReady());
     }
 
     @Test

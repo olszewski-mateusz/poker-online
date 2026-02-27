@@ -32,7 +32,7 @@ public final class Raise extends Action {
 
         Player player = gameState.getPlayerById(this.getPlayerId());
         int currentBet = gameState.getCurrentBet();
-        if (!gameState.getHistory().isBetPlacedInCurrentPhase()) {
+        if (!gameState.isBetPlacedInCurrentPhase()) {
             throw new GameStateException("No bet placed in this phase. Use bet.");
         }
         int minimumRaiseTo = minimumRaiseTo(gameState, configuration, currentBet);
