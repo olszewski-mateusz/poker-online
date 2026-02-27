@@ -18,7 +18,9 @@ import {
   GamePhase,
   HistoryEntry,
   isActionEntry, isGameWinnerEntry,
+  isPotWinnerEntry,
   isPhaseChangeEntry,
+  isShowdownSummaryEntry,
   isWinnerEntry,
   translateHandType
 } from '../../../model';
@@ -79,40 +81,42 @@ export class HistoryComponent {
 
   private buildHistoryEntries(game: Game): string[] {
     const entries: string[] = [];
-    let betPlaced: boolean = false;
     for (const entry of game.history) {
-      entries.push(this.translateHistoryEntry(entry, betPlaced));
-
-      if (isPhaseChangeEntry(entry) && (entry.details === GamePhase.FIRST_BETTING || entry.details === GamePhase.SECOND_BETTING)) {
-        betPlaced = false;
-      }
-
-      if (isActionEntry(entry) && (entry.entryType === ActionType.RAISE || entry.entryType === ActionType.ALL_IN)) {
-        betPlaced = true;
-      }
+      entries.push(this.translateHistoryEntry(entry));
     }
     return entries;
   }
 
-  private translateHistoryEntry(entry: HistoryEntry, betPlaced: boolean): string {
+  private translateHistoryEntry(entry: HistoryEntry): string {
     if (isPhaseChangeEntry(entry)) {
       return this.translateGamePhaseToEntry(entry.details);
     } else if (isWinnerEntry(entry)) {
       return `${entry.details.playerName} wins with ${translateHandType(entry.details.handType)}`;
     } else if (isGameWinnerEntry(entry)) {
       return `${entry.details.playerName} is game winner!`;
+    } else if (isPotWinnerEntry(entry)) {
+      return `Pot #${entry.details.potIndex} (${entry.details.potAmount}) won by ${entry.details.winnerNames.join(', ')}`;
+    } else if (isShowdownSummaryEntry(entry)) {
+      const winners: string = entry.details.winners
+        .map(winner => `${winner.playerName} (${translateHandType(winner.handType)})`)
+        .join(', ');
+      return `Showdown summary: ${entry.details.pots.length} pot(s), winners: ${winners}`;
     } else if (isActionEntry(entry)) {
       switch (entry.entryType) {
         case ActionType.JOIN:
           return `${entry.details.playerName} joins`;
         case ActionType.ALL_IN:
           return `${entry.details.playerName} goes all in!`;
+        case ActionType.BET:
+          return `${entry.details.playerName} bets ${entry.details.value}`;
+        case ActionType.CALL:
+          return `${entry.details.playerName} calls`;
         case ActionType.CHECK:
-          return entry.details.playerName + (betPlaced ? ' calls' : ' checks');
+          return `${entry.details.playerName} checks`;
         case ActionType.FOLD:
           return `${entry.details.playerName} folds`;
         case ActionType.RAISE:
-          return entry.details.playerName + (betPlaced ? ' raises to ' : ' bets ') + entry.details.value;
+          return `${entry.details.playerName} raises to ${entry.details.value}`;
         case ActionType.READY:
           return `${entry.details.playerName} is ${entry.details.value === true ? '' : 'not'} ready`;
         case ActionType.REPLACE: {

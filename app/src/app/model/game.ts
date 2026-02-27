@@ -8,7 +8,7 @@ export type Game = {
   configuration: Configuration
   phase: GamePhase
   currentPlayerIndex?: number
-  winnerIndex?: number
+  winnerIndexes: number[]
   myId: string
   myIndex: number
   gameId: string
@@ -34,7 +34,7 @@ export function buildMyTurnSignal(gameSignal: Signal<Game>): Signal<boolean> {
 export type Player = {
   index: number
   name: string
-  money: number
+  chips: number
   bet: number
   ready: boolean
   folded: boolean
@@ -44,8 +44,11 @@ export type Player = {
 
 export type Configuration = {
   minPlayersToStart: number
-  startMoney: number
+  startChips: number
   ante: number
+  minOpenBet: number
+  minRaiseIncrement: number
+  minRaiseToCurrentBetMultiplier: number
 }
 
 export enum GamePhase {

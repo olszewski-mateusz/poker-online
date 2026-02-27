@@ -34,11 +34,11 @@ export class PlayerSelectionComponent {
   }
 
   showAllInIcon(player: Player): boolean {
-    return !player.folded && player.money === 0 &&
+    return !player.folded && player.chips === 0 &&
       (this.game().phase === GamePhase.FIRST_BETTING || this.game().phase === GamePhase.SECOND_BETTING);
   }
 
   showWinnerIcon(player: Player): boolean {
-    return this.game().phase === GamePhase.SHOWDOWN && player.index === this.game().winnerIndex;
+    return this.game().phase === GamePhase.SHOWDOWN && this.game().winnerIndexes.includes(player.index);
   }
 }

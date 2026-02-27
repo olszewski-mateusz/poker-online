@@ -37,13 +37,26 @@ export class ApiRestService {
     });
   }
 
-  sendCheckOrCall(gameId: string, playerId: string): Observable<never> {
+  sendCheck(gameId: string, playerId: string): Observable<never> {
     return <Observable<never>> this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/check`,{
       playerId: playerId
     });
   }
 
-  sendBetOrRaise(gameId: string, playerId: string, amount: number): Observable<never> {
+  sendCall(gameId: string, playerId: string): Observable<never> {
+    return <Observable<never>> this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/call`,{
+      playerId: playerId
+    });
+  }
+
+  sendBet(gameId: string, playerId: string, amount: number): Observable<never> {
+    return <Observable<never>> this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/bet`,{
+      playerId: playerId,
+      amount: amount
+    });
+  }
+
+  sendRaise(gameId: string, playerId: string, amount: number): Observable<never> {
     return <Observable<never>> this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/raise`,{
       playerId: playerId,
       amount: amount

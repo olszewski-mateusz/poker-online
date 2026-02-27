@@ -61,6 +61,6 @@ export class ActionsComponent {
   }
 
   actionsForShowdown(): boolean {
-    return this.game().phase === GamePhase.SHOWDOWN;
+    return this.game().phase === GamePhase.SHOWDOWN || this.game().phase === GamePhase.FINISHED;
   }
 }

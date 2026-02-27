@@ -48,12 +48,16 @@ export class BettingActionsComponent {
         return Math.max(a, b);
       }, 0);
 
-    return currentBet - (this.myPlayer()?.bet ?? 0) >= (this.myPlayer()?.money ?? 0);
+    return currentBet - (this.myPlayer()?.bet ?? 0) > (this.myPlayer()?.chips ?? 0);
   });
 
   sendCheckOrCall(): void {
     const game: Game = this.game();
-    this.apiRestService.sendCheckOrCall(game.gameId, game.myId).subscribe();
+    if (this.betPlaced()) {
+      this.apiRestService.sendCall(game.gameId, game.myId).subscribe();
+    } else {
+      this.apiRestService.sendCheck(game.gameId, game.myId).subscribe();
+    }
   }
 
   sendAllIn(): void {

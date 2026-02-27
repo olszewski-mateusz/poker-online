@@ -42,12 +42,25 @@ export class ChipsAmountSetterComponent {
   });
 
   protected readonly minBet: Signal<number> = computed(() => {
-    return 2 * this.game().players.map(p => p.bet)
+    const game: Game = this.game();
+    const currentBet: number = game.players.map(p => p.bet)
       .reduce((a, b) => Math.max(a, b), 0);
+
+    if (this.betPlaced()) {
+      const byIncrement: number = currentBet + game.configuration.minRaiseIncrement;
+      const byMultiplier: number = currentBet * game.configuration.minRaiseToCurrentBetMultiplier;
+      return Math.max(byIncrement, byMultiplier);
+    }
+
+    return Math.max(game.configuration.minOpenBet, currentBet + 1);
   });
 
   protected readonly maxBet: Signal<number> = computed(() => {
-    return this.myPlayer()?.money ?? this.minBet();
+    const player: Player | undefined = this.myPlayer();
+    if (!player) {
+      return this.minBet();
+    }
+    return player.bet + player.chips;
   });
 
   protected readonly raiseIllegal: Signal<boolean> = computed(() => {
@@ -74,7 +87,11 @@ export class ChipsAmountSetterComponent {
 
   sendBetOrRaise(): void {
     const game: Game = this.game();
-    this.apiRestService.sendBetOrRaise(game.gameId, game.myId, this.amount()).subscribe();
+    if (this.betPlaced()) {
+      this.apiRestService.sendRaise(game.gameId, game.myId, this.amount()).subscribe();
+    } else {
+      this.apiRestService.sendBet(game.gameId, game.myId, this.amount()).subscribe();
+    }
     this.cancelRequest.emit();
   }
 
