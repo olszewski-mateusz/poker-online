@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,8 +68,8 @@ class GameStateTest {
     }
 
     @Test
-    @DisplayName("Get winner when showdown phase")
-    void getWinnerShowdownTest() {
+    @DisplayName("Get winners when showdown phase")
+    void getWinnersShowdownTest() {
         Hand winnerHand = new Hand(Set.of(
                 new Card(Rank.TWO, Suit.CLUBS),
                 new Card(Rank.THREE, Suit.CLUBS),
@@ -94,14 +93,70 @@ class GameStateTest {
         GameState gameState = new GameState(null, List.of(winnerPlayer, foldedPlayer, loserPlayer));
         gameState.setGamePhase(GamePhase.SHOWDOWN);
 
-        Optional<Player> result = gameState.getWinner();
-        assertTrue(result.isPresent());
-        assertSame(winnerPlayer, result.get());
+        List<Player> winners = gameState.getWinners();
+        assertEquals(1, winners.size());
+        assertSame(winnerPlayer, winners.getFirst());
     }
 
     @Test
-    @DisplayName("Get winner when finished phase")
-    void getWinnerFinishedTest() {
+    @DisplayName("Get winners when showdown has tie")
+    void getWinnersShowdownTieTest() {
+        Hand sharedStrengthA = new Hand(Set.of(
+                new Card(Rank.ACE, Suit.CLUBS),
+                new Card(Rank.KING, Suit.CLUBS),
+                new Card(Rank.NINE, Suit.CLUBS),
+                new Card(Rank.SEVEN, Suit.CLUBS),
+                new Card(Rank.THREE, Suit.CLUBS)
+        ));
+        Hand sharedStrengthB = new Hand(Set.of(
+                new Card(Rank.ACE, Suit.SPADES),
+                new Card(Rank.KING, Suit.SPADES),
+                new Card(Rank.NINE, Suit.SPADES),
+                new Card(Rank.SEVEN, Suit.SPADES),
+                new Card(Rank.THREE, Suit.SPADES)
+        ));
+        Hand weakerHand = new Hand(Set.of(
+                new Card(Rank.ACE, Suit.HEARTS),
+                new Card(Rank.KING, Suit.HEARTS),
+                new Card(Rank.NINE, Suit.HEARTS),
+                new Card(Rank.SEVEN, Suit.HEARTS),
+                new Card(Rank.TWO, Suit.HEARTS)
+        ));
+
+        Player winnerA = new Player("1", "1", 100, 100, false, false, sharedStrengthA);
+        Player winnerB = new Player("2", "2", 100, 100, false, false, sharedStrengthB);
+        Player loser = new Player("3", "3", 100, 100, false, false, weakerHand);
+
+        GameState gameState = new GameState(null, List.of(winnerA, winnerB, loser));
+        gameState.setGamePhase(GamePhase.SHOWDOWN);
+
+        List<Player> winners = gameState.getWinners();
+        assertEquals(2, winners.size());
+        assertEquals(List.of(winnerA, winnerB), winners);
+    }
+
+    @Test
+    @DisplayName("Showdown throws when active player has no hand")
+    void getWinnersShowdownMissingHandThrows() {
+        Hand hand = new Hand(Set.of(
+                new Card(Rank.ACE, Suit.CLUBS),
+                new Card(Rank.KING, Suit.CLUBS),
+                new Card(Rank.NINE, Suit.CLUBS),
+                new Card(Rank.SEVEN, Suit.CLUBS),
+                new Card(Rank.THREE, Suit.CLUBS)
+        ));
+        Player playerWithHand = new Player("1", "1", 100, 100, false, false, hand);
+        Player playerWithoutHand = new Player("2", "2", 100, 100, false, false, null);
+        GameState gameState = new GameState(null, List.of(playerWithHand, playerWithoutHand));
+        gameState.setGamePhase(GamePhase.SHOWDOWN);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, gameState::getWinners);
+        assertEquals("Showdown invariant violated: non-folded player without hand", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Get winners when finished phase")
+    void getWinnersFinishedTest() {
         Player winner = new Player("winner", "winner", 100, 100, false, false, null);
         GameState gameState = new GameState(null, List.of(
                 new Player("1", "1", 100, 100, false, true, null),
@@ -112,18 +167,32 @@ class GameStateTest {
         ));
         gameState.setGamePhase(GamePhase.FINISHED);
 
-        Optional<Player> result = gameState.getWinner();
-        assertTrue(result.isPresent());
-        assertSame(winner, result.get());
+        List<Player> winners = gameState.getWinners();
+        assertEquals(1, winners.size());
+        assertSame(winner, winners.getFirst());
     }
 
     @Test
-    @DisplayName("Get winner when in game phase")
-    void getWinnerEmptyTest() {
+    @DisplayName("Get winners when in game phase")
+    void getWinnersEmptyTest() {
         GameState gameState = new GameState(null, List.of());
         gameState.setGamePhase(GamePhase.DRAWING);
-        Optional<Player> result = gameState.getWinner();
-        assertTrue(result.isEmpty());
+        List<Player> winners = gameState.getWinners();
+        assertTrue(winners.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Finished throws when more than one player is active")
+    void getWinnersFinishedMultipleActiveThrows() {
+        GameState gameState = new GameState(null, List.of(
+                new Player("1", "1", 100, 100, false, false, null),
+                new Player("2", "2", 100, 100, false, false, null),
+                new Player("3", "3", 100, 100, false, true, null)
+        ));
+        gameState.setGamePhase(GamePhase.FINISHED);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, gameState::getWinners);
+        assertEquals("Finished invariant violated: expected exactly one non-folded player", exception.getMessage());
     }
 
     @Test

@@ -4,12 +4,12 @@ import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
 import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
 import com.molszewski.demos.poker.engine.game.state.history.History;
+import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 @Getter
 public class GameState {
@@ -47,22 +47,46 @@ public class GameState {
                 .orElseThrow(() -> new IllegalStateException("No player in game"));
     }
 
-    public Optional<Player> getWinner() {
+    public List<Player> getWinners() {
         if (gamePhase == GamePhase.SHOWDOWN) {
-            return players.stream()
-                    .filter(p -> !p.isFolded() && p.getHand() != null)
-                    .max(Comparator.comparing(Player::getHand));
-        } else if (gamePhase == GamePhase.FINISHED) {
-            return players.stream().filter(p -> !p.isFolded()).findFirst();
+            List<Player> activePlayers = players.stream()
+                    .filter(player -> !player.isFolded())
+                    .toList();
+            if (activePlayers.isEmpty()) {
+                return List.of();
+            }
+            if (activePlayers.stream().anyMatch(player -> player.getHand() == null)) {
+                throw new IllegalStateException("Showdown invariant violated: non-folded player without hand");
+            }
+            if (activePlayers.size() == 1) {
+                return activePlayers;
+            }
+
+            Hand bestHand = activePlayers.stream()
+                    .map(Player::getHand)
+                    .max(Hand::compareTo)
+                    .orElseThrow();
+            return activePlayers.stream()
+                    .filter(player -> player.getHand().compareTo(bestHand) == 0)
+                    .toList();
         }
-        return Optional.empty();
+        if (gamePhase == GamePhase.FINISHED) {
+            List<Player> activePlayers = players.stream()
+                    .filter(player -> !player.isFolded())
+                    .toList();
+            if (activePlayers.size() != 1) {
+                throw new IllegalStateException("Finished invariant violated: expected exactly one non-folded player");
+            }
+            return activePlayers;
+        }
+        return List.of();
     }
 
-    public void addPlayer(String playerId, String displayName, int startMoney) {
+    public void addPlayer(String playerId, String displayName, int startChips) {
         if (playerExists(playerId)) {
             throw new IllegalStateException("Player already in game");
         }
-        players.add(new Player(playerId, displayName, startMoney));
+        players.add(new Player(playerId, displayName, startChips));
     }
 
     public void validatePhase(Set<GamePhase> correctPhases) throws GameStateException {
@@ -73,6 +97,9 @@ public class GameState {
 
     public void validateCurrentPlayer(String playerId) throws GameStateException {
         Player player = getCurrentPlayer();
+        if (player == null) {
+            throw new GameStateException("No current player selected");
+        }
         if (player.getId().equals(playerId)) {
             if (player.isReady()) {
                 throw new GameStateException(String.format("Player %s is ready", player.getId()));

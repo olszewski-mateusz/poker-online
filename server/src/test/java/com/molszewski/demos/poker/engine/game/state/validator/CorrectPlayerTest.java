@@ -63,5 +63,16 @@ class CorrectPlayerTest {
         assertThrows(GameStateException.class, () -> gameState.validateCurrentPlayer("1"));
     }
 
+    @Test
+    @DisplayName("No current player validation")
+    void validateNoCurrentPlayerThrowsTest() {
+        GameState gameState = new GameState(null, List.of(
+                new Player("1", "1", 100, 100, false, false, null),
+                new Player("2", "2", 100, 100, false, false, null)
+        ));
+
+        assertThrows(GameStateException.class, () -> gameState.validateCurrentPlayer("1"));
+    }
+
 }
 

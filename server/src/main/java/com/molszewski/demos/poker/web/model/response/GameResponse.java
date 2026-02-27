@@ -1,6 +1,5 @@
 package com.molszewski.demos.poker.web.model.response;
 
-import com.molszewski.demos.poker.engine.game.GameEngine;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
@@ -19,7 +18,7 @@ public record GameResponse(
         Integer myIndex,
         GamePhase phase,
         Integer currentPlayerIndex,
-        Integer winnerIndex,
+        List<Integer> winnerIndexes,
         List<PlayerResponse> players,
         List<HistoryEntryResponse> history,
         int cardsInDeck,
@@ -37,10 +36,10 @@ public record GameResponse(
                 .map(context.state::getPlayerIndex)
                 .orElse(null);
 
-        Integer winnerIndex = context.state.getWinner()
+        List<Integer> winnerIndexes = context.state.getWinners().stream()
                 .map(Player::getId)
                 .map(context.state::getPlayerIndex)
-                .orElse(null);
+                .toList();
 
         return GameResponse.builder()
                 .gameId(context.gameId)
@@ -48,7 +47,7 @@ public record GameResponse(
                 .myIndex(context.state.getPlayerIndex(context.myId))
                 .phase(context.state.getGamePhase())
                 .currentPlayerIndex(currentPlayerIndex)
-                .winnerIndex(winnerIndex)
+                .winnerIndexes(winnerIndexes)
                 .players(IntStream.range(0, players.size())
                         .mapToObj(index -> {
                             Player player = players.get(index);

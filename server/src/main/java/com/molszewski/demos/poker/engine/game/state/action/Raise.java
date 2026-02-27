@@ -32,11 +32,15 @@ public final class Raise extends Action {
 
         Player player = gameState.getPlayerById(this.getPlayerId());
         int currentBet = gameState.getCurrentBet();
-        if (amount < 2 * currentBet) {
-            throw new GameStateException("Must raise at least double of the current bet");
+        if (!gameState.getHistory().isBetPlacedInCurrentPhase()) {
+            throw new GameStateException("No bet placed in this phase. Use bet.");
         }
-        if (amount - player.getBet() > player.getMoney()) {
-            throw new GameStateException("Must have money for raise.");
+        int minimumRaiseTo = minimumRaiseTo(gameState, configuration, currentBet);
+        if (amount < minimumRaiseTo) {
+            throw new GameStateException("Must raise to at least " + minimumRaiseTo + " chips");
+        }
+        if (amount - player.getBet() > player.getChips()) {
+            throw new GameStateException("Must have chips for raise.");
         }
     }
 
@@ -44,13 +48,26 @@ public final class Raise extends Action {
     protected void execute(GameState gameState, GameConfiguration configuration) {
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
+        int oldCurrentBet = gameState.getCurrentBet();
         gameState.getPlayers().forEach(p -> {
-            if (p.getMoney() > 0) {
+            if (p.getChips() > 0) {
                 p.setReady(false);
             }
         });
         player.setReady(true);
-        player.transferMoneyToBet(amount - player.getBet());
+        player.transferChipsToBet(amount - player.getBet());
+        gameState.getHistory().registerFullRaiseSize(gameState.getCurrentBet() - oldCurrentBet);
         ActionFlow.nextTurn(gameState);
+    }
+
+    static int minimumRaiseTo(GameState gameState, GameConfiguration configuration, int currentBet) {
+        int minimumRaiseIncrement = Math.max(
+                configuration.minRaiseIncrement(),
+                gameState.getHistory().getLastFullRaiseSizeInCurrentPhase()
+        );
+        long minimumRaiseToByIncrement = (long) currentBet + minimumRaiseIncrement;
+        long minimumRaiseToByMultiplier = (long) currentBet * configuration.minRaiseToCurrentBetMultiplier();
+        long minimumRaiseTo = Math.max(minimumRaiseToByIncrement, minimumRaiseToByMultiplier);
+        return (int) Math.min(minimumRaiseTo, Integer.MAX_VALUE);
     }
 }

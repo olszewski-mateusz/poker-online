@@ -37,6 +37,20 @@ public class ActionController {
                 .onErrorReturn(ResponseEntity.badRequest().build());
     }
 
+    @PostMapping("/call")
+    public Mono<ResponseEntity<ActionResponse>> call(@PathVariable String gameId, @RequestBody CallRequest request) {
+        return gameService.handleCommand(gameId, request.toCommand())
+                .map(ResponseEntity::ok)
+                .onErrorReturn(ResponseEntity.badRequest().build());
+    }
+
+    @PostMapping("/bet")
+    public Mono<ResponseEntity<ActionResponse>> bet(@PathVariable String gameId, @RequestBody BetRequest request) {
+        return gameService.handleCommand(gameId, request.toCommand())
+                .map(ResponseEntity::ok)
+                .onErrorReturn(ResponseEntity.badRequest().build());
+    }
+
     @PostMapping("/all-in")
     public Mono<ResponseEntity<ActionResponse>> allIn(@PathVariable String gameId, @RequestBody AllInRequest request) {
         return gameService.handleCommand(gameId, request.toCommand())

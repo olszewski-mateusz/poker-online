@@ -6,7 +6,7 @@ import com.molszewski.demos.poker.engine.game.state.exception.GameStateException
 import lombok.Getter;
 
 @Getter
-public abstract sealed class Action permits Join, Ready, Check, Raise, Fold, Replace, AllIn {
+public abstract sealed class Action permits Join, Ready, Check, Call, Bet, Raise, Fold, Replace, AllIn {
     private final String playerId;
 
     protected Action(String playerId) {

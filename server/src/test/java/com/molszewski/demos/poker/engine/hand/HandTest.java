@@ -125,10 +125,10 @@ class HandTest {
 
         Hand handB = new Hand(
                 Set.of(
-                        new Card(Rank.ACE, Suit.CLUBS),
+                        new Card(Rank.ACE, Suit.DIAMONDS),
                         new Card(Rank.JACK, Suit.DIAMONDS),
-                        new Card(Rank.FIVE, Suit.CLUBS),
-                        new Card(Rank.TWO, Suit.HEARTS),
+                        new Card(Rank.FIVE, Suit.HEARTS),
+                        new Card(Rank.KING, Suit.HEARTS),
                         new Card(Rank.JACK, Suit.CLUBS)
                 )
         );

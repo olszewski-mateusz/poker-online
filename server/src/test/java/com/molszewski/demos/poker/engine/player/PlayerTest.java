@@ -18,45 +18,45 @@ class PlayerTest {
     }
 
     @Test
-    @DisplayName("Transfer money correctly")
+    @DisplayName("Transfer chips correctly")
     void transferMoneyTest() {
-        int moneyBeforeTransfer = player.getMoney();
+        int chipsBeforeTransfer = player.getChips();
         int betBeforeTransfer = player.getBet();
         int transferAmount = 50;
 
-        player.transferMoneyToBet(transferAmount);
+        player.transferChipsToBet(transferAmount);
 
-        assertEquals(moneyBeforeTransfer - transferAmount, player.getMoney());
+        assertEquals(chipsBeforeTransfer - transferAmount, player.getChips());
         assertEquals(betBeforeTransfer + transferAmount, player.getBet());
     }
 
     @Test
-    @DisplayName("Transfer negative money - throws error")
+    @DisplayName("Transfer negative chips - throws error")
     void transferMoneyNegativeTest() {
-        assertThrows(IllegalArgumentException.class, () -> player.transferMoneyToBet(-1));
+        assertThrows(IllegalArgumentException.class, () -> player.transferChipsToBet(-1));
     }
 
     @Test
-    @DisplayName("Transfer not enough money - throws error")
+    @DisplayName("Transfer not enough chips - throws error")
     void transferMoneyNotEnoughTest() {
-        int moneyToTransfer = player.getMoney() + 1;
-        assertThrows(IllegalArgumentException.class, () -> player.transferMoneyToBet(moneyToTransfer));
+        int chipsToTransfer = player.getChips() + 1;
+        assertThrows(IllegalArgumentException.class, () -> player.transferChipsToBet(chipsToTransfer));
     }
 
     @Test
-    @DisplayName("Add money correctly")
-    void addMoneyTest() {
-        int moneyBeforeTransfer = player.getMoney();
+    @DisplayName("Add chips correctly")
+    void addChipsTest() {
+        int chipsBeforeTransfer = player.getChips();
         int transferAmount = 50;
 
-        player.addMoney(transferAmount);
-        assertEquals(moneyBeforeTransfer + transferAmount, player.getMoney());
+        player.addChips(transferAmount);
+        assertEquals(chipsBeforeTransfer + transferAmount, player.getChips());
     }
 
     @Test
-    @DisplayName("Add negative money - throws error")
-    void addMoneyNegativeTest() {
-        assertThrows(IllegalArgumentException.class, () -> player.addMoney(-1));
+    @DisplayName("Add negative chips - throws error")
+    void addChipsNegativeTest() {
+        assertThrows(IllegalArgumentException.class, () -> player.addChips(-1));
     }
 
     @Test
@@ -78,7 +78,7 @@ class PlayerTest {
         assertNotSame(player, copy);
         assertEquals(player.getId(), copy.getId());
         assertEquals(player.getName(), copy.getName());
-        assertEquals(player.getMoney(), copy.getMoney());
+        assertEquals(player.getChips(), copy.getChips());
         assertEquals(player.getBet(), copy.getBet());
         assertEquals(player.isReady(), copy.isReady());
         assertEquals(player.isFolded(), copy.isFolded());

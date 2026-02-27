@@ -23,8 +23,8 @@ public final class Check extends Action{
         gameState.validateCurrentPlayer(getPlayerId());
 
         Player player = gameState.getPlayerById(this.getPlayerId());
-        if (gameState.getCurrentBet() - player.getBet() > player.getMoney()) {
-            throw new GameStateException("Not having money for check. Use all in or fold.");
+        if (gameState.getCurrentBet() != player.getBet()) {
+            throw new GameStateException("Cannot check while behind current bet. Use call, all in or fold.");
         }
     }
 
@@ -33,7 +33,6 @@ public final class Check extends Action{
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setReady(true);
-        player.transferMoneyToBet(gameState.getCurrentBet() - player.getBet());
         ActionFlow.nextTurn(gameState);
     }
 }

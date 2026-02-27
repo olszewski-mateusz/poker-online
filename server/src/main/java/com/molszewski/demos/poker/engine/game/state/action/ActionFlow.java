@@ -2,11 +2,19 @@ package com.molszewski.demos.poker.engine.game.state.action;
 
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
+import com.molszewski.demos.poker.engine.game.pot.Pot;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
 import com.molszewski.demos.poker.engine.game.state.history.FlowStep;
+import com.molszewski.demos.poker.engine.game.state.history.ShowdownSummaryEntry;
+import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 final class ActionFlow {
     private ActionFlow() {
@@ -19,11 +27,8 @@ final class ActionFlow {
 
             if (state.getPlayers().stream().filter(player -> !player.isFolded()).count() == 1 ||
                     state.getGamePhase().equals(GamePhase.DRAWING) &&
-                            state.getPlayers().stream().filter(player -> !player.isFolded() && player.getMoney() > 0).count() <= 1) {
-
-                state.setGamePhase(GamePhase.SHOWDOWN);
-                state.getPlayers().forEach(player -> player.setReady(false));
-                state.setCurrentPlayer(null);
+                            state.getPlayers().stream().filter(player -> !player.isFolded() && player.getChips() > 0).count() <= 1) {
+                transitionToShowdownAndSettle(state);
                 return;
             }
 
@@ -35,15 +40,13 @@ final class ActionFlow {
                 case DRAWING -> {
                     state.setGamePhase(GamePhase.SECOND_BETTING);
                     state.getPlayers().forEach(player -> {
-                        if (player.getMoney() > 0) {
+                        if (player.getChips() > 0) {
                             player.setReady(false);
                         }
                     });
                 }
                 case SECOND_BETTING -> {
-                    state.setGamePhase(GamePhase.SHOWDOWN);
-                    state.getPlayers().forEach(player -> player.setReady(false));
-                    state.setCurrentPlayer(null);
+                    transitionToShowdownAndSettle(state);
                 }
                 default -> throw new IllegalStateException("Unexpected phase: " + state.getGamePhase());
             }
@@ -73,7 +76,7 @@ final class ActionFlow {
         List<Player> playersInGame;
         if (state.getGamePhase().equals(GamePhase.FIRST_BETTING) || state.getGamePhase().equals(GamePhase.SECOND_BETTING)) {
             playersInGame = players.stream()
-                    .filter(player -> (!player.isFolded() && player.getMoney() > 0) || player == currentPlayer)
+                    .filter(player -> (!player.isFolded() && player.getChips() > 0) || player == currentPlayer)
                     .toList();
         } else {
             playersInGame = players.stream()
@@ -86,35 +89,187 @@ final class ActionFlow {
 
     private static void applyStartGame(GameState state, GameConfiguration configuration) {
         if (state.getGamePhase().equals(GamePhase.SHOWDOWN)) {
+            if (hasCommittedBets(state)) {
+                distributePots(state);
+            } else if (state.getWinners().isEmpty()) {
+                throw new IllegalStateException("No winner found in game");
+            }
             reorderPlayers(state);
-            collectBet(state);
         }
         state.getPlayers().forEach(player -> player.setFolded(false));
         state.getPlayers().forEach(player -> player.setReady(false));
-        disablePlayersWithoutMoney(state);
-        state.setCurrentPlayer(state.getPlayers().stream().filter(player -> !player.isFolded()).findFirst().orElse(null));
+        disablePlayersWithoutChips(state);
         if (isGameFinished(state)) {
+            state.setCurrentPlayer(state.getPlayers().stream().filter(player -> !player.isFolded()).findFirst().orElse(null));
             state.setGamePhase(GamePhase.FINISHED);
             return;
         }
         state.setGamePhase(GamePhase.FIRST_BETTING);
         giveCardsToPlayers(state);
         collectAnte(state, configuration);
+        markPlayersWithoutChipsReady(state);
+        state.setCurrentPlayer(findCurrentPlayerForBetting(state));
+
+        // When everyone is all-in after ante, skip betting and continue with draw.
+        if (state.getCurrentPlayer() == null) {
+            state.setGamePhase(GamePhase.DRAWING);
+            state.getPlayers().stream()
+                    .filter(player -> !player.isFolded())
+                    .forEach(player -> player.setReady(false));
+            state.setCurrentPlayer(state.getPlayers().stream()
+                    .filter(player -> !player.isFolded())
+                    .findFirst()
+                    .orElse(null));
+        }
     }
 
     private static boolean isGameFinished(GameState state) {
         return state.getPlayers().stream().filter(player -> !player.isFolded()).count() == 1;
     }
 
-    private static void collectBet(GameState state) {
-        Player winner = state.getWinner().orElseThrow(() -> new IllegalStateException("No winner found in game"));
-        int collectedMoney = state.getPlayers().stream().map(Player::clearAndGetBet).reduce(0, Integer::sum);
-        winner.addMoney(collectedMoney);
+    private static boolean hasCommittedBets(GameState state) {
+        return state.getPlayers().stream().anyMatch(player -> player.getBet() > 0);
     }
 
-    private static void disablePlayersWithoutMoney(GameState state) {
+    private static void transitionToShowdownAndSettle(GameState state) {
+        state.setGamePhase(GamePhase.SHOWDOWN);
+        distributePots(state);
+        state.getPlayers().forEach(player -> player.setReady(false));
+        state.setCurrentPlayer(null);
+    }
+
+    private static void distributePots(GameState state) {
+        if (state.getWinners().isEmpty()) {
+            throw new IllegalStateException("No winner found in game");
+        }
+
+        List<Pot> pots = buildPotsFromCommittedBets(state);
+        List<ShowdownSummaryEntry.PotSummary> potSummaries = new ArrayList<>();
+        Map<String, ShowdownSummaryEntry.PlayerSummary> winnerSummaries = new LinkedHashMap<>();
+        for (int i = 0; i < pots.size(); i++) {
+            Pot pot = pots.get(i);
+            List<Player> potWinners = resolvePotWinners(pot);
+            List<String> winnerIds = potWinners.stream().map(Player::getId).toList();
+            state.getHistory().addPotWinner(
+                    i + 1,
+                    pot.amount(),
+                    winnerIds
+            );
+            potSummaries.add(new ShowdownSummaryEntry.PotSummary(i + 1, pot.amount(), winnerIds));
+            for (Player winner : potWinners) {
+                winnerSummaries.putIfAbsent(
+                        winner.getId(),
+                        new ShowdownSummaryEntry.PlayerSummary(
+                                winner.getId(),
+                                winner.getHand() == null ? null : winner.getHand().getHandType(),
+                                winner.getHand() == null ? List.of() : winner.getHand().getKeyCards()
+                        )
+                );
+            }
+            distributePot(state, pot, potWinners);
+        }
+        if (winnerSummaries.isEmpty()) {
+            state.getWinners().forEach(winner -> winnerSummaries.putIfAbsent(
+                    winner.getId(),
+                    new ShowdownSummaryEntry.PlayerSummary(
+                            winner.getId(),
+                            winner.getHand() == null ? null : winner.getHand().getHandType(),
+                            winner.getHand() == null ? List.of() : winner.getHand().getKeyCards()
+                    )
+            ));
+        }
+        winnerSummaries.values().forEach(winner ->
+                state.getHistory().addWinner(winner.playerId(), winner.handType(), winner.keyCards())
+        );
+        state.getHistory().addShowdownSummary(potSummaries, winnerSummaries.values().stream().toList());
+
+        state.getPlayers().forEach(Player::clearAndGetBet);
+    }
+
+    private static List<Pot> buildPotsFromCommittedBets(GameState state) {
+        List<Player> players = state.getPlayers();
+        List<Integer> potLevels = players.stream()
+                .map(Player::getBet)
+                .filter(committedBet -> committedBet > 0)
+                .distinct()
+                .sorted()
+                .toList();
+
+        List<Pot> pots = new ArrayList<>();
+        int previousPotLevel = 0;
+        for (Integer currentPotLevel : potLevels) {
+            int currentPotUnit = currentPotLevel - previousPotLevel;
+            if (currentPotUnit <= 0) {
+                continue;
+            }
+
+            List<Player> potContributors = players.stream()
+                    .filter(player -> player.getBet() >= currentPotLevel)
+                    .toList();
+            int potAmount = potContributors.size() * currentPotUnit;
+            if (potAmount == 0) {
+                previousPotLevel = currentPotLevel;
+                continue;
+            }
+
+            List<Player> eligiblePlayers = potContributors.stream()
+                    .filter(player -> !player.isFolded())
+                    .toList();
+            if (eligiblePlayers.isEmpty()) {
+                throw new IllegalStateException("No eligible players for a non-empty pot");
+            }
+
+            pots.add(new Pot(potAmount, potContributors, eligiblePlayers));
+            previousPotLevel = currentPotLevel;
+        }
+        return pots;
+    }
+
+    private static List<Player> resolvePotWinners(Pot pot) {
+        List<Player> eligiblePlayers = pot.eligiblePlayers();
+        if (eligiblePlayers.size() == 1) {
+            return eligiblePlayers;
+        }
+
+        if (eligiblePlayers.stream().anyMatch(player -> player.getHand() == null)) {
+            throw new IllegalStateException("Cannot resolve winner without hand during showdown");
+        }
+
+        Hand bestHand = eligiblePlayers.stream()
+                .map(Player::getHand)
+                .max(Hand::compareTo)
+                .orElseThrow();
+
+        return eligiblePlayers.stream()
+                .filter(player -> player.getHand().compareTo(bestHand) == 0)
+                .toList();
+    }
+
+    private static void distributePot(GameState state, Pot pot, List<Player> winners) {
+        int potAmount = pot.amount();
+        int splitShare = potAmount / winners.size();
+        int remaining = potAmount % winners.size();
+        winners.forEach(player -> player.addChips(splitShare));
+
+        if (remaining == 0) {
+            return;
+        }
+
+        Set<Player> winnersSet = new HashSet<>(winners);
+        for (Player player : state.getPlayers()) {
+            if (remaining == 0) {
+                break;
+            }
+            if (winnersSet.contains(player)) {
+                player.addChips(1);
+                remaining--;
+            }
+        }
+    }
+
+    private static void disablePlayersWithoutChips(GameState state) {
         state.getPlayers().stream()
-                .filter(player -> player.getMoney() == 0)
+                .filter(player -> player.getChips() == 0)
                 .forEach(player -> player.setFolded(true));
     }
 
@@ -137,8 +292,20 @@ final class ActionFlow {
 
     private static void collectAnte(GameState state, GameConfiguration configuration) {
         for (Player player : state.getPlayers().stream().filter(player -> !player.isFolded()).toList()) {
-            player.transferMoneyToBet(configuration.ante());
+            player.transferChipsToBet(Math.min(player.getChips(), configuration.ante()));
         }
     }
-}
 
+    private static void markPlayersWithoutChipsReady(GameState state) {
+        state.getPlayers().stream()
+                .filter(player -> !player.isFolded() && player.getChips() == 0)
+                .forEach(player -> player.setReady(true));
+    }
+
+    private static Player findCurrentPlayerForBetting(GameState state) {
+        return state.getPlayers().stream()
+                .filter(player -> !player.isFolded() && player.getChips() > 0)
+                .findFirst()
+                .orElse(null);
+    }
+}

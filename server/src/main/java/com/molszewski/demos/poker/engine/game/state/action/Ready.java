@@ -23,7 +23,7 @@ public final class Ready extends Action {
 
     @Override
     protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
-        gameState.validatePhase(Set.of(GamePhase.NOT_STARTED, GamePhase.SHOWDOWN));
+        gameState.validatePhase(Set.of(GamePhase.NOT_STARTED, GamePhase.SHOWDOWN, GamePhase.FINISHED));
         if (!gameState.playerExists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
         }

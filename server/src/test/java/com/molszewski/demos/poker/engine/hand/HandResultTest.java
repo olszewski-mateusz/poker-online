@@ -85,6 +85,20 @@ class HandResultTest {
     }
 
     @Test
+    @DisplayName("Correct hand - wheel straight")
+    void wheelStraightTest() {
+        HandResult result = new HandResult(Set.of(
+                new Card(Rank.ACE, Suit.HEARTS),
+                new Card(Rank.TWO, Suit.CLUBS),
+                new Card(Rank.THREE, Suit.DIAMONDS),
+                new Card(Rank.FOUR, Suit.SPADES),
+                new Card(Rank.FIVE, Suit.HEARTS)
+        ));
+
+        assertEquals(HandType.STRAIGHT, result.getHandType());
+    }
+
+    @Test
     @DisplayName("Correct hand - flush")
     void flushTest() {
         HandResult result = new HandResult(Set.of(
@@ -224,6 +238,72 @@ class HandResultTest {
         assertTrue(resultA.compareTo(resultB) < 0);
         assertTrue(resultB.compareTo(resultC) < 0);
         assertTrue(resultA.compareTo(resultC) < 0);
+    }
+
+    @Test
+    @DisplayName("Compare hands - high card with equal highest card uses next kicker")
+    void compareHighCardKickerTest() {
+        HandResult resultA = new HandResult(Set.of(
+                new Card(Rank.ACE, Suit.HEARTS),
+                new Card(Rank.KING, Suit.SPADES),
+                new Card(Rank.NINE, Suit.CLUBS),
+                new Card(Rank.FOUR, Suit.DIAMONDS),
+                new Card(Rank.TWO, Suit.HEARTS)
+        ));
+
+        HandResult resultB = new HandResult(Set.of(
+                new Card(Rank.ACE, Suit.SPADES),
+                new Card(Rank.QUEEN, Suit.HEARTS),
+                new Card(Rank.NINE, Suit.DIAMONDS),
+                new Card(Rank.FOUR, Suit.CLUBS),
+                new Card(Rank.TWO, Suit.SPADES)
+        ));
+
+        assertTrue(resultA.compareTo(resultB) > 0);
+    }
+
+    @Test
+    @DisplayName("Compare hands - same pair with different kickers")
+    void comparePairKickerTest() {
+        HandResult resultA = new HandResult(Set.of(
+                new Card(Rank.JACK, Suit.HEARTS),
+                new Card(Rank.JACK, Suit.SPADES),
+                new Card(Rank.ACE, Suit.CLUBS),
+                new Card(Rank.NINE, Suit.DIAMONDS),
+                new Card(Rank.THREE, Suit.HEARTS)
+        ));
+
+        HandResult resultB = new HandResult(Set.of(
+                new Card(Rank.JACK, Suit.DIAMONDS),
+                new Card(Rank.JACK, Suit.CLUBS),
+                new Card(Rank.KING, Suit.HEARTS),
+                new Card(Rank.NINE, Suit.SPADES),
+                new Card(Rank.THREE, Suit.DIAMONDS)
+        ));
+
+        assertTrue(resultA.compareTo(resultB) > 0);
+    }
+
+    @Test
+    @DisplayName("Compare hands - wheel straight loses against six-high straight")
+    void compareWheelStraightWithRegularStraightTest() {
+        HandResult resultA = new HandResult(Set.of(
+                new Card(Rank.ACE, Suit.HEARTS),
+                new Card(Rank.TWO, Suit.CLUBS),
+                new Card(Rank.THREE, Suit.DIAMONDS),
+                new Card(Rank.FOUR, Suit.SPADES),
+                new Card(Rank.FIVE, Suit.HEARTS)
+        ));
+
+        HandResult resultB = new HandResult(Set.of(
+                new Card(Rank.TWO, Suit.HEARTS),
+                new Card(Rank.THREE, Suit.CLUBS),
+                new Card(Rank.FOUR, Suit.DIAMONDS),
+                new Card(Rank.FIVE, Suit.SPADES),
+                new Card(Rank.SIX, Suit.HEARTS)
+        ));
+
+        assertTrue(resultA.compareTo(resultB) < 0);
     }
 
     @Test

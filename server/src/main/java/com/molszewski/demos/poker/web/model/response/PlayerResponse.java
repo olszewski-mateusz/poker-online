@@ -13,7 +13,7 @@ import java.util.Set;
 public record PlayerResponse(
         int index,
         String name,
-        int money,
+        int chips,
         int bet,
         boolean ready,
         boolean folded,
@@ -24,7 +24,7 @@ public record PlayerResponse(
         return  PlayerResponse.builder()
                 .index(index)
                 .name(player.getName())
-                .money(player.getMoney())
+                .chips(player.getChips())
                 .bet(player.getBet())
                 .ready(player.isReady())
                 .folded(player.isFolded())

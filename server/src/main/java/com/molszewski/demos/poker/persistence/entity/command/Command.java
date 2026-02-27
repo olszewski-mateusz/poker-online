@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract sealed class Command permits AllInCommand, CheckCommand, FoldCommand, JoinCommand, RaiseCommand, ReadyCommand, ReplaceCommand {
+public abstract sealed class Command permits AllInCommand, BetCommand, CallCommand, CheckCommand, FoldCommand, JoinCommand, RaiseCommand, ReadyCommand, ReplaceCommand {
     private String playerId;
     private String timestamp = LocalDateTime.now().toString();
 
@@ -36,6 +36,14 @@ public abstract sealed class Command permits AllInCommand, CheckCommand, FoldCom
 
     public static Command check(String playerId) {
         return new CheckCommand(playerId);
+    }
+
+    public static Command call(String playerId) {
+        return new CallCommand(playerId);
+    }
+
+    public static Command bet(String playerId, int amount) {
+        return new BetCommand(playerId, amount);
     }
 
     public static Command fold(String playerId) {

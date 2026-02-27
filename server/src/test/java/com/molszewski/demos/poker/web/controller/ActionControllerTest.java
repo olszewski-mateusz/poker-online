@@ -170,6 +170,92 @@ class ActionControllerTest {
     }
 
     @Test
+    @DisplayName("Call action success")
+    void callSuccessTest() {
+        String myId = "player";
+        String playerId = "player-id";
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
+
+        CallRequest callRequest = new CallRequest(playerId);
+        webClient.post().uri("/api/game/test/action/call")
+                .bodyValue(callRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals(myId, actionResponse.myId()));
+
+        verify(gameService, times(1)).handleCommand(eq("test"), argThat(
+                command -> command instanceof CallCommand callCommand &&
+                        callCommand.getPlayerId().equals(playerId)
+        ));
+    }
+
+    @Test
+    @DisplayName("Call action bad request")
+    void callBadRequestTest() {
+        String playerId = "player-id";
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
+
+        CallRequest callRequest = new CallRequest(playerId);
+        webClient.post().uri("/api/game/test/action/call")
+                .bodyValue(callRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest();
+
+        verify(gameService, times(1)).handleCommand(eq("test"), argThat(
+                command -> command instanceof CallCommand callCommand &&
+                        callCommand.getPlayerId().equals(playerId)
+        ));
+    }
+
+    @Test
+    @DisplayName("Bet action success")
+    void betSuccessTest() {
+        String myId = "player";
+        String playerId = "player-id";
+        int amount = 100;
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
+
+        BetRequest betRequest = new BetRequest(playerId, amount);
+        webClient.post().uri("/api/game/test/action/bet")
+                .bodyValue(betRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals(myId, actionResponse.myId()));
+
+        verify(gameService, times(1)).handleCommand(eq("test"), argThat(
+                command -> command instanceof BetCommand betCommand &&
+                        betCommand.getPlayerId().equals(playerId) &&
+                        betCommand.getAmount() == amount
+        ));
+    }
+
+    @Test
+    @DisplayName("Bet action bad request")
+    void betBadRequestTest() {
+        String playerId = "player-id";
+        int amount = 100;
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
+
+        BetRequest betRequest = new BetRequest(playerId, amount);
+        webClient.post().uri("/api/game/test/action/bet")
+                .bodyValue(betRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest();
+
+        verify(gameService, times(1)).handleCommand(eq("test"), argThat(
+                command -> command instanceof BetCommand betCommand &&
+                        betCommand.getPlayerId().equals(playerId) &&
+                        betCommand.getAmount() == amount
+        ));
+    }
+
+    @Test
     @DisplayName("All in action success")
     void allInSuccessTest() {
         String myId = "player";

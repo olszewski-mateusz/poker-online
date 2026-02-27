@@ -25,17 +25,23 @@ public final class AllIn extends Action {
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
+        boolean aggressiveActionAlreadyPlaced = gameState.getHistory().isBetPlacedInCurrentPhase();
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
 
         int oldBet = gameState.getCurrentBet();
 
-        player.transferMoneyToBet(player.getMoney());
+        player.transferChipsToBet(player.getChips());
 
         int newBet = gameState.getCurrentBet();
-        if (newBet > oldBet) {
+        int betIncrease = newBet - oldBet;
+        int minimumRaiseTo = Raise.minimumRaiseTo(gameState, configuration, oldBet);
+        boolean isFullRaise = betIncrease > 0
+                && (!aggressiveActionAlreadyPlaced || newBet >= minimumRaiseTo);
+        if (isFullRaise) {
+            gameState.getHistory().registerFullRaiseSize(betIncrease);
             gameState.getPlayers().forEach(p -> {
-                if (p.getMoney() > 0) {
+                if (p.getChips() > 0) {
                     p.setReady(false);
                 }
             });
