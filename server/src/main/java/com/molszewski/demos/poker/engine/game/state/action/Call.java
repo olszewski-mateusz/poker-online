@@ -3,7 +3,8 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.action.step.ActionSteps;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.player.Player;
 
@@ -15,7 +16,7 @@ public final class Call extends Action {
     }
 
     @Override
-    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+    protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
         gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING));
         if (!gameState.playerExists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
@@ -23,12 +24,12 @@ public final class Call extends Action {
         gameState.validateCurrentPlayer(getPlayerId());
 
         Player player = gameState.getPlayerById(getPlayerId());
-        int amountToCall = gameState.getCurrentBet() - player.getBet();
-        if (amountToCall <= 0) {
-            throw new GameStateException("No chips to call. Use check.");
+        int amountToCall = gameState.getPotState().getMaxContribution() - gameState.getPotState().getPlayerContribution(player);
+        if (amountToCall == 0) {
+            throw new ActionValidationException("No chips to call. Use check.");
         }
         if (amountToCall > player.getChips()) {
-            throw new GameStateException("Not enough chips to call. Use all in or fold.");
+            throw new ActionValidationException("Not enough chips to call. Use all in or fold.");
         }
     }
 
@@ -37,7 +38,7 @@ public final class Call extends Action {
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setReady(true);
-        player.transferChipsToBet(gameState.getCurrentBet() - player.getBet());
-        ActionFlow.nextTurn(gameState);
+        gameState.getPotState().addCall(player);
+        ActionSteps.nextTurn(gameState);
     }
 }

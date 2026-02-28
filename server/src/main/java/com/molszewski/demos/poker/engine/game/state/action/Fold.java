@@ -3,7 +3,8 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.action.step.ActionSteps;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.player.Player;
 
@@ -16,7 +17,7 @@ public final class Fold extends Action {
     }
 
     @Override
-    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+    protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
         gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING));
         if (!gameState.playerExists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
@@ -29,6 +30,6 @@ public final class Fold extends Action {
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setFolded(true);
-        ActionFlow.nextTurn(gameState);
+        ActionSteps.nextTurn(gameState);
     }
 }

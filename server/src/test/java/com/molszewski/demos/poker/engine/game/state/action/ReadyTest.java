@@ -3,7 +3,7 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
@@ -21,7 +21,7 @@ class ReadyTest {
 
     @Test
     @DisplayName("1 of 3 players is ready")
-    void onePlayerReady() throws GameStateException {
+    void onePlayerReady() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
@@ -35,7 +35,7 @@ class ReadyTest {
 
     @Test
     @DisplayName("3 of 4 players are ready")
-    void morePlayerReady() throws GameStateException {
+    void morePlayerReady() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
@@ -52,7 +52,7 @@ class ReadyTest {
 
     @Test
     @DisplayName("Player ready again - throws error")
-    void playerReadyTwoTimes() throws GameStateException {
+    void playerReadyTwoTimes() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
@@ -60,26 +60,26 @@ class ReadyTest {
         new Join("3", "3").apply(gameState, configuration);
 
         new Ready("2", true).apply(gameState, configuration);
-        assertThrows(GameStateException.class,
+        assertThrows(ActionValidationException.class,
                 () -> { new Ready("2", true).apply(gameState, configuration); });
     }
 
     @Test
     @DisplayName("Player not ready again - throws error")
-    void playerNotReady() throws GameStateException {
+    void playerNotReady() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
         new Join("2", "2").apply(gameState, configuration);
         new Join("3", "3").apply(gameState, configuration);
 
-        assertThrows(GameStateException.class,
+        assertThrows(ActionValidationException.class,
                 () -> { new Ready("2", false).apply(gameState, configuration); });
     }
 
     @Test
     @DisplayName("Player is correctly not ready")
-    void playerReadyThenNotReady() throws GameStateException {
+    void playerReadyThenNotReady() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
@@ -94,7 +94,7 @@ class ReadyTest {
 
     @Test
     @DisplayName("Unknown player is ready")
-    void unknownPlayerReady() throws GameStateException {
+    void unknownPlayerReady() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);

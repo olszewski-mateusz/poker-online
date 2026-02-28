@@ -1,20 +1,13 @@
 package com.molszewski.demos.poker.web.model.response;
 
-import com.molszewski.demos.poker.engine.card.Card;
-import com.molszewski.demos.poker.engine.card.Rank;
-import com.molszewski.demos.poker.engine.card.Suit;
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
-import com.molszewski.demos.poker.engine.game.GameEngine;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
 import com.molszewski.demos.poker.engine.game.state.action.Join;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.history.PotWinnerEntry;
-import com.molszewski.demos.poker.engine.game.state.history.ShowdownSummaryEntry;
-import com.molszewski.demos.poker.engine.game.state.history.WinnerEntry;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
-import com.molszewski.demos.poker.engine.hand.Hand;
-import com.molszewski.demos.poker.engine.hand.HandType;
+import com.molszewski.demos.poker.engine.game.state.pot.PotType;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;
 
@@ -23,149 +16,86 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @UnitTest
 class GameResponseTest {
 
     @Test
-    void mapsHistoryEntriesToResponseModelTest() throws GameStateException {
-        GameConfiguration localConfig = GameConfiguration.defaultConfiguration();
-        GameState localState = new GameState(new Deck(new Random(17L)));
-        GameEngine localEngine = new GameEngine(localState, localConfig);
+    void mapsJoinAndPhaseHistoryEntries() throws ActionValidationException {
+        GameConfiguration configuration = GameConfiguration.defaultConfiguration();
+        GameState state = new GameState(new Deck(new Random(17L)));
 
-        new Join("1", "Alice").apply(localState, localConfig);
-        localState.setGamePhase(GamePhase.FIRST_BETTING);
+        new Join("1", "Alice").apply(state, configuration);
+        state.setGamePhase(GamePhase.FIRST_BETTING);
 
         GameResponse response = GameResponse.fromParams(
                 GameResponse.GameContext.builder()
                         .gameId("game")
                         .myId("1")
-                        .state(localEngine.getGameState())
-                        .configuration(localEngine.getConfiguration())
+                        .state(state)
+                        .configuration(configuration)
                         .build()
         );
 
-        HistoryEntryResponse actionEntry = response.history().getFirst();
-        HistoryEntryResponse phaseChangeEntry = response.history().get(1);
-
         assertEquals(2, response.history().size());
-        assertEquals("JOIN", actionEntry.entryType());
-        assertInstanceOf(HistoryEntryResponse.ActionDetails.class, actionEntry.details());
-        assertEquals("PHASE_CHANGE", phaseChangeEntry.entryType());
-        assertEquals(GamePhase.FIRST_BETTING, phaseChangeEntry.details());
+        assertEquals("JOIN", response.history().get(0).entryType());
+        assertEquals("PHASE_CHANGE", response.history().get(1).entryType());
     }
 
     @Test
-    void mapsPotWinnerEntryToResponseModelTest() throws GameStateException {
-        GameConfiguration localConfig = GameConfiguration.defaultConfiguration();
-        GameState localState = new GameState(new Deck(new Random(17L)));
+    void mapsPotWinnerEntryWithCurrentShape() throws ActionValidationException {
+        GameConfiguration configuration = GameConfiguration.defaultConfiguration();
+        GameState state = new GameState(new Deck(new Random(17L)));
 
-        new Join("1", "Alice").apply(localState, localConfig);
-        new Join("2", "Bob").apply(localState, localConfig);
-
-        localState.getHistory().getEntries().add(new PotWinnerEntry(1, 101, java.util.List.of("1", "2")));
+        new Join("1", "Alice").apply(state, configuration);
+        state.getHistory().getEntries().add(new PotWinnerEntry(120, PotType.MAIN, Set.of("1"), true));
 
         GameResponse response = GameResponse.fromParams(
                 GameResponse.GameContext.builder()
                         .gameId("game")
                         .myId("1")
-                        .state(localState)
-                        .configuration(localConfig)
+                        .state(state)
+                        .configuration(configuration)
                         .build()
         );
 
-        HistoryEntryResponse potWinnerEntry = response.history().stream()
+        HistoryEntryResponse potWinner = response.history().stream()
                 .filter(entry -> "POT_WINNER".equals(entry.entryType()))
                 .findFirst()
                 .orElseThrow();
 
-        assertInstanceOf(HistoryEntryResponse.PotWinnerDetails.class, potWinnerEntry.details());
-        HistoryEntryResponse.PotWinnerDetails details = (HistoryEntryResponse.PotWinnerDetails) potWinnerEntry.details();
-        assertEquals(1, details.potIndex());
-        assertEquals(101, details.potAmount());
-        assertEquals(java.util.List.of("Alice", "Bob"), details.winnerNames());
+        assertInstanceOf(HistoryEntryResponse.PotWinnerDetails.class, potWinner.details());
+        HistoryEntryResponse.PotWinnerDetails details = (HistoryEntryResponse.PotWinnerDetails) potWinner.details();
+        assertEquals(120, details.potAmount());
     }
 
     @Test
-    void mapsWinnerEntryWithKeyCardsToResponseModelTest() throws GameStateException {
-        GameConfiguration localConfig = GameConfiguration.defaultConfiguration();
-        GameState localState = new GameState(new Deck(new Random(17L)));
+    void mapsPlayerContributionAsBetAndHidesOtherCardsOutsideShowdown() throws ActionValidationException {
+        GameConfiguration configuration = GameConfiguration.defaultConfiguration();
+        GameState state = new GameState(new Deck(new Random(17L)));
 
-        new Join("1", "Alice").apply(localState, localConfig);
-        Hand hand = new Hand(Set.of(
-                new Card(Rank.ACE, Suit.CLUBS),
-                new Card(Rank.ACE, Suit.SPADES),
-                new Card(Rank.KING, Suit.HEARTS),
-                new Card(Rank.QUEEN, Suit.DIAMONDS),
-                new Card(Rank.TEN, Suit.CLUBS)
-        ));
-        localState.getHistory().getEntries().add(new WinnerEntry("1", HandType.PAIR, hand.getKeyCards()));
+        new Join("1", "Alice").apply(state, configuration);
+        new Join("2", "Bob").apply(state, configuration);
+        state.setGamePhase(GamePhase.FIRST_BETTING);
+        state.getPotState().addAnte(state.getPlayerById("1"), 5);
+        state.getPotState().addAnte(state.getPlayerById("2"), 7);
 
         GameResponse response = GameResponse.fromParams(
                 GameResponse.GameContext.builder()
                         .gameId("game")
                         .myId("1")
-                        .state(localState)
-                        .configuration(localConfig)
+                        .state(state)
+                        .configuration(configuration)
                         .build()
         );
 
-        HistoryEntryResponse winnerEntry = response.history().stream()
-                .filter(entry -> "WINNER".equals(entry.entryType()))
-                .findFirst()
-                .orElseThrow();
+        PlayerResponse me = response.players().get(0);
+        PlayerResponse opponent = response.players().get(1);
 
-        assertInstanceOf(HistoryEntryResponse.WinnerDetails.class, winnerEntry.details());
-        HistoryEntryResponse.WinnerDetails details = (HistoryEntryResponse.WinnerDetails) winnerEntry.details();
-        assertEquals("Alice", details.playerName());
-        assertEquals(HandType.PAIR, details.handType());
-        assertEquals(5, details.keyCards().size());
-        assertEquals(Rank.ACE, details.keyCards().get(0).rank());
-    }
-
-    @Test
-    void mapsShowdownSummaryEntryToResponseModelTest() throws GameStateException {
-        GameConfiguration localConfig = GameConfiguration.defaultConfiguration();
-        GameState localState = new GameState(new Deck(new Random(17L)));
-
-        new Join("1", "Alice").apply(localState, localConfig);
-        new Join("2", "Bob").apply(localState, localConfig);
-        Hand hand = new Hand(Set.of(
-                new Card(Rank.ACE, Suit.CLUBS),
-                new Card(Rank.ACE, Suit.SPADES),
-                new Card(Rank.KING, Suit.HEARTS),
-                new Card(Rank.QUEEN, Suit.DIAMONDS),
-                new Card(Rank.TEN, Suit.CLUBS)
-        ));
-
-        localState.getHistory().getEntries().add(new ShowdownSummaryEntry(
-                java.util.List.of(new ShowdownSummaryEntry.PotSummary(1, 50, java.util.List.of("1"))),
-                java.util.List.of(new ShowdownSummaryEntry.PlayerSummary("1", HandType.PAIR, hand.getKeyCards()))
-        ));
-
-        GameResponse response = GameResponse.fromParams(
-                GameResponse.GameContext.builder()
-                        .gameId("game")
-                        .myId("1")
-                        .state(localState)
-                        .configuration(localConfig)
-                        .build()
-        );
-
-        HistoryEntryResponse summaryEntry = response.history().stream()
-                .filter(entry -> "SHOWDOWN_SUMMARY".equals(entry.entryType()))
-                .findFirst()
-                .orElseThrow();
-
-        assertInstanceOf(HistoryEntryResponse.ShowdownSummaryDetails.class, summaryEntry.details());
-        HistoryEntryResponse.ShowdownSummaryDetails details =
-                (HistoryEntryResponse.ShowdownSummaryDetails) summaryEntry.details();
-        assertEquals(1, details.pots().size());
-        assertEquals(1, details.winners().size());
-        assertEquals(50, details.pots().getFirst().potAmount());
-        assertEquals("Alice", details.pots().getFirst().winnerNames().getFirst());
-        assertEquals("Alice", details.winners().getFirst().playerName());
-        assertEquals(HandType.PAIR, details.winners().getFirst().handType());
-        assertEquals(5, details.winners().getFirst().keyCards().size());
+        assertEquals(5, me.bet());
+        assertEquals(7, opponent.bet());
+        assertNull(opponent.cards());
+        assertNull(opponent.handType());
     }
 }

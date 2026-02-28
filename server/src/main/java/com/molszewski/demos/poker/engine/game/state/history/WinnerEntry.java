@@ -9,12 +9,8 @@ import java.util.List;
 @Getter
 public class WinnerEntry extends HistoryEntry {
     private final String playerId;
-    private final HandType handType;
-    private final List<Card> keyCards;
 
-    public WinnerEntry(String playerId, HandType handType, List<Card> keyCards) {
+    public WinnerEntry(String playerId) {
         this.playerId = playerId;
-        this.handType = handType;
-        this.keyCards = List.copyOf(keyCards);
     }
 }

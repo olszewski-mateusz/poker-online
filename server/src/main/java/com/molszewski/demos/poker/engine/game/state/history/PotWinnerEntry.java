@@ -1,18 +1,21 @@
 package com.molszewski.demos.poker.engine.game.state.history;
 
+import com.molszewski.demos.poker.engine.game.state.pot.PotType;
 import lombok.Getter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 public class PotWinnerEntry extends HistoryEntry {
-    private final int potIndex;
+    private final PotType potType;
     private final int potAmount;
-    private final List<String> winnerIds;
+    private final Set<String> winnerIds;
+    private final boolean showdown;
 
-    public PotWinnerEntry(int potIndex, int potAmount, List<String> winnerIds) {
-        this.potIndex = potIndex;
+    public PotWinnerEntry(int potAmount, PotType potType, Set<String> winnerIds, boolean showdown) {
         this.potAmount = potAmount;
-        this.winnerIds = List.copyOf(winnerIds);
+        this.winnerIds = Set.copyOf(winnerIds);
+        this.potType = potType;
+        this.showdown = showdown;
     }
 }

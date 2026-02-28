@@ -1,7 +1,7 @@
 package com.molszewski.demos.poker.engine.game;
 
 import com.molszewski.demos.poker.engine.game.state.action.Action;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +22,7 @@ public class GameEngine {
         try {
             action.apply(gameState, configuration);
             return true;
-        } catch (GameStateException e) {
+        } catch (ActionValidationException e) {
             log.warn(e.getMessage());
             return false;
         }

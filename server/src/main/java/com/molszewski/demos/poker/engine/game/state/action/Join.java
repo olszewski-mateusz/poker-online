@@ -2,8 +2,7 @@ package com.molszewski.demos.poker.engine.game.state.action;
 
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
-import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 
 public final class Join extends Action {
@@ -15,22 +14,18 @@ public final class Join extends Action {
     }
 
     @Override
-    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+    protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
         if (gameState.playerExists(getPlayerId())) {
-            throw new GameStateException("Player already in game");
+            throw new ActionValidationException("Player already in game");
         }
         if (gameState.getPlayers().size() >= configuration.maxPlayers()) {
-            throw new GameStateException("Game is full");
+            throw new ActionValidationException("Game is full");
         }
     }
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
         gameState.getHistory().addAction(this);
-        gameState.addPlayer(this.getPlayerId(), this.displayName, configuration.startChips());
-        if (gameState.getGamePhase() != GamePhase.NOT_STARTED) {
-            Player player = gameState.getPlayerById(this.getPlayerId());
-            player.setFolded(true);
-        }
+        gameState.getPlayers().add(new Player(this.getPlayerId(), this.displayName, configuration.startChips()));
     }
 }

@@ -1,8 +1,8 @@
 package com.molszewski.demos.poker.engine.game.state.exception;
 
-public class GameStateException
+public class ActionValidationException
         extends Exception {
-    public GameStateException(String message) {
+    public ActionValidationException(String message) {
         super(message);
     }
 }

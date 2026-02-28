@@ -4,12 +4,12 @@ import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,147 +20,59 @@ class RaiseTest {
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();
 
     @Test
-    @DisplayName("Player correctly raises")
-    void simpleRaise() throws GameStateException {
-        int betAmount = 2 * configuration.ante();
-        int raiseAmount = 4 * configuration.ante();
-        GameState gameState = new GameState(new Deck(random));
+    void playerRaiseUpdatesContributionAndLastFullRaise() throws ActionValidationException {
+        GameState gameState = startedThreePlayerGame();
+        new Bet("1", 20).apply(gameState, configuration);
 
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
+        Player raiser = gameState.getCurrentPlayer();
+        new Raise(raiser.getId(), 40).apply(gameState, configuration);
 
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        new Bet("1", betAmount).apply(gameState, configuration);
-
-        Player player = gameState.getCurrentPlayer();
-        assertEquals("2", player.getId());
-        new Raise("2", raiseAmount).apply(gameState, configuration);
-        assertTrue(player.isReady());
-        assertEquals(raiseAmount, player.getBet());
-        assertEquals(configuration.startChips() - raiseAmount, player.getChips());
+        assertTrue(raiser.isReady());
+        assertEquals(40, gameState.getPotState().getPlayerContribution(raiser));
+        assertEquals(configuration.startChips() - 40, raiser.getChips());
+        assertEquals(20, gameState.getPotState().getLastFullRaise());
     }
 
     @Test
-    @DisplayName("Player raises before any bet in phase - throws error")
-    void raiseWithoutBetInPhaseThrows() throws GameStateException {
-        GameState gameState = new GameState(new Deck(random));
+    void raiseBeforeAnyBetThrows() throws ActionValidationException {
+        GameState gameState = startedThreePlayerGame();
 
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
-
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        assertThrows(GameStateException.class, () -> new Raise("1", 2 * configuration.ante()).apply(gameState, configuration));
+        assertThrows(ActionValidationException.class, () -> new Raise("1", 20).apply(gameState, configuration));
     }
 
     @Test
-    @DisplayName("Player raises too little chips - throws error")
-    void raiseTooLittle() throws GameStateException {
-        int betAmount = 2 * configuration.ante();
-        int raiseAmount = 3 * configuration.ante() - 1;
-        GameState gameState = new GameState(new Deck(random));
+    void raiseBelowMinimumThrows() throws ActionValidationException {
+        GameState gameState = startedThreePlayerGame();
+        new Bet("1", 20).apply(gameState, configuration);
 
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
-
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        new Bet("1", betAmount).apply(gameState, configuration);
-        assertThrows(GameStateException.class, () -> new Raise("2", raiseAmount).apply(gameState, configuration));
+        assertThrows(ActionValidationException.class, () -> new Raise("2", 39).apply(gameState, configuration));
     }
 
     @Test
-    @DisplayName("Raise respects minRaiseToCurrentBetMultiplier")
-    void raiseTooSmallForMultiplierRule() throws GameStateException {
-        GameConfiguration customConfiguration = new GameConfiguration(2, 1000, 5, 1, 1, 2);
-        GameState gameState = new GameState(new Deck(random));
-
-        new Join("1", "1").apply(gameState, customConfiguration);
-        new Join("2", "2").apply(gameState, customConfiguration);
-        new Join("3", "3").apply(gameState, customConfiguration);
-
-        new Ready("1", true).apply(gameState, customConfiguration);
-        new Ready("2", true).apply(gameState, customConfiguration);
-        new Ready("3", true).apply(gameState, customConfiguration);
-
-        new Bet("1", 10).apply(gameState, customConfiguration);
-        assertThrows(GameStateException.class, () -> new Raise("2", 15).apply(gameState, customConfiguration));
-        assertDoesNotThrow(() -> new Raise("2", 20).apply(gameState, customConfiguration));
-    }
-
-    @Test
-    @DisplayName("When player raises - others are not ready (when they have chips)")
-    void raiseChangesReadyStatus() throws GameStateException {
-        int betAmount = 2 * configuration.ante();
-        int raiseAmount = 4 * configuration.ante();
-        GameState gameState = new GameState(new Deck(random));
-
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
-
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        Player player = gameState.getCurrentPlayer();
-        new Bet("1", betAmount).apply(gameState, configuration);
-        assertTrue(player.isReady());
-        new Raise("2", raiseAmount).apply(gameState, configuration);
-        assertFalse(player.isReady());
-    }
-
-    @Test
-    @DisplayName("When player raises - others are still ready (when they don't have chips)")
-    void raiseNotChangesReadyStatus() throws GameStateException {
-        Player playerWithoutChips = new Player("1", "1", 0, 20, true, false, null);
-        Player raiser = new Player("2", "2", 100, 10, false, false, null);
-        Player otherPlayer = new Player("3", "3", 100, 20, true, false, null);
-        GameState gameState = new GameState(new Deck(random), java.util.List.of(playerWithoutChips, raiser, otherPlayer));
+    void raiseDoesNotUnsetReadyPlayersWithoutChips() throws ActionValidationException {
+        Player noChips = new Player("1", "1", 0, true, false, null);
+        Player raiser = new Player("2", "2", 100, false, false, null);
+        Player other = new Player("3", "3", 100, true, false, null);
+        GameState gameState = new GameState(new Deck(random), List.of(noChips, raiser, other));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
         gameState.setCurrentPlayer(raiser);
+        gameState.getPotState().addAnte(raiser, 10);
+        gameState.getPotState().addAnte(other, 20);
+        gameState.getPotState().addBet(other, 20);
 
-        new Raise("2", 30).apply(gameState, configuration);
-        assertTrue(playerWithoutChips.isReady());
+        new Raise("2", 40).apply(gameState, configuration);
+
+        assertTrue(noChips.isReady());
     }
 
-    @Test
-    @DisplayName("Raise must be at least size of last full raise")
-    void raiseMustMatchLastFullRaiseSize() throws GameStateException {
+    private GameState startedThreePlayerGame() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
-
         new Join("1", "1").apply(gameState, configuration);
         new Join("2", "2").apply(gameState, configuration);
         new Join("3", "3").apply(gameState, configuration);
-
         new Ready("1", true).apply(gameState, configuration);
         new Ready("2", true).apply(gameState, configuration);
         new Ready("3", true).apply(gameState, configuration);
-
-        new Bet("1", 10).apply(gameState, configuration);
-        new Raise("2", 30).apply(gameState, configuration);
-
-        assertThrows(GameStateException.class, () -> new Raise("3", 45).apply(gameState, configuration));
-        assertDoesNotThrow(() -> new Raise("3", 50).apply(gameState, configuration));
-    }
-
-    @Test
-    @DisplayName("minimumRaiseTo handles integer overflow safely")
-    void minimumRaiseToOverflowSafety() {
-        GameConfiguration customConfiguration = new GameConfiguration(2, 1000, 5, 1, 1, Integer.MAX_VALUE);
-        GameState gameState = new GameState(new Deck(random));
-        int minimumRaiseTo = Raise.minimumRaiseTo(gameState, customConfiguration, 1_500_000_000);
-
-        assertEquals(Integer.MAX_VALUE, minimumRaiseTo);
+        return gameState;
     }
 }

@@ -3,7 +3,8 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.action.step.ActionSteps;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.player.Player;
 
@@ -23,7 +24,7 @@ public final class Raise extends Action {
     }
 
     @Override
-    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+    protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
         gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING));
         if (!gameState.playerExists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
@@ -31,16 +32,15 @@ public final class Raise extends Action {
         gameState.validateCurrentPlayer(getPlayerId());
 
         Player player = gameState.getPlayerById(this.getPlayerId());
-        int currentBet = gameState.getCurrentBet();
-        if (!gameState.isBetPlacedInCurrentPhase()) {
-            throw new GameStateException("No bet placed in this phase. Use bet.");
+        if (!gameState.getPotState().isBetPlaced()) {
+            throw new ActionValidationException("No bet placed in this phase. Use bet.");
         }
-        int minimumRaiseTo = minimumRaiseTo(gameState, configuration, currentBet);
+        int minimumRaiseTo = gameState.getPotState().getMaxContribution() + gameState.getPotState().getLastFullRaise();
         if (amount < minimumRaiseTo) {
-            throw new GameStateException("Must raise to at least " + minimumRaiseTo + " chips");
+            throw new ActionValidationException("Raise must be at least " + minimumRaiseTo + " chips");
         }
-        if (amount - player.getBet() > player.getChips()) {
-            throw new GameStateException("Must have chips for raise.");
+        if (amount - gameState.getPotState().getPlayerContribution(player) > player.getChips()) {
+            throw new ActionValidationException("Must have chips for raise.");
         }
     }
 
@@ -48,26 +48,13 @@ public final class Raise extends Action {
     protected void execute(GameState gameState, GameConfiguration configuration) {
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
-        int oldCurrentBet = gameState.getCurrentBet();
         gameState.getPlayers().forEach(p -> {
             if (p.getChips() > 0) {
                 p.setReady(false);
             }
         });
         player.setReady(true);
-        player.transferChipsToBet(amount - player.getBet());
-        gameState.getHistory().registerFullRaiseSize(gameState.getCurrentBet() - oldCurrentBet);
-        ActionFlow.nextTurn(gameState);
-    }
-
-    static int minimumRaiseTo(GameState gameState, GameConfiguration configuration, int currentBet) {
-        int minimumRaiseIncrement = Math.max(
-                configuration.minRaiseIncrement(),
-                gameState.getHistory().getLastFullRaiseSizeInCurrentPhase()
-        );
-        long minimumRaiseToByIncrement = (long) currentBet + minimumRaiseIncrement;
-        long minimumRaiseToByMultiplier = (long) currentBet * configuration.minRaiseToCurrentBetMultiplier();
-        long minimumRaiseTo = Math.max(minimumRaiseToByIncrement, minimumRaiseToByMultiplier);
-        return (int) Math.min(minimumRaiseTo, Integer.MAX_VALUE);
+        gameState.getPotState().addRaise(player, amount);
+        ActionSteps.nextTurn(gameState);
     }
 }

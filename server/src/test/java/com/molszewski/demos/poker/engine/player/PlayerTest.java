@@ -1,88 +1,56 @@
 package com.molszewski.demos.poker.engine.player;
 
 import com.molszewski.demos.poker.test.UnitTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @UnitTest
 class PlayerTest {
 
-    private Player player;
+    @Test
+    void takeChipsTest() {
+        Player player = new Player("1", "Alice", 100, false, false, null);
 
-    @BeforeEach
-    void setUp() {
-        player = new Player("1", "1", 100, 10, false, false, null);
+        player.takeChips(40);
+
+        assertEquals(60, player.getChips());
+        assertThrows(IllegalArgumentException.class, () -> player.takeChips(-1));
+        assertThrows(IllegalArgumentException.class, () -> player.takeChips(61));
     }
 
     @Test
-    @DisplayName("Transfer chips correctly")
-    void transferMoneyTest() {
-        int chipsBeforeTransfer = player.getChips();
-        int betBeforeTransfer = player.getBet();
-        int transferAmount = 50;
+    void takeAllChipsTest() {
+        Player player = new Player("1", "Alice", 77, false, false, null);
 
-        player.transferChipsToBet(transferAmount);
+        int amount = player.takeAllChips();
 
-        assertEquals(chipsBeforeTransfer - transferAmount, player.getChips());
-        assertEquals(betBeforeTransfer + transferAmount, player.getBet());
+        assertEquals(77, amount);
+        assertEquals(0, player.getChips());
     }
 
     @Test
-    @DisplayName("Transfer negative chips - throws error")
-    void transferMoneyNegativeTest() {
-        assertThrows(IllegalArgumentException.class, () -> player.transferChipsToBet(-1));
-    }
-
-    @Test
-    @DisplayName("Transfer not enough chips - throws error")
-    void transferMoneyNotEnoughTest() {
-        int chipsToTransfer = player.getChips() + 1;
-        assertThrows(IllegalArgumentException.class, () -> player.transferChipsToBet(chipsToTransfer));
-    }
-
-    @Test
-    @DisplayName("Add chips correctly")
     void addChipsTest() {
-        int chipsBeforeTransfer = player.getChips();
-        int transferAmount = 50;
+        Player player = new Player("1", "Alice", 20, false, false, null);
 
-        player.addChips(transferAmount);
-        assertEquals(chipsBeforeTransfer + transferAmount, player.getChips());
-    }
+        player.addChips(15);
 
-    @Test
-    @DisplayName("Add negative chips - throws error")
-    void addChipsNegativeTest() {
+        assertEquals(35, player.getChips());
         assertThrows(IllegalArgumentException.class, () -> player.addChips(-1));
     }
 
     @Test
-    @DisplayName("Clear and get bet correctly")
-    void clearAndGetTest() {
-        int betBeforeClear = player.getBet();
+    void copyKeepsCoreStateTest() {
+        Player player = new Player("1", "Alice", 42, true, true, null);
 
-        int bet = player.clearAndGetBet();
-
-        assertEquals(betBeforeClear, bet);
-        assertEquals(0, player.getBet());
-    }
-
-    @Test
-    @DisplayName("Copy player correctly")
-    void copyTest() {
         Player copy = player.copy();
 
-        assertNotSame(player, copy);
         assertEquals(player.getId(), copy.getId());
         assertEquals(player.getName(), copy.getName());
         assertEquals(player.getChips(), copy.getChips());
-        assertEquals(player.getBet(), copy.getBet());
         assertEquals(player.isReady(), copy.isReady());
         assertEquals(player.isFolded(), copy.isFolded());
         assertEquals(player.getHand(), copy.getHand());
     }
 }
-

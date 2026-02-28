@@ -3,10 +3,10 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.GamePhase;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -19,116 +19,61 @@ class BetTest {
     private final GameConfiguration configuration = GameConfiguration.defaultConfiguration();
 
     @Test
-    @DisplayName("Player correctly bets")
-    void simpleBet() throws GameStateException {
+    void playerBetIncreasesContributionAndConsumesOnlyDeltaFromStack() throws ActionValidationException {
         int betAmount = 100;
-        GameState gameState = new GameState(new Deck(random));
-
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
-
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
+        GameState gameState = startedThreePlayerGame();
 
         Player player = gameState.getCurrentPlayer();
-        assertEquals("1", player.getId());
-        new Bet("1", betAmount).apply(gameState, configuration);
+        new Bet(player.getId(), betAmount).apply(gameState, configuration);
+
         assertTrue(player.isReady());
-        assertEquals(betAmount, player.getBet());
+        assertEquals(betAmount, gameState.getPotState().getPlayerContribution(player));
         assertEquals(configuration.startChips() - betAmount, player.getChips());
     }
 
     @Test
-    @DisplayName("Player bets too little chips - throws error")
-    void betTooLittle() throws GameStateException {
-        int betAmount = configuration.ante();
-        GameState gameState = new GameState(new Deck(random));
+    void betBelowMinOpenBetThrows() throws ActionValidationException {
+        GameConfiguration customConfiguration = new GameConfiguration(2, 1000, 5, 20);
+        GameState gameState = startedThreePlayerGame(customConfiguration);
 
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
-
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        assertThrows(GameStateException.class, () -> new Bet("1", betAmount).apply(gameState, configuration));
+        assertThrows(ActionValidationException.class, () -> new Bet("1", 10).apply(gameState, customConfiguration));
     }
 
     @Test
-    @DisplayName("Player bets below minOpenBet - throws error")
-    void betBelowMinOpenBet() throws GameStateException {
-        GameConfiguration customConfiguration = new GameConfiguration(2, 1000, 5, 20, 1, 1);
-        GameState gameState = new GameState(new Deck(random));
+    void secondBetInPhaseThrows() throws ActionValidationException {
+        GameState gameState = startedThreePlayerGame();
 
-        new Join("1", "1").apply(gameState, customConfiguration);
-        new Join("2", "2").apply(gameState, customConfiguration);
-        new Join("3", "3").apply(gameState, customConfiguration);
+        new Bet("1", 20).apply(gameState, configuration);
 
-        new Ready("1", true).apply(gameState, customConfiguration);
-        new Ready("2", true).apply(gameState, customConfiguration);
-        new Ready("3", true).apply(gameState, customConfiguration);
-
-        assertThrows(GameStateException.class, () -> new Bet("1", 10).apply(gameState, customConfiguration));
+        assertThrows(ActionValidationException.class, () -> new Bet("2", 30).apply(gameState, configuration));
     }
 
     @Test
-    @DisplayName("Player bets too many chips - throws error")
-    void betTooMany() throws GameStateException {
-        int betAmount = configuration.startChips() + 1;
-        GameState gameState = new GameState(new Deck(random));
+    void betLowerThanCurrentContributionThrows() throws ActionValidationException {
+        GameState gameState = startedThreePlayerGame();
+        Player player = gameState.getPlayerById("1");
 
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
+        new Bet("1", 50).apply(gameState, configuration);
+        gameState.getPotState().resetToNewBettingPhase();
+        gameState.setGamePhase(GamePhase.SECOND_BETTING);
+        gameState.getPlayers().forEach(p -> p.setReady(false));
+        gameState.setCurrentPlayer(player);
 
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        assertThrows(GameStateException.class, () -> new Bet("1", betAmount).apply(gameState, configuration));
+        assertThrows(ActionValidationException.class, () -> new Bet("1", 40).apply(gameState, configuration));
     }
 
-    @Test
-    @DisplayName("When player bets - others are not ready (when they have chips)")
-    void betChangesReadyStatus() throws GameStateException {
-        int betAmount = 2 * configuration.ante();
-        GameState gameState = new GameState(new Deck(random));
-
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
-
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        Player player = gameState.getCurrentPlayer();
-        assertEquals("1", player.getId());
-        new Check("1").apply(gameState, configuration);
-        assertTrue(player.isReady());
-        new Bet("2", betAmount).apply(gameState, configuration);
-        assertFalse(player.isReady());
+    private GameState startedThreePlayerGame() throws ActionValidationException {
+        return startedThreePlayerGame(configuration);
     }
 
-    @Test
-    @DisplayName("Second bet in one phase - throws error")
-    void secondBetThrows() throws GameStateException {
-        int firstBetAmount = 2 * configuration.ante();
-        int secondBetAmount = 3 * configuration.ante();
+    private GameState startedThreePlayerGame(GameConfiguration cfg) throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
-
-        new Join("1", "1").apply(gameState, configuration);
-        new Join("2", "2").apply(gameState, configuration);
-        new Join("3", "3").apply(gameState, configuration);
-
-        new Ready("1", true).apply(gameState, configuration);
-        new Ready("2", true).apply(gameState, configuration);
-        new Ready("3", true).apply(gameState, configuration);
-
-        new Bet("1", firstBetAmount).apply(gameState, configuration);
-        assertThrows(GameStateException.class, () -> new Bet("2", secondBetAmount).apply(gameState, configuration));
+        new Join("1", "1").apply(gameState, cfg);
+        new Join("2", "2").apply(gameState, cfg);
+        new Join("3", "3").apply(gameState, cfg);
+        new Ready("1", true).apply(gameState, cfg);
+        new Ready("2", true).apply(gameState, cfg);
+        new Ready("3", true).apply(gameState, cfg);
+        return gameState;
     }
 }

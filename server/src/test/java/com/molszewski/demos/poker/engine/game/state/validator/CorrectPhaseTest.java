@@ -2,7 +2,7 @@ package com.molszewski.demos.poker.engine.game.state.validator;
 
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +31,6 @@ class CorrectPhaseTest {
         GameState gameState = new GameState(null, List.of());
         gameState.setGamePhase(GamePhase.SECOND_BETTING);
 
-        assertThrows(GameStateException.class, () -> gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING)));
+        assertThrows(ActionValidationException.class, () -> gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING)));
     }
 }

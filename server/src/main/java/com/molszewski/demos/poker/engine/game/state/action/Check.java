@@ -3,7 +3,8 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.action.step.ActionSteps;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.player.Player;
 
@@ -15,7 +16,7 @@ public final class Check extends Action{
     }
 
     @Override
-    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+    protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
         gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING));
         if (!gameState.playerExists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
@@ -23,8 +24,8 @@ public final class Check extends Action{
         gameState.validateCurrentPlayer(getPlayerId());
 
         Player player = gameState.getPlayerById(this.getPlayerId());
-        if (gameState.getCurrentBet() != player.getBet()) {
-            throw new GameStateException("Cannot check while behind current bet. Use call, all in or fold.");
+        if (gameState.getPotState().getMaxContribution() != gameState.getPotState().getPlayerContribution(player)) {
+            throw new ActionValidationException("Cannot check while behind current bet. Use call, all in or fold.");
         }
     }
 
@@ -33,6 +34,6 @@ public final class Check extends Action{
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setReady(true);
-        ActionFlow.nextTurn(gameState);
+        ActionSteps.nextTurn(gameState);
     }
 }

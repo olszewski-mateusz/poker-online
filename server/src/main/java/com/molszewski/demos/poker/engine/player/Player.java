@@ -10,7 +10,6 @@ public class Player {
     private final String name;
 
     private int chips;
-    private int bet;
     @Setter
     private boolean ready;
     @Setter
@@ -19,20 +18,19 @@ public class Player {
     private Hand hand;
 
     public Player(String id, String name, int startChips) {
-        this(id, name, startChips, 0, false, false, null);
+        this(id, name, startChips, false, true, null);
     }
 
-    public Player(String id, String name, int chips, int bet, boolean ready, boolean folded, Hand hand) {
+    public Player(String id, String name, int chips, boolean ready, boolean folded, Hand hand) {
         this.id = id;
         this.name = name;
         this.chips = chips;
-        this.bet = bet;
         this.ready = ready;
         this.folded = folded;
         this.hand = hand;
     }
 
-    public void transferChipsToBet(int amount) {
+    public void takeChips(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Amount can't be negative");
         }
@@ -40,7 +38,12 @@ public class Player {
             throw new IllegalArgumentException("Can't have less than 0 chips");
         }
         this.chips -= amount;
-        this.bet += amount;
+    }
+
+    public int takeAllChips() {
+        int amount = this.chips;
+        this.chips = 0;
+        return amount;
     }
 
     public void addChips(int amount) {
@@ -50,14 +53,8 @@ public class Player {
         this.chips += amount;
     }
 
-    public int clearAndGetBet() {
-        int amount = bet;
-        bet = 0;
-        return amount;
-    }
-
     public Player copy() {
-        return new Player(id, name, chips, bet, ready, folded, hand);
+        return new Player(id, name, chips, ready, folded, hand);
     }
 
 }

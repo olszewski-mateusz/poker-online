@@ -3,7 +3,8 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.action.step.ActionSteps;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.player.Player;
 
@@ -22,7 +23,7 @@ public final class Bet extends Action {
     }
 
     @Override
-    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+    protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
         gameState.validatePhase(Set.of(GamePhase.FIRST_BETTING, GamePhase.SECOND_BETTING));
         if (!gameState.playerExists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
@@ -30,19 +31,18 @@ public final class Bet extends Action {
         gameState.validateCurrentPlayer(getPlayerId());
 
         Player player = gameState.getPlayerById(this.getPlayerId());
-        int currentBet = gameState.getCurrentBet();
-        if (gameState.isBetPlacedInCurrentPhase()) {
-            throw new GameStateException("Bet already placed in this phase. Use raise.");
+        if (gameState.getPotState().isBetPlaced()) {
+            throw new ActionValidationException("Bet already placed in this phase. Use raise.");
         }
-        if (currentBet != player.getBet()) {
-            throw new GameStateException("Must call current bet before betting.");
+        int currentContribution = gameState.getPotState().getPlayerContribution(player);
+        if (amount < currentContribution + configuration.minOpenBet()) {
+            throw new ActionValidationException("Bet cannot be lower than current contribution.");
         }
-        int minimumOpenTo = Math.max(configuration.minOpenBet(), currentBet + 1);
-        if (amount < minimumOpenTo) {
-            throw new GameStateException("Bet must be at least " + minimumOpenTo + " chips");
+        if (amount < configuration.minOpenBet()) {
+            throw new ActionValidationException("Bet must be at least " + configuration.minOpenBet() + " chips");
         }
-        if (amount - player.getBet() > player.getChips()) {
-            throw new GameStateException("Must have chips for bet.");
+        if (amount - currentContribution > player.getChips()) {
+            throw new ActionValidationException("Must have chips for bet.");
         }
     }
 
@@ -50,15 +50,13 @@ public final class Bet extends Action {
     protected void execute(GameState gameState, GameConfiguration configuration) {
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
-        int oldCurrentBet = gameState.getCurrentBet();
         gameState.getPlayers().forEach(p -> {
             if (p.getChips() > 0) {
                 p.setReady(false);
             }
         });
         player.setReady(true);
-        player.transferChipsToBet(amount - player.getBet());
-        gameState.getHistory().registerFullRaiseSize(gameState.getCurrentBet() - oldCurrentBet);
-        ActionFlow.nextTurn(gameState);
+        gameState.getPotState().addBet(player, amount);
+        ActionSteps.nextTurn(gameState);
     }
 }

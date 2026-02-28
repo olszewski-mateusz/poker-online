@@ -36,10 +36,10 @@ public record GameResponse(
                 .map(context.state::getPlayerIndex)
                 .orElse(null);
 
-        List<Integer> winnerIndexes = context.state.getWinners().stream()
-                .map(Player::getId)
-                .map(context.state::getPlayerIndex)
-                .toList();
+//        List<Integer> winnerIndexes = context.state.getWinners().stream()
+//                .map(Player::getId)
+//                .map(context.state::getPlayerIndex)
+//                .toList();
 
         return GameResponse.builder()
                 .gameId(context.gameId)
@@ -47,12 +47,12 @@ public record GameResponse(
                 .myIndex(context.state.getPlayerIndex(context.myId))
                 .phase(context.state.getGamePhase())
                 .currentPlayerIndex(currentPlayerIndex)
-                .winnerIndexes(winnerIndexes)
+//                .winnerIndexes(winnerIndexes)
                 .players(IntStream.range(0, players.size())
                         .mapToObj(index -> {
                             Player player = players.get(index);
                             boolean hideCards = !(isShowdown || player.getId().equals(context.myId));
-                            return PlayerResponse.fromPlayer(player, index + 1, hideCards);
+                            return PlayerResponse.fromPlayer(player, index + 1, hideCards, context.state.getPotState().getPlayerContribution(player));
                         })
                         .toList())
                 .cardsInDeck(context.state.getDeck().cardsCount())
@@ -61,7 +61,7 @@ public record GameResponse(
                         .map(entry -> HistoryEntryResponse.fromHistoryEntry(entry, context.state))
                         .filter(Objects::nonNull)
                         .toList())
-                .betPlacedInCurrentPhase(context.state.isBetPlacedInCurrentPhase())
+                .betPlacedInCurrentPhase(context.state.getPotState().isBetPlaced())
                 .configuration(context.configuration)
                 .build();
     }

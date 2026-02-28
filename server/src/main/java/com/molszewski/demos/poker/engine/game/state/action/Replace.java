@@ -4,7 +4,8 @@ import com.molszewski.demos.poker.engine.card.Card;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.action.step.ActionSteps;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
@@ -24,7 +25,7 @@ public final class Replace extends Action{
     }
 
     @Override
-    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
+    protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
         gameState.validatePhase(Set.of(GamePhase.DRAWING));
         if (!gameState.playerExists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
@@ -34,7 +35,7 @@ public final class Replace extends Action{
         Player player = gameState.getPlayerById(this.getPlayerId());
         Set<Card> cardsInHand = new HashSet<>(player.getHand().getCards());
         if (!cardsInHand.containsAll(cardsToReplace)) {
-            throw new GameStateException("Cards to replace are not in hand");
+            throw new ActionValidationException("Cards to replace are not in hand");
         }
     }
 
@@ -52,6 +53,6 @@ public final class Replace extends Action{
         }
 
         player.setHand(new Hand(cardsInHand));
-        ActionFlow.nextTurn(gameState);
+        ActionSteps.nextTurn(gameState);
     }
 }

@@ -2,7 +2,7 @@ package com.molszewski.demos.poker.engine.game;
 
 import com.molszewski.demos.poker.engine.game.state.action.Action;
 import com.molszewski.demos.poker.engine.game.state.action.Join;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,7 @@ class GameEngineTest {
     private GameConfiguration configuration;
 
     @Test
-    void applyActionTest() throws GameStateException {
+    void applyActionTest() throws ActionValidationException {
         Action action = mock(Join.class);
         GameEngine gameEngine = new GameEngine(gameState, configuration);
         boolean success = gameEngine.applyAction(action);
@@ -32,10 +32,10 @@ class GameEngineTest {
     }
 
     @Test
-    void applyActionThrows() throws GameStateException {
+    void applyActionThrows() throws ActionValidationException {
         Action action = mock(Join.class);
         GameEngine gameEngine = new GameEngine(gameState, configuration);
-        doThrow(new GameStateException("")).when(action).apply(any(), any());
+        doThrow(new ActionValidationException("")).when(action).apply(any(), any());
 
         boolean success = gameEngine.applyAction(action);
         verify(action, times(1)).apply(eq(gameState), eq(configuration));

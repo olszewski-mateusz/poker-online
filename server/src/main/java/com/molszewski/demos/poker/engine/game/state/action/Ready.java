@@ -3,7 +3,8 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.action.step.ActionSteps;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.state.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.player.Player;
 
@@ -22,18 +23,18 @@ public final class Ready extends Action {
     }
 
     @Override
-    protected void validate(GameState gameState, GameConfiguration configuration) throws GameStateException {
-        gameState.validatePhase(Set.of(GamePhase.NOT_STARTED, GamePhase.SHOWDOWN, GamePhase.FINISHED));
+    protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
+        gameState.validatePhase(Set.of(GamePhase.NOT_STARTED, GamePhase.SHOWDOWN, GamePhase.FOLDOUT, GamePhase.FINISHED));
         if (!gameState.playerExists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
         }
 
         Player player = gameState.getPlayerById(this.getPlayerId());
         if (isReady && player.isReady()) {
-            throw new GameStateException(String.format("Player %s is already ready", player.getId()));
+            throw new ActionValidationException(String.format("Player %s is already ready", player.getId()));
         }
         if (!isReady && !player.isReady()) {
-            throw new GameStateException(String.format("Player %s is already not ready", player.getId()));
+            throw new ActionValidationException(String.format("Player %s is already not ready", player.getId()));
         }
     }
 
@@ -42,6 +43,6 @@ public final class Ready extends Action {
         gameState.getHistory().addAction(this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setReady(isReady);
-        ActionFlow.tryStartRound(gameState, configuration);
+        ActionSteps.tryStartRound(gameState, configuration);
     }
 }

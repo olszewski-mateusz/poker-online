@@ -20,12 +20,12 @@ public record PlayerResponse(
         Set<Card> cards,
         HandType handType
 ) {
-    public static PlayerResponse fromPlayer(Player player, int index, boolean hideCards) {
+    public static PlayerResponse fromPlayer(Player player, int index, boolean hideCards, int bet) {
         return  PlayerResponse.builder()
                 .index(index)
                 .name(player.getName())
                 .chips(player.getChips())
-                .bet(player.getBet())
+                .bet(bet)
                 .ready(player.isReady())
                 .folded(player.isFolded())
                 .cards(hideCards ? null : Optional.ofNullable(player.getHand()).map(Hand::getCards).orElse(null))

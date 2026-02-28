@@ -1,10 +1,8 @@
 package com.molszewski.demos.poker.web.model.response;
 
-import com.molszewski.demos.poker.engine.card.Card;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.action.*;
 import com.molszewski.demos.poker.engine.game.state.history.*;
-import com.molszewski.demos.poker.engine.hand.HandType;
 
 public record HistoryEntryResponse(
         String entryType,
@@ -24,9 +22,7 @@ public record HistoryEntryResponse(
             return new HistoryEntryResponse(
                     "WINNER",
                     new WinnerDetails(
-                            gameState.getPlayerById(winnerEntry.getPlayerId()).getName(),
-                            winnerEntry.getHandType(),
-                            winnerEntry.getKeyCards()
+                            gameState.getPlayerById(winnerEntry.getPlayerId()).getName()
                     )
             );
         }
@@ -40,34 +36,7 @@ public record HistoryEntryResponse(
             return new HistoryEntryResponse(
                     "POT_WINNER",
                     new PotWinnerDetails(
-                            potWinnerEntry.getPotIndex(),
-                            potWinnerEntry.getPotAmount(),
-                            potWinnerEntry.getWinnerIds().stream()
-                                    .map(id -> gameState.getPlayerById(id).getName())
-                                    .toList()
-                    )
-            );
-        }
-        if (entry instanceof ShowdownSummaryEntry showdownSummaryEntry) {
-            return new HistoryEntryResponse(
-                    "SHOWDOWN_SUMMARY",
-                    new ShowdownSummaryDetails(
-                            showdownSummaryEntry.getPots().stream()
-                                    .map(pot -> new ShowdownPotDetails(
-                                            pot.potIndex(),
-                                            pot.potAmount(),
-                                            pot.winnerIds().stream()
-                                                    .map(id -> gameState.getPlayerById(id).getName())
-                                                    .toList()
-                                    ))
-                                    .toList(),
-                            showdownSummaryEntry.getWinners().stream()
-                                    .map(winner -> new ShowdownWinnerDetails(
-                                            gameState.getPlayerById(winner.playerId()).getName(),
-                                            winner.handType(),
-                                            winner.keyCards()
-                                    ))
-                                    .toList()
+                            potWinnerEntry.getPotAmount()
                     )
             );
         }
@@ -92,24 +61,12 @@ public record HistoryEntryResponse(
     public record ActionDetails(String playerName, Object value) {
     }
 
-    public record WinnerDetails(String playerName, HandType handType, java.util.List<Card> keyCards) {
+    public record WinnerDetails(String playerName) {
     }
 
     public record GameWinnerDetails(String playerName) {
     }
 
-    public record PotWinnerDetails(int potIndex, int potAmount, java.util.List<String> winnerNames) {
-    }
-
-    public record ShowdownSummaryDetails(
-            java.util.List<ShowdownPotDetails> pots,
-            java.util.List<ShowdownWinnerDetails> winners
-    ) {
-    }
-
-    public record ShowdownPotDetails(int potIndex, int potAmount, java.util.List<String> winnerNames) {
-    }
-
-    public record ShowdownWinnerDetails(String playerName, HandType handType, java.util.List<Card> keyCards) {
+    public record PotWinnerDetails(int potAmount) {
     }
 }

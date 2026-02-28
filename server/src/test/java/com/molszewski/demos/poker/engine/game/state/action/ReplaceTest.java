@@ -4,7 +4,7 @@ import com.molszewski.demos.poker.engine.card.Card;
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
@@ -24,7 +24,7 @@ class ReplaceTest {
 
     @Test
     @DisplayName("Player correctly replaces 2 cards")
-    void simpleReplace() throws GameStateException {
+    void simpleReplace() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
@@ -58,7 +58,7 @@ class ReplaceTest {
 
     @Test
     @DisplayName("Player replaces card which he doesn't have - throws error")
-    void replaceIllegalCard() throws GameStateException {
+    void replaceIllegalCard() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
@@ -79,12 +79,12 @@ class ReplaceTest {
         Card wrongCard = gameState.getDeck().pop();
 
         List<Card> cards = List.copyOf(player.getHand().getCards());
-        assertThrows(GameStateException.class, () -> { new Replace("1", Set.of(wrongCard, cards.get(1))).apply(gameState, configuration); });
+        assertThrows(ActionValidationException.class, () -> { new Replace("1", Set.of(wrongCard, cards.get(1))).apply(gameState, configuration); });
     }
 
     @Test
     @DisplayName("Player correctly replaces all cards")
-    void replaceAll() throws GameStateException {
+    void replaceAll() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
@@ -121,7 +121,7 @@ class ReplaceTest {
 
     @Test
     @DisplayName("Player correctly replaces zero cards")
-    void replaceNone() throws GameStateException {
+    void replaceNone() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);

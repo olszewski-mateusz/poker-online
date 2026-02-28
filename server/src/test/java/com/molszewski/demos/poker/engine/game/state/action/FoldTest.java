@@ -3,7 +3,7 @@ package com.molszewski.demos.poker.engine.game.state.action;
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
-import com.molszewski.demos.poker.engine.game.state.exception.GameStateException;
+import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +20,7 @@ class FoldTest {
 
     @Test
     @DisplayName("Player correctly folds")
-    void simpleRaise() throws GameStateException {
+    void simpleRaise() throws ActionValidationException {
         GameState gameState = new GameState(new Deck(random));
 
         new Join("1", "1").apply(gameState, configuration);
