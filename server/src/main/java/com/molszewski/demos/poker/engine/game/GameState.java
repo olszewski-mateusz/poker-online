@@ -1,11 +1,9 @@
 package com.molszewski.demos.poker.engine.game;
 
 import com.molszewski.demos.poker.engine.deck.Deck;
-import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
-import com.molszewski.demos.poker.engine.game.state.history.History;
-import com.molszewski.demos.poker.engine.game.state.pot.PotState;
-import com.molszewski.demos.poker.engine.hand.Hand;
+import com.molszewski.demos.poker.engine.exception.ActionValidationException;
+import com.molszewski.demos.poker.engine.history.History;
+import com.molszewski.demos.poker.engine.pot.PotState;
 import com.molszewski.demos.poker.engine.player.Player;
 import lombok.Getter;
 import lombok.Setter;

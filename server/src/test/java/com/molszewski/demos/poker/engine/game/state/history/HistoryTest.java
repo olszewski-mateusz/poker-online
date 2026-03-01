@@ -2,9 +2,10 @@ package com.molszewski.demos.poker.engine.game.state.history;
 
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameState;
-import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.action.Join;
-import com.molszewski.demos.poker.engine.game.state.pot.PotType;
+import com.molszewski.demos.poker.engine.game.GamePhase;
+import com.molszewski.demos.poker.engine.action.Join;
+import com.molszewski.demos.poker.engine.pot.PotType;
+import com.molszewski.demos.poker.engine.history.*;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;

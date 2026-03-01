@@ -3,11 +3,11 @@ package com.molszewski.demos.poker.web.model.response;
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
-import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.action.Join;
-import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
-import com.molszewski.demos.poker.engine.game.state.history.PotWinnerEntry;
-import com.molszewski.demos.poker.engine.game.state.pot.PotType;
+import com.molszewski.demos.poker.engine.game.GamePhase;
+import com.molszewski.demos.poker.engine.action.Join;
+import com.molszewski.demos.poker.engine.exception.ActionValidationException;
+import com.molszewski.demos.poker.engine.history.PotWinnerEntry;
+import com.molszewski.demos.poker.engine.pot.PotType;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;
 

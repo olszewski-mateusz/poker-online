@@ -1,8 +1,8 @@
 package com.molszewski.demos.poker.engine.game;
 
-import com.molszewski.demos.poker.engine.game.state.action.Action;
-import com.molszewski.demos.poker.engine.game.state.action.Join;
-import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
+import com.molszewski.demos.poker.engine.action.Action;
+import com.molszewski.demos.poker.engine.action.Join;
+import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

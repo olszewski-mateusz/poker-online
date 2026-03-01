@@ -1,7 +1,7 @@
 package com.molszewski.demos.poker.engine.game;
 
-import com.molszewski.demos.poker.engine.game.state.action.Action;
-import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
+import com.molszewski.demos.poker.engine.action.Action;
+import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

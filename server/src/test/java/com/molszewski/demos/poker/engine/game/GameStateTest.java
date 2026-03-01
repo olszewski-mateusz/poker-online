@@ -1,9 +1,8 @@
 package com.molszewski.demos.poker.engine.game;
 
 import com.molszewski.demos.poker.engine.deck.Deck;
-import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
-import com.molszewski.demos.poker.engine.game.state.history.PhaseChangeEntry;
+import com.molszewski.demos.poker.engine.exception.ActionValidationException;
+import com.molszewski.demos.poker.engine.history.PhaseChangeEntry;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;

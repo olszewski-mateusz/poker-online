@@ -1,8 +1,10 @@
 package com.molszewski.demos.poker.web.model.response;
 
+import com.molszewski.demos.poker.engine.action.*;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.state.action.*;
 import com.molszewski.demos.poker.engine.game.state.history.*;
+import com.molszewski.demos.poker.engine.history.*;
 
 public record HistoryEntryResponse(
         String entryType,

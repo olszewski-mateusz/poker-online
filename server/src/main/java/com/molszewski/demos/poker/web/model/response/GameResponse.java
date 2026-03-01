@@ -2,7 +2,7 @@ package com.molszewski.demos.poker.web.model.response;
 
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
-import com.molszewski.demos.poker.engine.game.state.GamePhase;
+import com.molszewski.demos.poker.engine.game.GamePhase;
 import com.molszewski.demos.poker.engine.player.Player;
 import lombok.Builder;
 

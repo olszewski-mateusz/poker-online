@@ -1,8 +1,8 @@
 package com.molszewski.demos.poker.engine.game.state.validator;
 
 import com.molszewski.demos.poker.engine.game.GameState;
-import com.molszewski.demos.poker.engine.game.state.GamePhase;
-import com.molszewski.demos.poker.engine.game.state.exception.ActionValidationException;
+import com.molszewski.demos.poker.engine.game.GamePhase;
+import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
