@@ -52,7 +52,7 @@ public record GameResponse(
                         .mapToObj(index -> {
                             Player player = players.get(index);
                             boolean hideCards = !(isShowdown || player.getId().equals(context.myId));
-                            return PlayerResponse.fromPlayer(player, index + 1, hideCards, context.state.getPotState().getPlayerContribution(player));
+                            return PlayerResponse.fromPlayer(player, index, hideCards, context.state.getPotState().getPlayerContribution(player));
                         })
                         .toList())
                 .cardsInDeck(context.state.getDeck().cardsCount())
