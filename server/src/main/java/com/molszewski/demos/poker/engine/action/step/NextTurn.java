@@ -1,19 +1,17 @@
 package com.molszewski.demos.poker.engine.action.step;
 
-import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GamePhase;
-import com.molszewski.demos.poker.engine.history.FlowStep;
+import com.molszewski.demos.poker.engine.game.GameState;
+import com.molszewski.demos.poker.engine.hand.Hand;
+import com.molszewski.demos.poker.engine.history.ActionStepType;
+import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.engine.pot.Pot;
 import com.molszewski.demos.poker.engine.pot.PotType;
-import com.molszewski.demos.poker.engine.hand.Hand;
-import com.molszewski.demos.poker.engine.player.Player;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 class NextTurn {
     static void nextTurn(GameState state) {
-        state.getHistory().addFlowStep(FlowStep.NEXT_TURN);
         nextPlayer(state);
         if (canProceedToNextPhase(state)) {
 
@@ -36,6 +34,8 @@ class NextTurn {
                 case SECOND_BETTING -> transitionToShowdownPhase(state);
                 default -> throw new IllegalStateException("Unexpected phase: " + state.getGamePhase());
             }
+        } else {
+            state.getHistory().addFlowStep(state, ActionStepType.NEXT_TURN);
         }
     }
 
@@ -118,7 +118,7 @@ class NextTurn {
             int amount = pot.getAmount();
             winners.forEach(player -> player.addChips(amount / winners.size())); // todo: better handling odd chips
 
-            state.getHistory().addPotWinner(amount, pot.type(), winners.stream().map(Player::getId).collect(Collectors.toSet()), showdown);
+            state.getHistory().addPotWinner(state, pot, winners, showdown);
         }
     }
 
@@ -126,8 +126,9 @@ class NextTurn {
         for (Pot pot : state.getPotState().calculatePots(state.getPlayers())) {
             if (pot.type().equals(PotType.SIDE) && pot.eligible().size() == 1) {
                 String eligible = pot.eligible().iterator().next();
-                state.getPlayerById(eligible).addChips(pot.getAmount());
-                state.getHistory().addPotWinner(pot.getAmount(), pot.type(), pot.eligible(), false);
+                Player winner = state.getPlayerById(eligible);
+                winner.addChips(pot.getAmount());
+                state.getHistory().addPotWinner(state, pot, List.of(winner), false);
                 state.getPotState().removePot(pot);
             }
         }

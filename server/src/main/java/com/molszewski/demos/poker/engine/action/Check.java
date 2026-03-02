@@ -31,7 +31,7 @@ public final class Check extends Action{
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
-        gameState.getHistory().addAction(this);
+        gameState.getHistory().addAction(gameState, this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setReady(true);
         ActionSteps.nextTurn(gameState);

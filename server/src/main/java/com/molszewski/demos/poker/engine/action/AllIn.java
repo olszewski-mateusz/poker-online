@@ -26,7 +26,7 @@ public final class AllIn extends Action {
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
-        gameState.getHistory().addAction(this);
+        gameState.getHistory().addAction(gameState, this);
         Player player = gameState.getPlayerById(this.getPlayerId());
 
         int maxContribution = gameState.getPotState().getMaxContribution();

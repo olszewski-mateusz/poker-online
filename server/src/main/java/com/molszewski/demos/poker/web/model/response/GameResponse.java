@@ -1,15 +1,15 @@
 package com.molszewski.demos.poker.web.model.response;
 
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
-import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GamePhase;
+import com.molszewski.demos.poker.engine.game.GameState;
+import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
 import lombok.Builder;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 @Builder
 public record GameResponse(
@@ -36,10 +36,15 @@ public record GameResponse(
                 .map(context.state::getPlayerIndex)
                 .orElse(null);
 
-//        List<Integer> winnerIndexes = context.state.getWinners().stream()
-//                .map(Player::getId)
-//                .map(context.state::getPlayerIndex)
-//                .toList();
+        List<Integer> winnerIndexes = context.state.getPlayers().stream()
+                .map(Player::getHand)
+                .filter(Objects::nonNull)
+                .max(Hand::compareTo)
+                .map(bestHand -> context.state.getPlayers().stream()
+                        .filter(player -> player.getHand().compareTo(bestHand) == 0)
+                        .map(player -> context.state.getPlayerIndex(player.getId()))
+                        .toList())
+                .orElse(List.of());
 
         return GameResponse.builder()
                 .gameId(context.gameId)
@@ -47,19 +52,17 @@ public record GameResponse(
                 .myIndex(context.state.getPlayerIndex(context.myId))
                 .phase(context.state.getGamePhase())
                 .currentPlayerIndex(currentPlayerIndex)
-//                .winnerIndexes(winnerIndexes)
-                .players(IntStream.range(0, players.size())
-                        .mapToObj(index -> {
-                            Player player = players.get(index);
+                .winnerIndexes(winnerIndexes)
+                .players(players.stream()
+                        .map(player -> {
                             boolean hideCards = !(isShowdown || player.getId().equals(context.myId));
-                            return PlayerResponse.fromPlayer(player, index, hideCards, context.state.getPotState().getPlayerContribution(player));
+                            return PlayerResponse.fromPlayer(player, context.state.getPlayerIndex(player.getId()), hideCards, context.state.getPotState().getPlayerContribution(player));
                         })
                         .toList())
                 .cardsInDeck(context.state.getDeck().cardsCount())
                 .discardedCards(context.state.getDeck().discardsCount())
                 .history(context.state.getHistory().getEntries().stream()
-                        .map(entry -> HistoryEntryResponse.fromHistoryEntry(entry, context.state))
-                        .filter(Objects::nonNull)
+                        .map(HistoryEntryResponse::fromHistoryEntry)
                         .toList())
                 .betPlacedInCurrentPhase(context.state.getPotState().isBetPlaced())
                 .configuration(context.configuration)

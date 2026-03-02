@@ -40,7 +40,7 @@ public final class Ready extends Action {
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration)  {
-        gameState.getHistory().addAction(this);
+        gameState.getHistory().addAction(gameState, this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setReady(isReady);
         ActionSteps.tryStartRound(gameState, configuration);

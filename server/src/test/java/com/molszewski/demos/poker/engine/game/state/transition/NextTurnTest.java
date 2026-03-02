@@ -7,7 +7,6 @@ import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GamePhase;
 import com.molszewski.demos.poker.engine.action.step.ActionSteps;
-import com.molszewski.demos.poker.engine.history.PotWinnerEntry;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
@@ -90,15 +89,14 @@ class NextTurnTest {
         assertEquals(150, p1.getChips());
         assertEquals(50, p2.getChips());
 
-        PotWinnerEntry winnerEntry = gameState.getHistory().getEntries().stream()
-                .filter(PotWinnerEntry.class::isInstance)
-                .map(PotWinnerEntry.class::cast)
+        var winnerEntry = gameState.getHistory().getEntries().stream()
+                .filter(entry -> "POT_WINNER".equals(entry.getEntryCategory()))
                 .findFirst()
                 .orElseThrow();
 
-        assertEquals(100, winnerEntry.getPotAmount());
-        assertEquals(Set.of("1"), winnerEntry.getWinnerIds());
-        assertTrue(winnerEntry.isShowdown());
+        assertEquals("100", winnerEntry.getProperties().get("potChips"));
+        assertEquals("1", winnerEntry.getProperties().get("winners"));
+        assertEquals("true", winnerEntry.getProperties().get("showdown"));
     }
 
     @Test

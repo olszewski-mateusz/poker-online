@@ -1,21 +1,27 @@
 package com.molszewski.demos.poker.web.model.response;
 
 import com.molszewski.demos.poker.engine.deck.Deck;
+import com.molszewski.demos.poker.engine.card.Card;
+import com.molszewski.demos.poker.engine.card.Rank;
+import com.molszewski.demos.poker.engine.card.Suit;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GamePhase;
 import com.molszewski.demos.poker.engine.action.Join;
 import com.molszewski.demos.poker.engine.exception.ActionValidationException;
-import com.molszewski.demos.poker.engine.history.PotWinnerEntry;
+import com.molszewski.demos.poker.engine.hand.Hand;
+import com.molszewski.demos.poker.engine.player.Player;
+import com.molszewski.demos.poker.engine.pot.Pot;
 import com.molszewski.demos.poker.engine.pot.PotType;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @UnitTest
@@ -39,17 +45,33 @@ class GameResponseTest {
         );
 
         assertEquals(2, response.history().size());
-        assertEquals("JOIN", response.history().get(0).entryType());
-        assertEquals("PHASE_CHANGE", response.history().get(1).entryType());
+        assertEquals("ACTION", response.history().get(0).category());
+        assertEquals("join", response.history().get(0).properties().get("actionType"));
+        assertEquals("PHASE_CHANGE", response.history().get(1).category());
+        assertEquals(GamePhase.FIRST_BETTING.toString(), response.history().get(1).properties().get("newPhase"));
     }
 
     @Test
     void mapsPotWinnerEntryWithCurrentShape() throws ActionValidationException {
         GameConfiguration configuration = GameConfiguration.defaultConfiguration();
         GameState state = new GameState(new Deck(new Random(17L)));
+        Hand winningHand = new Hand(Set.of(
+                new Card(Rank.ACE, Suit.CLUBS),
+                new Card(Rank.KING, Suit.CLUBS),
+                new Card(Rank.QUEEN, Suit.CLUBS),
+                new Card(Rank.JACK, Suit.CLUBS),
+                new Card(Rank.TEN, Suit.CLUBS)
+        ));
 
         new Join("1", "Alice").apply(state, configuration);
-        state.getHistory().getEntries().add(new PotWinnerEntry(120, PotType.MAIN, Set.of("1"), true));
+        Player player1 = state.getPlayerById("1");
+        player1.setHand(winningHand);
+        state.getHistory().addPotWinner(
+                state,
+                new Pot(PotType.MAIN, Map.of("1", 120), Set.of("1")),
+                List.of(player1),
+                true
+        );
 
         GameResponse response = GameResponse.fromParams(
                 GameResponse.GameContext.builder()
@@ -61,13 +83,14 @@ class GameResponseTest {
         );
 
         HistoryEntryResponse potWinner = response.history().stream()
-                .filter(entry -> "POT_WINNER".equals(entry.entryType()))
+                .filter(entry -> "POT_WINNER".equals(entry.category()))
                 .findFirst()
                 .orElseThrow();
 
-        assertInstanceOf(HistoryEntryResponse.PotWinnerDetails.class, potWinner.details());
-        HistoryEntryResponse.PotWinnerDetails details = (HistoryEntryResponse.PotWinnerDetails) potWinner.details();
-        assertEquals(120, details.potAmount());
+        assertEquals("MAIN", potWinner.properties().get("potType"));
+        assertEquals("120", potWinner.properties().get("potChips"));
+        assertEquals("Alice", potWinner.properties().get("winners"));
+        assertEquals("true", potWinner.properties().get("showdown"));
     }
 
     @Test

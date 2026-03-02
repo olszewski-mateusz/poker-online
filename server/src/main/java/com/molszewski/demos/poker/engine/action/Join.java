@@ -25,7 +25,7 @@ public final class Join extends Action {
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
-        gameState.getHistory().addAction(this);
         gameState.getPlayers().add(new Player(this.getPlayerId(), this.displayName, configuration.startChips()));
+        gameState.getHistory().addAction(gameState, this);
     }
 }

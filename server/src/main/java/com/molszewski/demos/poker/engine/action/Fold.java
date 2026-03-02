@@ -27,7 +27,7 @@ public final class Fold extends Action {
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
-        gameState.getHistory().addAction(this);
+        gameState.getHistory().addAction(gameState, this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setFolded(true);
         ActionSteps.nextTurn(gameState);

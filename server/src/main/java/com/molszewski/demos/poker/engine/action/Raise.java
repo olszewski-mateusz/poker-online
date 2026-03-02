@@ -46,7 +46,7 @@ public final class Raise extends Action {
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
-        gameState.getHistory().addAction(this);
+        gameState.getHistory().addAction(gameState, this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         gameState.getPlayers().forEach(p -> {
             if (p.getChips() > 0) {

@@ -41,7 +41,7 @@ public final class Replace extends Action{
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration)  {
-        gameState.getHistory().addAction(this);
+        gameState.getHistory().addAction(gameState, this);
         Player player = gameState.getPlayerById(this.getPlayerId());
         player.setReady(true);
         Set<Card> cardsInHand = new HashSet<>(player.getHand().getCards());

@@ -2,7 +2,6 @@ package com.molszewski.demos.poker.engine.game;
 
 import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.exception.ActionValidationException;
-import com.molszewski.demos.poker.engine.history.PhaseChangeEntry;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
 import org.junit.jupiter.api.Test;
@@ -69,7 +68,7 @@ class GameStateTest {
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
 
         assertEquals(1, gameState.getHistory().getEntries().size());
-        assertInstanceOf(PhaseChangeEntry.class, gameState.getHistory().getEntries().getFirst());
-        assertEquals(GamePhase.FIRST_BETTING, ((PhaseChangeEntry) gameState.getHistory().getEntries().getFirst()).getPhase());
+        assertEquals("PHASE_CHANGE", gameState.getHistory().getEntries().getFirst().getEntryCategory());
+        assertEquals(GamePhase.FIRST_BETTING.toString(), gameState.getHistory().getEntries().getFirst().getProperties().get("newPhase"));
     }
 }

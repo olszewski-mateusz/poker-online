@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   ElementRef,
+  inject,
   input,
   InputSignal,
   signal,
@@ -12,19 +13,9 @@ import {
   WritableSignal
 } from '@angular/core';
 import {MatList, MatListItem, MatListItemTitle} from '@angular/material/list';
-import {
-  ActionType,
-  Game,
-  GamePhase,
-  HistoryEntry,
-  isActionEntry, isGameWinnerEntry,
-  isPotWinnerEntry,
-  isPhaseChangeEntry,
-  isShowdownSummaryEntry,
-  isWinnerEntry,
-  translateHandType
-} from '../../../model';
+import {Game} from '../../../model';
 import {MatIcon} from '@angular/material/icon';
+import {HistoryService} from './history.service';
 
 @Component({
   selector: 'poker-game-history',
@@ -51,8 +42,10 @@ export class HistoryComponent {
     return this.mobile() ? 20 : 100;
   })
 
+  private readonly historyService = inject(HistoryService);
+
   historyEntries: Signal<string[]> = computed(() => {
-    const entries: string[] = this.buildHistoryEntries(this.game());
+    const entries: string[] = this.historyService.buildHistoryEntries(this.game());
     if (entries.length > this.maxEntries()) {
       return entries.slice(-this.maxEntries());
     }
@@ -76,66 +69,6 @@ export class HistoryComponent {
         left: 0,
         behavior: smooth ? 'smooth' : 'instant'
       });
-    }
-  }
-
-  private buildHistoryEntries(game: Game): string[] {
-    const entries: string[] = [];
-    for (const entry of game.history) {
-      entries.push(this.translateHistoryEntry(entry));
-    }
-    return entries;
-  }
-
-  private translateHistoryEntry(entry: HistoryEntry): string {
-    if (isPhaseChangeEntry(entry)) {
-      return this.translateGamePhaseToEntry(entry.details);
-    } else if (isWinnerEntry(entry)) {
-      return `${entry.details.playerName} wins with ${translateHandType(entry.details.handType)}`;
-    } else if (isGameWinnerEntry(entry)) {
-      return `${entry.details.playerName} is game winner!`;
-    } else if (isPotWinnerEntry(entry)) {
-      return `Pot #${entry.details.potIndex} (${entry.details.potAmount}) won by ${entry.details.winnerNames.join(', ')}`;
-    } else if (isShowdownSummaryEntry(entry)) {
-      const winners: string = entry.details.winners
-        .map(winner => `${winner.playerName} (${translateHandType(winner.handType)})`)
-        .join(', ');
-      return `Showdown summary: ${entry.details.pots.length} pot(s), winners: ${winners}`;
-    } else if (isActionEntry(entry)) {
-      switch (entry.entryType) {
-        case ActionType.JOIN:
-          return `${entry.details.playerName} joins`;
-        case ActionType.ALL_IN:
-          return `${entry.details.playerName} goes all in!`;
-        case ActionType.BET:
-          return `${entry.details.playerName} bets ${entry.details.value}`;
-        case ActionType.CALL:
-          return `${entry.details.playerName} calls`;
-        case ActionType.CHECK:
-          return `${entry.details.playerName} checks`;
-        case ActionType.FOLD:
-          return `${entry.details.playerName} folds`;
-        case ActionType.RAISE:
-          return `${entry.details.playerName} raises to ${entry.details.value}`;
-        case ActionType.READY:
-          return `${entry.details.playerName} is ${entry.details.value === true ? '' : 'not'} ready`;
-        case ActionType.REPLACE: {
-          const isOne: boolean = entry.details.value === 1;
-          return `${entry.details.playerName} replaces ${entry.details.value} ${isOne ? 'card' : 'cards'}`;
-        }
-      }
-    }
-    return 'Unknown history entry';
-  }
-
-  private translateGamePhaseToEntry(phase: GamePhase): string {
-    switch (phase) {
-      case GamePhase.NOT_STARTED: return 'Game is not started';
-      case GamePhase.FIRST_BETTING: return 'Round starts';
-      case GamePhase.DRAWING: return 'Drawing phase starts';
-      case GamePhase.SECOND_BETTING: return 'Second betting phase starts';
-      case GamePhase.SHOWDOWN: return 'Showdown phase starts';
-      case GamePhase.FINISHED: return 'There is only one player left with chips';
     }
   }
 }

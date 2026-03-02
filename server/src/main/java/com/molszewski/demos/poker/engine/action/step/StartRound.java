@@ -3,7 +3,7 @@ package com.molszewski.demos.poker.engine.action.step;
 import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GamePhase;
-import com.molszewski.demos.poker.engine.history.FlowStep;
+import com.molszewski.demos.poker.engine.history.ActionStepType;
 import com.molszewski.demos.poker.engine.player.Player;
 
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.List;
 public class StartRound {
 
     static void tryStartRound(GameState state, GameConfiguration configuration) {
-        state.getHistory().addFlowStep(FlowStep.START_ROUND);
         long playersReady = state.getPlayers().stream().filter(Player::isReady).count();
         if (playersReady >= configuration.minPlayersToStart() && playersReady == state.getPlayers().size()) {
+            state.getHistory().addFlowStep(state, ActionStepType.START_ROUND);
             applyStartGame(state, configuration);
         }
     }
@@ -29,7 +29,7 @@ public class StartRound {
         if (isGameFinished(state)) {
             state.setCurrentPlayer(state.getPlayers().stream().filter(player -> !player.isFolded()).findFirst().orElse(null));
             state.setGamePhase(GamePhase.FINISHED);
-            state.getHistory().addWinner(state.getCurrentPlayer().getId());
+            state.getHistory().addGameWinner(state, state.getCurrentPlayer());
             return;
         }
         state.setGamePhase(GamePhase.FIRST_BETTING);

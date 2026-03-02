@@ -1,12 +1,25 @@
 package com.molszewski.demos.poker.engine.history;
 
+import com.molszewski.demos.poker.engine.game.GameState;
+import com.molszewski.demos.poker.engine.player.Player;
 import lombok.Getter;
 
-@Getter
-public class GameWinnerEntry extends HistoryEntry {
-    private final String playerId;
+import java.util.Map;
 
-    public GameWinnerEntry(String playerId) {
-        this.playerId = playerId;
+@Getter
+class GameWinnerEntry extends HistoryEntry<Player> {
+
+    GameWinnerEntry(GameState gameState, Player player) {
+        super(gameState, player);
+    }
+
+    @Override
+    public String getEntryCategory() {
+        return "GAME_WINNER";
+    }
+
+    @Override
+    protected Map<String, String> buildProperties(GameState gameState, Player player) {
+        return Map.of("winnerName", player.getName());
     }
 }
