@@ -20,6 +20,7 @@ public class GameController {
 
     @PostMapping
     public Mono<ResponseEntity<NewGameResponse>> create() {
+        log.debug("Creating new game");
         return gameService.createGame()
                 .map(ResponseEntity::ok)
                 .doOnError(err -> log.error(err.getMessage()))
@@ -28,11 +29,13 @@ public class GameController {
 
     @GetMapping(value = "{gameId}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<GameResponse> subscribe(@PathVariable String gameId, @RequestParam String myId) {
+        log.debug("Game: {} Player: {} subscribes", gameId, myId);
         return gameService.subscribeToGameChanges(gameId, myId);
     }
 
     @GetMapping(value = "{gameId}/exists")
     public Mono<ResponseEntity<Boolean>> exists(@PathVariable String gameId) {
+        log.debug("Game: {} Existence check", gameId);
         return gameService.exists(gameId)
                 .map(ResponseEntity::ok)
                 .doOnError(err -> log.error(err.getMessage()))
@@ -41,6 +44,7 @@ public class GameController {
 
     @GetMapping(value = "{gameId}")
     public Mono<ResponseEntity<GameResponse>> get(@PathVariable String gameId, @RequestParam String myId) {
+        log.debug("Game: {} Getting current state", gameId);
         return gameService.getCurrentGame(gameId, myId)
                 .map(ResponseEntity::ok)
                 .doOnError(err -> log.error(err.getMessage()))
