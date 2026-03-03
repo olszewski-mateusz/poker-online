@@ -116,30 +116,20 @@ public class PotState {
         List<Integer> caps = smallAllInCaps.stream()
                 .distinct()
                 .sorted()
-                .toList();
+                .collect(Collectors.toList());
+        caps.add(Integer.MAX_VALUE);
 
         int previousCap = 0;
         for (int cap : caps) {
-            int layerWidth = cap - previousCap;
-            if (layerWidth <= 0) {
-                continue;
-            }
-
+            cap -= previousCap;
             Map<String, Integer> potContributions = new HashMap<>();
 
-            contributionsCopy.forEach((key, value) -> {
-                if (value > 0) {
-                    potContributions.put(key, Math.min(layerWidth, value));
+            for (Map.Entry<String, Integer> entry : contributionsCopy.entrySet()) {
+                if (entry.getValue() > 0) {
+                    int value = Math.min(cap, entry.getValue());
+                    potContributions.put(entry.getKey(), value);
+                    contributionsCopy.put(entry.getKey(), contributionsCopy.get(entry.getKey()) - value);
                 }
-            });
-
-            potContributions.forEach((key, value) -> {
-               contributionsCopy.put(key, contributionsCopy.get(key) - value);
-            });
-
-            if (potContributions.isEmpty()) {
-                previousCap = cap;
-                continue;
             }
 
             Pot pot = new Pot(
@@ -152,36 +142,11 @@ public class PotState {
             );
 
             if (pot.eligible().isEmpty()) {
-                throw  new IllegalArgumentException("There should always be at least one eligible");
+                throw new IllegalArgumentException("There should always be at least one eligible");
             }
 
             pots.add(pot);
             previousCap = cap;
-        }
-
-        Map<String, Integer> remainingContributions = new HashMap<>();
-        contributionsCopy.forEach((key, value) -> {
-            if (value > 0) {
-                remainingContributions.put(key, value);
-            }
-        });
-
-        if (!remainingContributions.isEmpty()) {
-            Pot finalPot = new Pot(
-                    pots.isEmpty() ? PotType.MAIN : PotType.SIDE,
-                    remainingContributions,
-                    players.stream()
-                            .filter(player -> !player.isFolded() && remainingContributions.containsKey(player.getId()))
-                            .map(Player::getId)
-                            .collect(Collectors.toSet())
-            );
-
-            if (finalPot.eligible().isEmpty()) {
-                throw  new IllegalArgumentException("There should always be at least one eligible");
-            }
-
-            pots.add(finalPot);
-            remainingContributions.forEach((key, value) -> contributionsCopy.put(key, contributionsCopy.get(key) - value));
         }
 
         if (contributionsCopy.values().stream().anyMatch(value -> value > 0)) {
@@ -197,7 +162,7 @@ public class PotState {
     }
 
     public int getPlayerContribution(Player player) {
-        return contributions.getOrDefault(player.getId(), 0);
+        return getPlayerContribution(player.getId());
     }
 
     public int getPlayerContribution(String playerId) {

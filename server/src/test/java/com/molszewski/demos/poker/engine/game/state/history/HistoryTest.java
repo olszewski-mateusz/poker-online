@@ -1,6 +1,7 @@
 package com.molszewski.demos.poker.engine.game.state.history;
 
 import com.molszewski.demos.poker.engine.action.Ready;
+import com.molszewski.demos.poker.engine.action.ActionType;
 import com.molszewski.demos.poker.engine.card.Card;
 import com.molszewski.demos.poker.engine.card.Rank;
 import com.molszewski.demos.poker.engine.card.Suit;
@@ -37,7 +38,7 @@ class HistoryTest {
 
         assertEquals(2, history.getEntries().size());
         assertEquals("ACTION", history.getEntries().get(0).getEntryCategory());
-        assertEquals("ready", history.getEntries().get(0).getProperties().get("actionType"));
+        assertEquals(ActionType.READY.toString(), history.getEntries().get(0).getProperties().get("actionType"));
         assertEquals("Alice", history.getEntries().get(0).getProperties().get("playerName"));
         assertEquals("ACTION_STEP", history.getEntries().get(1).getEntryCategory());
         assertEquals("NEXT_TURN", history.getEntries().get(1).getProperties().get("stepType"));

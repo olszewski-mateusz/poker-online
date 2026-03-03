@@ -5,6 +5,9 @@ import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @Slf4j
 public class GameEngine {
 
@@ -18,13 +21,17 @@ public class GameEngine {
         this.configuration = configuration;
     }
 
-    public boolean applyAction(Action action) {
-        try {
-            action.apply(gameState, configuration);
-            return true;
-        } catch (ActionValidationException e) {
-            log.warn(e.getMessage());
-            return false;
-        }
+    public void applyActions(Stream<Action> actions) {
+        actions.forEach(action -> {
+            try {
+                action.apply(gameState, configuration);
+            } catch (ActionValidationException e) {
+                log.debug("Illegal action found, reason: {}", e.getMessage());
+            }
+        });
+    }
+
+    public void tryApplyAction(Action action) throws ActionValidationException {
+        action.apply(gameState, configuration);
     }
 }

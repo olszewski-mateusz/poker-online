@@ -8,6 +8,7 @@ import com.molszewski.demos.poker.engine.game.GameConfiguration;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.game.GamePhase;
 import com.molszewski.demos.poker.engine.action.Join;
+import com.molszewski.demos.poker.engine.action.ActionType;
 import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
@@ -46,7 +47,7 @@ class GameResponseTest {
 
         assertEquals(2, response.history().size());
         assertEquals("ACTION", response.history().get(0).category());
-        assertEquals("join", response.history().get(0).properties().get("actionType"));
+        assertEquals(ActionType.JOIN.toString(), response.history().get(0).properties().get("actionType"));
         assertEquals("PHASE_CHANGE", response.history().get(1).category());
         assertEquals(GamePhase.FIRST_BETTING.toString(), response.history().get(1).properties().get("newPhase"));
     }

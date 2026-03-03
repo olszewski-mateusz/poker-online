@@ -1,5 +1,6 @@
 package com.molszewski.demos.poker.web.service;
 
+import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.game.GameEngine;
 import com.molszewski.demos.poker.persistence.entity.GameSetup;
 import com.molszewski.demos.poker.persistence.entity.command.Command;
@@ -34,12 +35,22 @@ public class GameService {
     }
 
     public Mono<ActionResponse> handleCommand(String gameId, Command newCommand) {
-        return this.gameSetupRepository.exists(gameId).flatMap(success -> {
-            if (Boolean.TRUE.equals(success)) {
-                return commandRepository.send(gameId, newCommand).thenReturn(new ActionResponse(newCommand.getPlayerId()));
-            }
-            return Mono.error(new IllegalStateException("Game does not exist"));
-        }).doOnError(e -> log.warn(e.getMessage()));
+        return gameSetupRepository.findById(gameId)
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Game not found")))
+                .flatMap(gameSetup -> commandRepository.readAll(gameId)
+                        .map(Record::getValue)
+                        .collectList()
+                        .flatMap(commands -> {
+                            GameEngine engine = gameSetup.toGame();
+                            engine.applyActions(commands.stream().map(Command::toAction));
+                            try {
+                                engine.tryApplyAction(newCommand.toAction());
+                                return commandRepository.send(gameId, newCommand).thenReturn(new ActionResponse(newCommand.getPlayerId()));
+                            } catch (ActionValidationException e) {
+                                return Mono.error(e);
+                            }
+                        })
+                ).doOnError(e -> log.warn(e.getMessage()));
     }
 
     public Flux<GameResponse> subscribeToGameChanges(String gameId, String myId) {
@@ -90,12 +101,7 @@ public class GameService {
     }
 
     private void processCommands(GameEngine gameEngine, List<Command> commands) {
-        for (Command command : commands) {
-            boolean success = gameEngine.applyAction(command.toAction());
-            if (!success) {
-                log.warn("Illegal command found in stream");
-            }
-        }
+        gameEngine.applyActions(commands.stream().map(Command::toAction));
     }
 
     public String generatePlayerId() {

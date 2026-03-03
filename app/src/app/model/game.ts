@@ -6,6 +6,7 @@ export type Game = {
   players: Player[]
   history: HistoryEntry[]
   configuration: Configuration
+  validActions: ValidAction[]
   phase: GamePhase
   currentPlayerIndex?: number
   winnerIndexes: number[]
@@ -49,6 +50,23 @@ export type Configuration = {
   minOpenBet: number
   minRaiseIncrement: number
   minRaiseToCurrentBetMultiplier: number
+}
+
+export type ValidAction = {
+  type: ActionType
+  properties: Record<string, string>
+}
+
+export enum ActionType {
+  ALL_IN = 'ALL_IN',
+  BET = 'BET',
+  CALL = 'CALL',
+  CHECK = 'CHECK',
+  FOLD = 'FOLD',
+  JOIN = 'JOIN',
+  RAISE = 'RAISE',
+  READY = 'READY',
+  REPLACE = 'REPLACE'
 }
 
 export enum GamePhase {

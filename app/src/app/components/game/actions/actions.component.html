@@ -1,15 +1,14 @@
-  @if (actionsForGameNotStarted()) {
-    <button class="button-large" mat-button (click)="sendReady()">
-      {{ myPlayer()?.ready ? 'Not ready' : 'Ready' }}
-    </button>
-  } @else if (actionsForShowdown()) {
-    <button class="button-large" mat-button (click)="sendReady()">
-      {{ myPlayer()?.ready ? 'Not ready' : 'Ready for next round' }}
-    </button>
-  } @else if (actionsForBetting()) {
-    <poker-game-betting-actions [game]="game()" [mobile]="mobile()"/>
-  } @else if (actionsForDrawing()) {
-    <button class="button-large" mat-button [disabled]="!myTurn()" (click)="sendReplace()">
-      Replace cards ({{cardsToReplaceCount()}})
+@if (selectedAmountAction(); as action) {
+  <poker-game-chips-amount-setter
+    [game]="game()"
+    [mobile]="mobile()"
+    [action]="action"
+    (cancelRequest)="closeAmountPanel()"
+  />
+} @else {
+  @for (action of availableActions(); track action.type) {
+    <button class="button-large" mat-button (click)="onActionClick(action)">
+      {{actionButtonLabel(action)}}
     </button>
   }
+}

@@ -24,7 +24,8 @@ public record GameResponse(
         int cardsInDeck,
         int discardedCards,
         boolean betPlacedInCurrentPhase,
-        GameConfiguration configuration
+        GameConfiguration configuration,
+        List<ValidActionsResponse.ValidAction> validActions
 ) {
     public static GameResponse fromParams(GameContext context) {
         List<Player> players = context.state.getPlayers();
@@ -66,6 +67,7 @@ public record GameResponse(
                         .toList())
                 .betPlacedInCurrentPhase(context.state.getPotState().isBetPlaced())
                 .configuration(context.configuration)
+                .validActions(ValidActionsResponse.fromGameState(context.myId, context.state, context.configuration).validActions())
                 .build();
     }
 

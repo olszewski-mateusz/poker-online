@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import {ActionEntryType, ActionStepType, Game, GamePhase, HistoryEntry, HistoryEntryCategory} from '../../../model';
+import {
+  ActionStepType,
+  ActionType,
+  Game,
+  GamePhase,
+  HistoryEntry,
+  HistoryEntryCategory
+} from '../../../model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,29 +41,29 @@ export class HistoryService {
   private translateActionEntry(properties: Record<string, string>): string {
     const playerName = properties["playerName"]
     switch (properties["actionType"]) {
-      case ActionEntryType.JOIN:
+      case ActionType.JOIN:
         return `${playerName} joins`;
-      case ActionEntryType.ALL_IN:
+      case ActionType.ALL_IN:
         return `${playerName} goes all in!`;
-      case ActionEntryType.BET: {
+      case ActionType.BET: {
         const betAmount = properties["betAmount"]
         return `${playerName} bets ${betAmount}`;
       }
-      case ActionEntryType.CALL:
+      case ActionType.CALL:
         return `${playerName} calls`;
-      case ActionEntryType.CHECK:
+      case ActionType.CHECK:
         return `${playerName} checks`;
-      case ActionEntryType.FOLD:
+      case ActionType.FOLD:
         return `${playerName} folds`;
-      case ActionEntryType.RAISE: {
+      case ActionType.RAISE: {
         const raiseAmount = properties["raiseAmount"]
         return `${playerName} raises to ${raiseAmount}`;
       }
-      case ActionEntryType.READY: {
-        const isReady = Boolean(properties["ready"]);
+      case ActionType.READY: {
+        const isReady = Boolean(JSON.parse(properties["ready"]));
         return `${playerName} is ${isReady ? '' : 'not'} ready`;
       }
-      case ActionEntryType.REPLACE: {
+      case ActionType.REPLACE: {
         const replaceAmount = Number(properties["replaceAmount"]);
         const isOne: boolean = replaceAmount === 1;
         return `${playerName} replaces ${replaceAmount} ${isOne ? 'card' : 'cards'}`;

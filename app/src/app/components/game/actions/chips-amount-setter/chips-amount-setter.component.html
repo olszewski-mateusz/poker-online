@@ -1,13 +1,13 @@
-@if (!raiseIllegal()) {
+@if (!actionIllegal()) {
   <div class="row-container amount-label poker-text"
        [class.mobile]="mobile()"
        [class.desktop]="!mobile()">
-    {{betPlaced() ? 'Raise' : 'Bet'}} amount: {{amount()}}
+    {{actionLabel()}} amount: {{amount()}}
   </div>
 
   @if (mobile()) {
     <div class="row-container">
-      <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
+      <mat-slider [step]="5" [min]="minValue()" [max]="maxValue()">
         <input [(value)]="amount" matSliderThumb>
       </mat-slider>
     </div>
@@ -23,7 +23,7 @@
       <button class="button-large" mat-button (click)="addToAmount(-50)">-50</button>
       <button class="button-large" mat-button (click)="addToAmount(-5)">-5</button>
 
-      <mat-slider [step]="5" [min]="minBet()" [max]="maxBet()">
+      <mat-slider [step]="5" [min]="minValue()" [max]="maxValue()">
         <input [(value)]="amount" matSliderThumb>
       </mat-slider>
 
@@ -37,21 +37,14 @@
   <button mat-button
           [class.button-large]="!mobile()"
           [class.button-medium]="mobile()"
-          [disabled]="!myTurn()" (click)="sendAllIn()">
-    All in
+          [disabled]="actionIllegal()" (click)="sendAction()">
+    {{actionLabel()}}
   </button>
 
   <button mat-button
           [class.button-large]="!mobile()"
           [class.button-medium]="mobile()"
-          [disabled]="!myTurn() || raiseIllegal()" (click)="sendBetOrRaise()">
-    {{betPlaced() ? 'Raise' : 'Bet'}}
-  </button>
-
-  <button mat-button
-          [class.button-large]="!mobile()"
-          [class.button-medium]="mobile()"
-          [disabled]="!myTurn()" (click)="cancelRequest.emit()">
+          (click)="cancelRequest.emit()">
     Cancel
   </button>
 </div>

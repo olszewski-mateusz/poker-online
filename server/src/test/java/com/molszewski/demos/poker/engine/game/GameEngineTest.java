@@ -26,9 +26,8 @@ class GameEngineTest {
     void applyActionTest() throws ActionValidationException {
         Action action = mock(Join.class);
         GameEngine gameEngine = new GameEngine(gameState, configuration);
-        boolean success = gameEngine.applyAction(action);
+        gameEngine.tryApplyAction(action);
         verify(action, times(1)).apply(eq(gameState), eq(configuration));
-        assertTrue(success);
     }
 
     @Test
@@ -37,9 +36,8 @@ class GameEngineTest {
         GameEngine gameEngine = new GameEngine(gameState, configuration);
         doThrow(new ActionValidationException("")).when(action).apply(any(), any());
 
-        boolean success = gameEngine.applyAction(action);
+        assertThrows(ActionValidationException.class, () -> gameEngine.tryApplyAction(action));
         verify(action, times(1)).apply(eq(gameState), eq(configuration));
-        assertFalse(success);
     }
 
     @Test
@@ -49,4 +47,3 @@ class GameEngineTest {
         assertSame(configuration, gameEngine.getConfiguration());
     }
 }
-

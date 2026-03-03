@@ -1,27 +1,33 @@
 package com.molszewski.demos.poker.engine.card;
 
 public enum Rank {
-    TWO(1),
-    THREE(2),
-    FOUR(3),
-    FIVE(4),
-    SIX(5),
-    SEVEN(6),
-    EIGHT(7),
-    NINE(8),
-    TEN(9),
-    JACK(10),
-    QUEEN(11),
-    KING(12),
-    ACE(13);
+    TWO(1, "2"),
+    THREE(2, "3"),
+    FOUR(3, "4"),
+    FIVE(4, "5"),
+    SIX(5, "6"),
+    SEVEN(6, "7"),
+    EIGHT(7, "8"),
+    NINE(8, "9"),
+    TEN(9, "10"),
+    JACK(10, "J"),
+    QUEEN(11, "Q"),
+    KING(12, "K"),
+    ACE(13, "A");
 
     private int value;
+    private String shortLabel;
 
-    Rank(int value) {
+    Rank(int value, String shortLabel) {
         this.value = value;
+        this.shortLabel = shortLabel;
     }
 
     public int getValue() {
         return this.value;
+    }
+
+    public String getShortLabel() {
+        return this.shortLabel;
     }
 }

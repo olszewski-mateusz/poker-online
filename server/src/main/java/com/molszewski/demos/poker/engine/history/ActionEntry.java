@@ -4,7 +4,6 @@ import com.molszewski.demos.poker.engine.action.*;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.player.Player;
 import lombok.Getter;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -27,34 +26,34 @@ public class ActionEntry extends HistoryEntry<Action> {
         properties.put("playerName", player.getName());
         switch (action) {
             case AllIn allIn -> {
-                properties.put("actionType", "allIn");
+                properties.put("actionType", ActionType.ALL_IN.toString());
             }
             case Bet bet -> {
-                properties.put("actionType", "bet");
+                properties.put("actionType", ActionType.BET.toString());
                 properties.put("betAmount", String.valueOf(bet.getAmount()));
             }
             case Call call -> {
-                properties.put("actionType", "call");
+                properties.put("actionType", ActionType.CALL.toString());
             }
             case Check check -> {
-                properties.put("actionType", "check");
+                properties.put("actionType", ActionType.CHECK.toString());
             }
             case Fold fold -> {
-                properties.put("actionType", "fold");
+                properties.put("actionType", ActionType.FOLD.toString());
             }
             case Join join -> {
-                properties.put("actionType", "join");
+                properties.put("actionType", ActionType.JOIN.toString());
             }
             case Raise raise -> {
-                properties.put("actionType", "raise");
+                properties.put("actionType", ActionType.RAISE.toString());
                 properties.put("raiseAmount", String.valueOf(raise.getAmount()));
             }
             case Ready ready -> {
-                properties.put("actionType", "ready");
-                properties.put("isReady", String.valueOf(ready.isReady()));
+                properties.put("actionType", ActionType.READY.toString());
+                properties.put("ready", String.valueOf(ready.isReady()));
             }
             case Replace replace -> {
-                properties.put("actionType", "replace");
+                properties.put("actionType", ActionType.REPLACE.toString());
                 properties.put("replaceAmount", String.valueOf(replace.getCardsToReplace().size()));
             }
         }

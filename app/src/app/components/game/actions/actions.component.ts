@@ -1,9 +1,17 @@
-import {ChangeDetectionStrategy, Component, computed, inject, input, InputSignal, Signal} from '@angular/core';
-import {buildMyPlayerSignal, buildMyTurnSignal, Card, Game, GamePhase, Player} from '../../../model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  InputSignal,
+  signal,
+  WritableSignal
+} from '@angular/core';
+import {ActionType, Card, Game, GamePhase, ValidAction} from '../../../model';
 import {ApiRestService} from '../../../services';
 import {ReplaceCardsService} from './replace-cards.service';
-import {ChipsAmountSetterComponent} from './betting-actions/chips-amount-setter/chips-amount-setter.component';
-import {BettingActionsComponent} from './betting-actions/betting-actions.component';
+import {ChipsAmountSetterComponent} from './chips-amount-setter/chips-amount-setter.component';
 import {MatButton} from '@angular/material/button';
 
 @Component({
@@ -11,7 +19,6 @@ import {MatButton} from '@angular/material/button';
   standalone: true,
   imports: [
     ChipsAmountSetterComponent,
-    BettingActionsComponent,
     MatButton
   ],
   templateUrl: './actions.component.html',
@@ -25,42 +32,81 @@ export class ActionsComponent {
   private readonly apiRestService: ApiRestService = inject(ApiRestService);
   private readonly replaceCardsService: ReplaceCardsService = inject(ReplaceCardsService);
 
-  protected readonly myPlayer: Signal<Player | undefined> = buildMyPlayerSignal(this.game);
+  protected readonly selectedAmountAction: WritableSignal<ValidAction | null> = signal<ValidAction | null>(null);
 
-  protected readonly myTurn: Signal<boolean> = buildMyTurnSignal(this.game);
-
-  protected readonly cardsToReplaceCount: Signal<number> = computed(() => {
-    return this.replaceCardsService.cardsToReplace().length;
+  protected readonly availableActions = computed(() => {
+    return this.game().validActions;
   });
 
-  sendReady(): void {
+  onActionClick(action: ValidAction): void {
     const game: Game = this.game();
-    const myPlayer = this.myPlayer();
-    if (myPlayer) {
-      this.apiRestService.sendReady(game.gameId, game.myId, !myPlayer.ready).subscribe();
+    switch (action.type) {
+      case ActionType.ALL_IN:
+        this.apiRestService.sendAllIn(game.gameId, game.myId).subscribe();
+        break;
+      case ActionType.CALL:
+        this.apiRestService.sendCall(game.gameId, game.myId).subscribe();
+        break;
+      case ActionType.CHECK:
+        this.apiRestService.sendCheck(game.gameId, game.myId).subscribe();
+        break;
+      case ActionType.FOLD:
+        this.apiRestService.sendFold(game.gameId, game.myId).subscribe();
+        break;
+      case ActionType.REPLACE: {
+        const cardsToReplace: Card[] = this.replaceCardsService.cardsToReplace();
+        this.apiRestService.sendReplace(game.gameId, game.myId, cardsToReplace).subscribe();
+        this.replaceCardsService.clearSelection();
+        break;
+      }
+      case ActionType.READY: {
+        const ready: boolean = Boolean(JSON.parse(action.properties["ready"]));
+        this.apiRestService.sendReady(game.gameId, game.myId, ready).subscribe();
+        break;
+      }
+      case ActionType.BET:
+      case ActionType.RAISE:
+        this.selectedAmountAction.set(action);
+        break;
+      case ActionType.JOIN:
+        break;
     }
   }
 
-  sendReplace(): void {
-    const game: Game = this.game();
-    const cardsToReplace: Card[] = this.replaceCardsService.cardsToReplace();
-    this.apiRestService.sendReplace(game.gameId, game.myId, cardsToReplace).subscribe();
-    this.replaceCardsService.clearSelection();
+  protected readyButtonLabel(action: ValidAction): string {
+    const targetReady: boolean = action.properties["ready"] === "true";
+    if (!targetReady) {
+      return "Not ready";
+    }
+    return this.game().phase === GamePhase.SHOWDOWN || this.game().phase === GamePhase.FINISHED
+      ? "Ready for next round"
+      : "Ready";
   }
 
-  actionsForGameNotStarted(): boolean {
-    return this.game().phase === GamePhase.NOT_STARTED;
+  protected closeAmountPanel(): void {
+    this.selectedAmountAction.set(null);
   }
 
-  actionsForBetting(): boolean {
-    return this.game().phase === GamePhase.FIRST_BETTING || this.game().phase === GamePhase.SECOND_BETTING;
-  }
-
-  actionsForDrawing(): boolean {
-    return this.game().phase === GamePhase.DRAWING;
-  }
-
-  actionsForShowdown(): boolean {
-    return this.game().phase === GamePhase.SHOWDOWN || this.game().phase === GamePhase.FINISHED;
+  protected actionButtonLabel(action: ValidAction) {
+    switch (action.type) {
+      case ActionType.READY:
+        return this.readyButtonLabel(action)
+      case ActionType.REPLACE:
+        return `Replace cards (${this.replaceCardsService.cardsToReplace().length})`;
+      case ActionType.CHECK:
+        return "Check"
+      case ActionType.CALL:
+        return "Call"
+      case ActionType.BET:
+        return "Bet"
+      case ActionType.RAISE:
+        return "Raise"
+      case ActionType.ALL_IN:
+        return "All in"
+      case ActionType.FOLD:
+        return "Fold"
+      default:
+        return "Unknown"
+    }
   }
 }

@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, input, InputSignal, Signal} from '@angular/core';
-import {Card, compareCards, Game, GamePhase, Rank} from '../../../model';
+import {ActionType, Card, compareCards, Game, GamePhase, Rank} from '../../../model';
 import {CardComponent, CardSize} from './card/card.component';
 import {ReplaceCardsService} from '../actions';
 
@@ -34,7 +34,7 @@ export class HandComponent {
 
   cardsInteractive: Signal<boolean> = computed(() => {
     const game: Game = this.game();
-    return game.phase === GamePhase.DRAWING && game.myIndex === game.currentPlayerIndex;
+    return game.validActions.some(value => value.type === ActionType.REPLACE);
   });
 
   cardsSize: Signal<CardSize> = computed(() => {
@@ -46,6 +46,6 @@ export class HandComponent {
   }
 
   isCardSelected(card: Card): boolean {
-    return !!this.replaceCardService.cardsToReplace().find(c => c.rank === card.rank && c.suit === card.suit);
+    return this.replaceCardService.cardsToReplace().some(c => c.rank === card.rank && c.suit === card.suit);
   }
 }
