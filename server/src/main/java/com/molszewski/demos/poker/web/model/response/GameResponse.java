@@ -21,7 +21,6 @@ public record GameResponse(
         List<HistoryEntryResponse> history,
         int cardsInDeck,
         int discardedCards,
-        boolean betPlacedInCurrentPhase,
         GameConfiguration configuration,
         List<ValidActionsResponse.ValidAction> validActions
 ) {
@@ -55,7 +54,6 @@ public record GameResponse(
                 .history(context.state.getHistory().getEntries().stream()
                         .map(HistoryEntryResponse::fromHistoryEntry)
                         .toList())
-                .betPlacedInCurrentPhase(context.state.getPotState().isBetPlaced())
                 .configuration(context.configuration)
                 .validActions(ValidActionsResponse.fromGameState(context.myId, context.state, context.configuration).validActions())
                 .build();

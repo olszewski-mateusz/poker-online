@@ -15,20 +15,12 @@ export type Game = {
   gameId: string
   cardsInDeck: number
   discardedCards: number
-  betPlacedInCurrentPhase: boolean
 }
 
 export function buildMyPlayerSignal(gameSignal: Signal<Game>): Signal<Player | undefined> {
   return computed(() => {
     const game: Game = gameSignal();
     return game.players.find(value => value.index === game.myIndex);
-  })
-}
-
-export function buildMyTurnSignal(gameSignal: Signal<Game>): Signal<boolean> {
-  return computed(() => {
-    const game: Game = gameSignal();
-    return game.currentPlayerIndex === game.myIndex;
   })
 }
 

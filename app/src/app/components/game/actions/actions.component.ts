@@ -109,4 +109,16 @@ export class ActionsComponent {
         return "Unknown"
     }
   }
+
+  protected actionWidthByCount(size: number) {
+    let value;
+    if (size === 1) {
+      value = 80
+    } else if (size > 2) {
+      value = 200 / size;
+    } else {
+      value = 100 / size;
+    }
+    return value + '%';
+  }
 }

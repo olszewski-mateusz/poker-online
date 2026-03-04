@@ -7,7 +7,7 @@
   />
 } @else {
   @for (action of availableActions(); track action.type) {
-    <button class="button-large" mat-button (click)="onActionClick(action)">
+    <button [style.width]="actionWidthByCount(availableActions().length)" class="button-large" mat-button (click)="onActionClick(action)">
       {{actionButtonLabel(action)}}
     </button>
   }

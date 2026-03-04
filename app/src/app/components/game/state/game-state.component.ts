@@ -20,7 +20,7 @@ export class GameStateComponent {
     return this.game().players.find(p => p.index === this.game().currentPlayerIndex);
   });
 
-  roundReward: Signal<number> = computed(() => {
+  potReward: Signal<number> = computed(() => {
     return this.game().players
       .map(p => p.bet ?? 0)
       .reduce((previousValue, currentValue) => {
@@ -31,14 +31,6 @@ export class GameStateComponent {
   translatedGamePhase: Signal<string> = computed(() => {
     return this.translateGamePhase(this.game().phase);
   });
-
-  currentBet: Signal<number> = computed(() => {
-    return this.game().players
-      .map(p => p.bet ?? 0)
-      .reduce((previousValue, currentValue) => {
-        return Math.max(previousValue, currentValue);
-      }, 0)
-  })
 
   private translateGamePhase(phase: GamePhase): string {
     switch (phase) {
