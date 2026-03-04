@@ -1,0 +1,21 @@
+<div class="viewport poker-panel"
+     [class.is-dragging]="isDragging()"
+     [style.--item-height.px]="itemHeight()"
+     (pointerdown)="onPointerDown($event)"
+     (pointermove)="onPointerMove($event)"
+     (pointerup)="onPointerUp($event)"
+     (pointercancel)="onPointerCancel($event)"
+     (wheel)="onWheel($event)">
+  @if (hasPlayers()) {
+    @for (offset of renderedSlots; track offset) {
+      <div class="slot"
+           [class.centered]="offset === 0"
+           [style.transform]="slotTransform(offset)">
+        <div class="player-name">{{ playerNameForOffset(offset) }}</div>
+      </div>
+    }
+    <div class="center-indicator"></div>
+  } @else {
+    <div class="empty-state">No players</div>
+  }
+</div>

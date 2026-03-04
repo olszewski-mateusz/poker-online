@@ -1,0 +1,76 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.viewport {
+  --item-height: 44px;
+
+  position: relative;
+  width: 100%;
+  height: calc(var(--item-height) * 5);
+  overflow: hidden;
+  border-radius: 6px;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+}
+
+.viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.slot {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - (var(--item-height) / 2));
+  width: calc(100% - 16px);
+  height: var(--item-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.player-name {
+  width: 100%;
+  height: calc(var(--item-height) - 8px);
+  padding: 0 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: rgba(201, 201, 201, 0.07);
+  color: #c9c9c9;
+}
+
+.slot.centered .player-name {
+  background-color: rgba(255, 183, 135, 0.26);
+  color: #ffe8d8;
+  font-weight: 600;
+}
+
+.center-indicator {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: var(--item-height);
+  border: 1px solid rgba(255, 183, 135, 0.45);
+  border-radius: 6px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.empty-state {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9c9c9;
+  opacity: 0.7;
+}

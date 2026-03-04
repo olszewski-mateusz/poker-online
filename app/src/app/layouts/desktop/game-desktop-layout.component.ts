@@ -3,7 +3,7 @@ import {
   ActionsComponent,
   GameStateComponent,
   HandComponent,
-  HistoryComponent, PlayerPropertiesComponent,
+  HistoryComponent, PlayerPropertiesComponent, PlayersCarouselComponent,
   PlayerSelectionComponent,
   ToolbarComponent
 } from '../../components/game';
@@ -19,7 +19,8 @@ import {Game} from '../../model';
     HandComponent,
     PlayerSelectionComponent,
     PlayerPropertiesComponent,
-    ActionsComponent
+    ActionsComponent,
+    PlayersCarouselComponent
   ],
   templateUrl: './game-desktop-layout.component.html',
   styleUrl: './game-desktop-layout.component.scss',
@@ -27,4 +28,6 @@ import {Game} from '../../model';
 })
 export class GameDesktopLayoutComponent {
   game: InputSignal<Game> = input.required<Game>();
+  protected players = ["tom", "mike", "greg", "bob"]
+
 }
