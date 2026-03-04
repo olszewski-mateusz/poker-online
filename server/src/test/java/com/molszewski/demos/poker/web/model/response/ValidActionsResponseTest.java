@@ -9,6 +9,7 @@ import com.molszewski.demos.poker.engine.game.GamePhase;
 import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
+import com.molszewski.demos.poker.test.TestPlayerState;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -42,14 +43,14 @@ class ValidActionsResponseTest {
         new Join("1", "Alice").apply(state, configuration);
         new Join("2", "Bob").apply(state, configuration);
 
-        Player me = state.getPlayerById("1");
+        Player me = state.getPlayerState().getById("1");
         me.setFolded(false);
         me.setReady(false);
-        state.getPlayerById("2").setFolded(false);
+        state.getPlayerState().getById("2").setFolded(false);
         state.setGamePhase(GamePhase.FIRST_BETTING);
-        state.setCurrentPlayer(me);
+        TestPlayerState.setCurrentPlayer(state, me);
         state.getPotState().addAnte(me, configuration.ante());
-        state.getPotState().addAnte(state.getPlayerById("2"), configuration.ante());
+        state.getPotState().addAnte(state.getPlayerState().getById("2"), configuration.ante());
 
         ValidActionsResponse response = ValidActionsResponse.fromGameState("1", state, configuration);
         Map<ActionType, ValidActionsResponse.ValidAction> byType = toMap(response);
@@ -71,13 +72,13 @@ class ValidActionsResponseTest {
         new Join("1", "Alice").apply(state, configuration);
         new Join("2", "Bob").apply(state, configuration);
 
-        Player me = state.getPlayerById("1");
-        Player other = state.getPlayerById("2");
+        Player me = state.getPlayerState().getById("1");
+        Player other = state.getPlayerState().getById("2");
         me.setFolded(false);
         me.setReady(false);
         other.setFolded(false);
         state.setGamePhase(GamePhase.FIRST_BETTING);
-        state.setCurrentPlayer(me);
+        TestPlayerState.setCurrentPlayer(state, me);
         state.getPotState().addAnte(me, configuration.ante());
         state.getPotState().addAnte(other, configuration.ante());
         state.getPotState().addBet(other, 25);
@@ -96,16 +97,12 @@ class ValidActionsResponseTest {
     }
 
     @Test
-    void returnsJoinWhenPlayerIsNotInGameAndThereIsSpace() throws ActionValidationException {
+    void throwsWhenPlayerIsNotInGame() throws ActionValidationException {
         GameConfiguration configuration = GameConfiguration.defaultConfiguration();
         GameState state = new GameState(new Deck(new Random(17L)));
         new Join("1", "Alice").apply(state, configuration);
 
-        ValidActionsResponse response = ValidActionsResponse.fromGameState("2", state, configuration);
-        Map<ActionType, ValidActionsResponse.ValidAction> byType = toMap(response);
-
-        assertEquals(1, response.validActions().size());
-        assertTrue(byType.containsKey(ActionType.JOIN));
+        assertThrows(IllegalStateException.class, () -> ValidActionsResponse.fromGameState("2", state, configuration));
     }
 
     private static Map<ActionType, ValidActionsResponse.ValidAction> toMap(ValidActionsResponse response) {

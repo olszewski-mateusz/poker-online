@@ -4,6 +4,7 @@ import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
+import com.molszewski.demos.poker.test.TestPlayerState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,9 +23,9 @@ class CorrectPlayerTest {
                 new Player("1", "1", 100, false, false, null),
                 new Player("2", "2", 100, false, false, null)
         ));
-        gameState.setCurrentPlayer(gameState.getPlayerById("2"));
+        TestPlayerState.setCurrentPlayer(gameState, gameState.getPlayerState().getById("2"));
 
-        assertDoesNotThrow(() -> gameState.validateCurrentPlayer("2"));
+        assertDoesNotThrow(() -> gameState.getPlayerState().canPlayerMakeAction("2"));
     }
 
     @Test
@@ -34,9 +35,9 @@ class CorrectPlayerTest {
                 new Player("1", "1", 100, false, false, null),
                 new Player("2", "2", 100, true, false, null)
         ));
-        gameState.setCurrentPlayer(gameState.getPlayerById("2"));
+        TestPlayerState.setCurrentPlayer(gameState, gameState.getPlayerState().getById("2"));
 
-        assertThrows(ActionValidationException.class, () -> gameState.validateCurrentPlayer("2"));
+        assertThrows(ActionValidationException.class, () -> gameState.getPlayerState().canPlayerMakeAction("2"));
     }
 
     @Test
@@ -46,9 +47,9 @@ class CorrectPlayerTest {
                 new Player("1", "1", 100, false, false, null),
                 new Player("2", "2", 100, false, true, null)
         ));
-        gameState.setCurrentPlayer(gameState.getPlayerById("2"));
+        TestPlayerState.setCurrentPlayer(gameState, gameState.getPlayerState().getById("2"));
 
-        assertThrows(ActionValidationException.class, () -> gameState.validateCurrentPlayer("2"));
+        assertThrows(ActionValidationException.class, () -> gameState.getPlayerState().canPlayerMakeAction("2"));
     }
 
     @Test
@@ -58,9 +59,9 @@ class CorrectPlayerTest {
                 new Player("1", "1", 100, false, false, null),
                 new Player("2", "2", 100, false, false, null)
         ));
-        gameState.setCurrentPlayer(gameState.getPlayerById("2"));
+        TestPlayerState.setCurrentPlayer(gameState, gameState.getPlayerState().getById("2"));
 
-        assertThrows(ActionValidationException.class, () -> gameState.validateCurrentPlayer("1"));
+        assertThrows(ActionValidationException.class, () -> gameState.getPlayerState().canPlayerMakeAction("1"));
     }
 
     @Test
@@ -71,7 +72,7 @@ class CorrectPlayerTest {
                 new Player("2", "2", 100, false, false, null)
         ));
 
-        assertThrows(ActionValidationException.class, () -> gameState.validateCurrentPlayer("1"));
+        assertThrows(ActionValidationException.class, () -> gameState.getPlayerState().canPlayerMakeAction("1"));
     }
 
 }

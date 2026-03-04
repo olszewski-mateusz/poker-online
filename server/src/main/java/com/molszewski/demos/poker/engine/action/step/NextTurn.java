@@ -5,6 +5,7 @@ import com.molszewski.demos.poker.engine.game.GameState;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.history.ActionStepType;
 import com.molszewski.demos.poker.engine.player.Player;
+import com.molszewski.demos.poker.engine.player.PlayerState;
 import com.molszewski.demos.poker.engine.pot.Pot;
 import com.molszewski.demos.poker.engine.pot.PotType;
 
@@ -12,12 +13,14 @@ import java.util.List;
 
 class NextTurn {
     static void nextTurn(GameState state) {
-        nextPlayer(state);
-        if (canProceedToNextPhase(state)) {
+        PlayerState playerState = state.getPlayerState();
+
+        playerState.setNextCurrentPlayer(state.getGamePhase());
+        if (canProceedToNextPhase(playerState)) {
 
             processOnePlayerSidePots(state);
 
-            if (onlyOnePlayerLeftInRound(state))  {
+            if (onlyOnePlayerLeftInRound(playerState))  {
                 transitionToFoldoutPhase(state);
                 return;
             }
@@ -25,7 +28,7 @@ class NextTurn {
             switch (state.getGamePhase()) {
                 case FIRST_BETTING -> transitionToDrawingPhase(state);
                 case DRAWING -> {
-                    if (isBettingPossible(state)) {
+                    if (isBettingPossible(playerState)) {
                         transitionToSecondBettingPhase(state);
                     } else {
                         transitionToShowdownPhase(state);
@@ -39,94 +42,57 @@ class NextTurn {
         }
     }
 
-    private static boolean canProceedToNextPhase(GameState state) {
-        return state.getPlayers().stream().allMatch(player -> player.isReady() || player.isFolded());
+    private static boolean canProceedToNextPhase(PlayerState state) {
+        return state.allMatched(player -> player.isReady() || player.isFolded());
     }
 
-    private static boolean onlyOnePlayerLeftInRound(GameState state) {
-        return state.getPlayers().stream().filter(player -> !player.isFolded()).count() == 1;
+    private static boolean onlyOnePlayerLeftInRound(PlayerState state) {
+        return state.filtered((player -> !player.isFolded())).size() == 1;
     }
 
-    private static boolean isBettingPossible(GameState state) {
-        return state.getPlayers().stream().filter(player -> !player.isFolded() && player.getChips() > 0).count() >= 2;
-    }
-
-    private static void nextPlayer(GameState state) {
-        List<Player> players = state.getPlayers();
-        Player currentPlayer = state.getCurrentPlayer();
-
-        if (players.isEmpty()) {
-            throw new IllegalStateException("No players in game");
-        }
-
-        if (currentPlayer == null) {
-            throw new IllegalStateException("Current player is null");
-        }
-
-        List<Player> playersInGame;
-        if (state.getGamePhase().equals(GamePhase.FIRST_BETTING) || state.getGamePhase().equals(GamePhase.SECOND_BETTING)) {
-            playersInGame = players.stream()
-                    .filter(player -> (!player.isFolded() && player.getChips() > 0) || player == currentPlayer)
-                    .toList();
-        } else {
-            playersInGame = players.stream()
-                    .filter(player -> !player.isFolded() || player == currentPlayer)
-                    .toList();
-        }
-
-        state.setCurrentPlayer(playersInGame.get((playersInGame.indexOf(currentPlayer) + 1) % playersInGame.size()));
+    private static boolean isBettingPossible(PlayerState state) {
+        return state.filtered(player -> !player.isFolded() && player.getChips() > 0).size() >= 2;
     }
 
     private static void transitionToDrawingPhase(GameState state) {
         state.setGamePhase(GamePhase.DRAWING);
-        state.getPlayers().forEach(player -> player.setReady(false));
+        state.getPlayerState().removeReadyForAll();
         state.getPotState().resetToNewBettingPhase();
     }
 
     private static void transitionToSecondBettingPhase(GameState state) {
         state.setGamePhase(GamePhase.SECOND_BETTING);
-        state.getPlayers().forEach(player -> {
-            if (player.getChips() > 0) {
-                player.setReady(false);
-            }
-        });
+        state.getPlayerState().removeReadyForAllWithChips();
     }
 
     private static void transitionToShowdownPhase(GameState state) {
         state.setGamePhase(GamePhase.SHOWDOWN);
         distributePotsAmongWinners(state, true);
-        state.getPlayers().forEach(player -> player.setReady(false));
-        state.setCurrentPlayer(null);
+        state.getPlayerState().removeReadyForAll();
+        state.getPlayerState().clearCurrentPlayer();
     }
 
     private static void transitionToFoldoutPhase(GameState state) {
         state.setGamePhase(GamePhase.FOLDOUT);
         distributePotsAmongWinners(state, false);
-        state.getPlayers().forEach(player -> player.setReady(false));
-        state.setCurrentPlayer(null);
+        state.getPlayerState().removeReadyForAll();
+        state.getPlayerState().clearCurrentPlayer();
     }
 
     private static void distributePotsAmongWinners(GameState state, boolean showdown) {
-        for (Pot pot : state.getPotState().calculatePots(state.getPlayers())) {
-            List<Player> potPlayers = state.getPlayers().stream().filter(player -> pot.eligible().contains(player.getId())).toList();
-            Hand bestHand = potPlayers.stream()
-                    .map(Player::getHand)
-                    .max(Hand::compareTo)
-                    .orElseThrow();
-
-            List<Player> winners = potPlayers.stream().filter(player -> player.getHand().compareTo(bestHand) == 0).toList();
+        for (Pot pot : state.getPotState().calculatePots(state.getPlayerState().getAll())) {
+            List<Player> winners = state.getPlayerState().getPotWinners(pot.eligible());
             int amount = pot.getAmount();
             winners.forEach(player -> player.addChips(amount / winners.size())); // todo: better handling odd chips
-
             state.getHistory().addPotWinner(state, pot, winners, showdown);
         }
     }
 
     private static void processOnePlayerSidePots(GameState state) {
-        for (Pot pot : state.getPotState().calculatePots(state.getPlayers())) {
+        for (Pot pot : state.getPotState().calculatePots(state.getPlayerState().getAll())) {
             if (pot.type().equals(PotType.SIDE) && pot.eligible().size() == 1) {
                 String eligible = pot.eligible().iterator().next();
-                Player winner = state.getPlayerById(eligible);
+                Player winner = state.getPlayerState().getById(eligible);
                 winner.addChips(pot.getAmount());
                 state.getHistory().addPotWinner(state, pot, List.of(winner), false);
                 state.getPotState().removePot(pot);

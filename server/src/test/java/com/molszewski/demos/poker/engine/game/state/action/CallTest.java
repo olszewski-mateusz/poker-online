@@ -26,7 +26,7 @@ class CallTest {
         GameState gameState = startedThreePlayerGame();
         new Bet("1", 15).apply(gameState, configuration);
 
-        Player caller = gameState.getCurrentPlayer();
+        Player caller = gameState.getPlayerState().getCurrentPlayer();
         new Call(caller.getId()).apply(gameState, configuration);
 
         assertTrue(caller.isReady());
@@ -44,7 +44,7 @@ class CallTest {
     @Test
     void callWithoutEnoughChipsThrows() throws ActionValidationException {
         GameState gameState = startedThreePlayerGame();
-        gameState.getPlayerById("1").addChips(1000);
+        gameState.getPlayerState().getById("1").addChips(1000);
         new Bet("1", 500).apply(gameState, configuration);
 
         assertThrows(ActionValidationException.class, () -> new Call("2").apply(gameState, configuration));

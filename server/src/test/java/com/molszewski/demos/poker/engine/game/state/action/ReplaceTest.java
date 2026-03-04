@@ -43,7 +43,7 @@ class ReplaceTest {
         new Check("2").apply(gameState, configuration);
         new Check("3").apply(gameState, configuration);
 
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getPlayerState().getCurrentPlayer();
         assertEquals("1", player.getId());
 
         int cardsInDeckBeforeReplace = gameState.getDeck().getCards().size();
@@ -77,7 +77,7 @@ class ReplaceTest {
         new Check("2").apply(gameState, configuration);
         new Check("3").apply(gameState, configuration);
 
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getPlayerState().getCurrentPlayer();
         assertEquals("1", player.getId());
 
         Card wrongCard = gameState.getDeck().pop();
@@ -103,7 +103,7 @@ class ReplaceTest {
         new Check("2").apply(gameState, configuration);
         new Check("3").apply(gameState, configuration);
 
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getPlayerState().getCurrentPlayer();
         assertEquals("1", player.getId());
 
         int cardsInDeckBeforeReplace = gameState.getDeck().getCards().size();
@@ -140,7 +140,7 @@ class ReplaceTest {
         new Check("2").apply(gameState, configuration);
         new Check("3").apply(gameState, configuration);
 
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getPlayerState().getCurrentPlayer();
         assertEquals("1", player.getId());
 
         int cardsInDeckBeforeReplace = gameState.getDeck().getCards().size();

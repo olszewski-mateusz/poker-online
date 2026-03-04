@@ -33,9 +33,9 @@ class StartRoundTest {
         new Ready("3", true).apply(gameState, configuration);
 
         assertEquals(GamePhase.FIRST_BETTING, gameState.getGamePhase());
-        assertNotNull(gameState.getPlayerById("1").getHand());
-        assertNotNull(gameState.getPlayerById("2").getHand());
-        assertNotNull(gameState.getPlayerById("3").getHand());
+        assertNotNull(gameState.getPlayerState().getById("1").getHand());
+        assertNotNull(gameState.getPlayerState().getById("2").getHand());
+        assertNotNull(gameState.getPlayerState().getById("3").getHand());
         assertEquals(configuration.ante(), gameState.getPotState().getPlayerContribution("1"));
         assertEquals(configuration.ante(), gameState.getPotState().getPlayerContribution("2"));
         assertEquals(configuration.ante(), gameState.getPotState().getPlayerContribution("3"));
@@ -58,21 +58,13 @@ class StartRoundTest {
     }
 
     @Test
-    void roundSkipsFirstBettingWhenEveryoneIsAllInFromAnte() {
+    void roundStartThrowsWhenEveryoneIsAllInFromAnte() {
         Player p1 = new Player("1", "1", 3, true, true, null);
         Player p2 = new Player("2", "2", 3, true, true, null);
         GameState gameState = new GameState(new Deck(new Random(17L)), List.of(p1, p2));
         gameState.setGamePhase(GamePhase.NOT_STARTED);
 
-        ActionSteps.tryStartRound(gameState, configuration);
-
-        assertEquals(GamePhase.DRAWING, gameState.getGamePhase());
-        assertNotNull(gameState.getCurrentPlayer());
-        assertEquals("1", gameState.getCurrentPlayer().getId());
-        assertEquals(3, gameState.getPotState().getPlayerContribution("1"));
-        assertEquals(3, gameState.getPotState().getPlayerContribution("2"));
-        assertFalse(p1.isReady());
-        assertFalse(p2.isReady());
+        assertThrows(IllegalStateException.class, () -> ActionSteps.tryStartRound(gameState, configuration));
     }
 
     @Test
@@ -83,16 +75,16 @@ class StartRoundTest {
         new Join("3", "3").apply(gameState, configuration);
 
         gameState.setGamePhase(GamePhase.SHOWDOWN);
-        gameState.getPotState().addAnte(gameState.getPlayerById("1"), 10);
-        gameState.getPotState().addAnte(gameState.getPlayerById("2"), 10);
-        gameState.getPotState().addAnte(gameState.getPlayerById("3"), 10);
+        gameState.getPotState().addAnte(gameState.getPlayerState().getById("1"), 10);
+        gameState.getPotState().addAnte(gameState.getPlayerState().getById("2"), 10);
+        gameState.getPotState().addAnte(gameState.getPlayerState().getById("3"), 10);
 
         new Ready("1", true).apply(gameState, configuration);
         new Ready("2", true).apply(gameState, configuration);
         new Ready("3", true).apply(gameState, configuration);
 
         assertEquals(GamePhase.FIRST_BETTING, gameState.getGamePhase());
-        assertEquals("2", gameState.getPlayers().getFirst().getId());
+        assertEquals("2", gameState.getPlayerState().getAll().getFirst().getId());
         assertEquals(configuration.ante(), gameState.getPotState().getPlayerContribution("1"));
         assertEquals(configuration.ante(), gameState.getPotState().getPlayerContribution("2"));
         assertEquals(configuration.ante(), gameState.getPotState().getPlayerContribution("3"));

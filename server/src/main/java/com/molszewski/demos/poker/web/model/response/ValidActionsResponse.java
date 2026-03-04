@@ -19,13 +19,13 @@ public record ValidActionsResponse(List<ValidAction> validActions) {
         }
 
         List<ValidAction> actions = new ArrayList<>();
-        boolean playerExists = gameState.playerExists(myId);
+        boolean playerExists = gameState.getPlayerState().exists(myId);
 
         if (!playerExists) {
             throw new IllegalStateException("My player does not exist");
         }
 
-        Player me = gameState.getPlayerById(myId);
+        Player me = gameState.getPlayerState().getById(myId);
         GamePhase phase = gameState.getGamePhase();
 
         switch (phase) {
@@ -83,7 +83,7 @@ public record ValidActionsResponse(List<ValidAction> validActions) {
     }
 
     private static boolean isCurrentPlayerAbleToAct(String myId, GameState gameState) {
-        Player currentPlayer = gameState.getCurrentPlayer();
+        Player currentPlayer = gameState.getPlayerState().getCurrentPlayer();
         if (currentPlayer == null || !currentPlayer.getId().equals(myId)) {
             return false;
         }

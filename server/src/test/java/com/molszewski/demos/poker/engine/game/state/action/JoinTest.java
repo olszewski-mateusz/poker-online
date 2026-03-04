@@ -26,7 +26,7 @@ class JoinTest {
 
         new Join("1", "Alice").apply(gameState, configuration);
 
-        Player player = gameState.getPlayers().getFirst();
+        Player player = gameState.getPlayerState().getAll().getFirst();
         assertEquals("1", player.getId());
         assertEquals("Alice", player.getName());
         assertEquals(configuration.startChips(), player.getChips());

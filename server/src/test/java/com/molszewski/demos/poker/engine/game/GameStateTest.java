@@ -4,6 +4,7 @@ import com.molszewski.demos.poker.engine.deck.Deck;
 import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
+import com.molszewski.demos.poker.test.TestPlayerState;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -17,25 +18,25 @@ class GameStateTest {
 
     @Test
     void getPlayerByIdAndExistsTest() {
-        Player a = new Player("A", "A", 100);
-        Player b = new Player("B", "B", 100);
+        Player a = new Player("A", "A", 100, false, true, null);
+        Player b = new Player("B", "B", 100, false, true, null);
         GameState gameState = new GameState(new Deck(new Random(17L)), List.of(a, b));
 
-        assertTrue(gameState.playerExists("B"));
-        assertSame(b, gameState.getPlayerById("B"));
-        assertThrows(IllegalStateException.class, () -> gameState.getPlayerById("missing"));
+        assertTrue(gameState.getPlayerState().exists("B"));
+        assertSame(b, gameState.getPlayerState().getById("B"));
+        assertThrows(IllegalStateException.class, () -> gameState.getPlayerState().getById("missing"));
     }
 
     @Test
     void getPlayerIndexTest() {
         GameState gameState = new GameState(new Deck(new Random(17L)), List.of(
-                new Player("A", "A", 100),
-                new Player("B", "B", 100),
-                new Player("C", "C", 100)
+                new Player("A", "A", 100, false, true, null),
+                new Player("B", "B", 100, false, true, null),
+                new Player("C", "C", 100, false, true, null)
         ));
 
-        assertEquals(1, gameState.getPlayerIndex("B"));
-        assertThrows(IllegalStateException.class, () -> gameState.getPlayerIndex("D"));
+        assertEquals(1, gameState.getPlayerState().getIndex("B"));
+        assertThrows(IllegalStateException.class, () -> gameState.getPlayerState().getIndex("D"));
     }
 
     @Test
@@ -53,12 +54,12 @@ class GameStateTest {
         Player p2 = new Player("2", "2", 100, false, false, null);
         GameState gameState = new GameState(new Deck(new Random(17L)), List.of(p1, p2));
 
-        gameState.setCurrentPlayer(p2);
-        assertDoesNotThrow(() -> gameState.validateCurrentPlayer("2"));
-        assertThrows(ActionValidationException.class, () -> gameState.validateCurrentPlayer("1"));
+        TestPlayerState.setCurrentPlayer(gameState, p2);
+        assertDoesNotThrow(() -> gameState.getPlayerState().canPlayerMakeAction("2"));
+        assertThrows(ActionValidationException.class, () -> gameState.getPlayerState().canPlayerMakeAction("1"));
 
         p2.setReady(true);
-        assertThrows(ActionValidationException.class, () -> gameState.validateCurrentPlayer("2"));
+        assertThrows(ActionValidationException.class, () -> gameState.getPlayerState().canPlayerMakeAction("2"));
     }
 
     @Test

@@ -11,6 +11,7 @@ import com.molszewski.demos.poker.engine.action.Ready;
 import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
+import com.molszewski.demos.poker.test.TestPlayerState;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,7 +28,7 @@ class AllInTest {
     void simpleAllInTransfersEntireStackToContribution() throws ActionValidationException {
         GameState gameState = startedThreePlayerGame();
 
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getPlayerState().getCurrentPlayer();
         new AllIn(player.getId()).apply(gameState, configuration);
 
         assertTrue(player.isReady());
@@ -38,7 +39,7 @@ class AllInTest {
     @Test
     void allInThatIncreasesMaxContributionResetsOtherReadyPlayers() throws ActionValidationException {
         GameState gameState = startedThreePlayerGame();
-        Player first = gameState.getCurrentPlayer();
+        Player first = gameState.getPlayerState().getCurrentPlayer();
         new Check(first.getId()).apply(gameState, configuration);
 
         new AllIn("2").apply(gameState, configuration);
@@ -54,7 +55,7 @@ class AllInTest {
 
         GameState gameState = new GameState(new Deck(random), List.of(p1, p2, p3));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
-        gameState.setCurrentPlayer(p2);
+        TestPlayerState.setCurrentPlayer(gameState, p2);
         gameState.getPotState().addAnte(p1, 40);
         gameState.getPotState().addAnte(p3, 40);
 
@@ -71,7 +72,7 @@ class AllInTest {
 
         GameState gameState = new GameState(new Deck(random), List.of(p1, p2, p3));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
-        gameState.setCurrentPlayer(p2);
+        TestPlayerState.setCurrentPlayer(gameState, p2);
 
         gameState.getPotState().addBet(p1, 100);
         gameState.getPotState().addAnte(p2, 90);

@@ -9,6 +9,7 @@ import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.exception.PlayerNotFound;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
+import com.molszewski.demos.poker.engine.player.PlayerState;
 import lombok.Getter;
 
 import java.util.HashSet;
@@ -26,13 +27,15 @@ public final class Replace extends Action{
 
     @Override
     protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
+        PlayerState playerState = gameState.getPlayerState();
+
         gameState.validatePhase(Set.of(GamePhase.DRAWING));
-        if (!gameState.playerExists(getPlayerId())) {
+        if (!playerState.exists(getPlayerId())) {
             throw new PlayerNotFound(getPlayerId());
         }
-        gameState.validateCurrentPlayer(getPlayerId());
+        playerState.canPlayerMakeAction(getPlayerId());
 
-        Player player = gameState.getPlayerById(this.getPlayerId());
+        Player player = playerState.getById(this.getPlayerId());
         Set<Card> cardsInHand = new HashSet<>(player.getHand().getCards());
         if (!cardsInHand.containsAll(cardsToReplace)) {
             throw new ActionValidationException("Cards to replace are not in hand");
@@ -42,7 +45,7 @@ public final class Replace extends Action{
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration)  {
         gameState.getHistory().addAction(gameState, this);
-        Player player = gameState.getPlayerById(this.getPlayerId());
+        Player player = gameState.getPlayerState().getById(this.getPlayerId());
         player.setReady(true);
         Set<Card> cardsInHand = new HashSet<>(player.getHand().getCards());
         cardsInHand.removeAll(cardsToReplace);

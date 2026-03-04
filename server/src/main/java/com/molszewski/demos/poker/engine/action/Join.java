@@ -15,17 +15,17 @@ public final class Join extends Action {
 
     @Override
     protected void validate(GameState gameState, GameConfiguration configuration) throws ActionValidationException {
-        if (gameState.playerExists(getPlayerId())) {
+        if (gameState.getPlayerState().exists(getPlayerId())) {
             throw new ActionValidationException("Player already in game");
         }
-        if (gameState.getPlayers().size() >= configuration.maxPlayers()) {
+        if (gameState.getPlayerState().size() >= configuration.maxPlayers()) {
             throw new ActionValidationException("Game is full");
         }
     }
 
     @Override
     protected void execute(GameState gameState, GameConfiguration configuration) {
-        gameState.getPlayers().add(new Player(this.getPlayerId(), this.displayName, configuration.startChips()));
+        gameState.getPlayerState().add(this.getPlayerId(), this.displayName, configuration.startChips());
         gameState.getHistory().addAction(gameState, this);
     }
 }

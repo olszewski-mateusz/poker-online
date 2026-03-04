@@ -32,7 +32,7 @@ class ReadyTest {
 
         new Ready("2", true).apply(gameState, configuration);
 
-        assertEquals(1, gameState.getPlayers().stream().filter(Player::isReady).count());
+        assertEquals(1, gameState.getPlayerState().getAll().stream().filter(Player::isReady).count());
     }
 
     @Test
@@ -49,7 +49,7 @@ class ReadyTest {
         new Ready("1", true).apply(gameState, configuration);
         new Ready("3", true).apply(gameState, configuration);
 
-        assertEquals(3, gameState.getPlayers().stream().filter(Player::isReady).count());
+        assertEquals(3, gameState.getPlayerState().getAll().stream().filter(Player::isReady).count());
     }
 
     @Test
@@ -91,7 +91,7 @@ class ReadyTest {
         new Ready("2", true).apply(gameState, configuration);
         new Ready("2", false).apply(gameState, configuration);
 
-        assertFalse(gameState.getPlayerById("2").isReady());
+        assertFalse(gameState.getPlayerState().getById("2").isReady());
     }
 
     @Test

@@ -10,6 +10,7 @@ import com.molszewski.demos.poker.engine.action.step.ActionSteps;
 import com.molszewski.demos.poker.engine.hand.Hand;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
+import com.molszewski.demos.poker.test.TestPlayerState;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -30,11 +31,11 @@ class NextTurnTest {
                 new Player("4", "4", 100, false, false, null)
         ));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
-        gameState.setCurrentPlayer(gameState.getPlayerById("2"));
+        TestPlayerState.setCurrentPlayer(gameState, gameState.getPlayerState().getById("2"));
 
         ActionSteps.nextTurn(gameState);
 
-        assertEquals("3", gameState.getCurrentPlayer().getId());
+        assertEquals("3", gameState.getPlayerState().getCurrentPlayer().getId());
     }
 
     @Test
@@ -44,7 +45,7 @@ class NextTurnTest {
         Player p3 = new Player("3", "3", 100, true, false, null);
         GameState gameState = new GameState(new Deck(new Random(17L)), List.of(p1, p2, p3));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
-        gameState.setCurrentPlayer(p1);
+        TestPlayerState.setCurrentPlayer(gameState, p1);
         gameState.getPotState().addAnte(p1, 5);
         gameState.getPotState().addAnte(p2, 5);
         gameState.getPotState().addAnte(p3, 5);
@@ -52,9 +53,9 @@ class NextTurnTest {
         ActionSteps.nextTurn(gameState);
 
         assertEquals(GamePhase.DRAWING, gameState.getGamePhase());
-        assertFalse(gameState.getPlayerById("1").isReady());
-        assertFalse(gameState.getPlayerById("2").isReady());
-        assertFalse(gameState.getPlayerById("3").isReady());
+        assertFalse(gameState.getPlayerState().getById("1").isReady());
+        assertFalse(gameState.getPlayerState().getById("2").isReady());
+        assertFalse(gameState.getPlayerState().getById("3").isReady());
     }
 
     @Test
@@ -78,14 +79,14 @@ class NextTurnTest {
         Player p2 = new Player("2", "2", 100, true, false, losingHand);
         GameState gameState = new GameState(new Deck(new Random(17L)), List.of(p1, p2));
         gameState.setGamePhase(GamePhase.SECOND_BETTING);
-        gameState.setCurrentPlayer(p1);
+        TestPlayerState.setCurrentPlayer(gameState, p1);
         gameState.getPotState().addAnte(p1, 50);
         gameState.getPotState().addAnte(p2, 50);
 
         ActionSteps.nextTurn(gameState);
 
         assertEquals(GamePhase.SHOWDOWN, gameState.getGamePhase());
-        assertNull(gameState.getCurrentPlayer());
+        assertNull(gameState.getPlayerState().getCurrentPlayer());
         assertEquals(150, p1.getChips());
         assertEquals(50, p2.getChips());
 
@@ -128,7 +129,7 @@ class NextTurnTest {
         Player p3 = new Player("3", "3", 5, true, false, losingHand2);
         GameState gameState = new GameState(new Deck(new Random(17L)), List.of(p1, p2, p3));
         gameState.setGamePhase(GamePhase.DRAWING);
-        gameState.setCurrentPlayer(p1);
+        TestPlayerState.setCurrentPlayer(gameState, p1);
         gameState.getPotState().addAnte(p1, 5);
         gameState.getPotState().addAnte(p2, 5);
         gameState.getPotState().addAnte(p3, 5);
@@ -136,7 +137,7 @@ class NextTurnTest {
         ActionSteps.nextTurn(gameState);
 
         assertEquals(GamePhase.SHOWDOWN, gameState.getGamePhase());
-        assertNull(gameState.getCurrentPlayer());
+        assertNull(gameState.getPlayerState().getCurrentPlayer());
         assertEquals(20, p1.getChips());
         assertEquals(0, p2.getChips());
         assertEquals(0, p3.getChips());

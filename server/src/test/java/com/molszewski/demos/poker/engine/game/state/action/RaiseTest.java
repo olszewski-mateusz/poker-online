@@ -11,6 +11,7 @@ import com.molszewski.demos.poker.engine.action.Ready;
 import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
+import com.molszewski.demos.poker.test.TestPlayerState;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -28,7 +29,7 @@ class RaiseTest {
         GameState gameState = startedThreePlayerGame();
         new Bet("1", 20).apply(gameState, configuration);
 
-        Player raiser = gameState.getCurrentPlayer();
+        Player raiser = gameState.getPlayerState().getCurrentPlayer();
         new Raise(raiser.getId(), 40).apply(gameState, configuration);
 
         assertTrue(raiser.isReady());
@@ -59,7 +60,7 @@ class RaiseTest {
         Player other = new Player("3", "3", 100, true, false, null);
         GameState gameState = new GameState(new Deck(random), List.of(noChips, raiser, other));
         gameState.setGamePhase(GamePhase.FIRST_BETTING);
-        gameState.setCurrentPlayer(raiser);
+        TestPlayerState.setCurrentPlayer(gameState, raiser);
         gameState.getPotState().addAnte(raiser, 10);
         gameState.getPotState().addAnte(other, 20);
         gameState.getPotState().addBet(other, 20);

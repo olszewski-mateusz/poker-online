@@ -17,10 +17,6 @@ public class Player {
     @Setter
     private Hand hand;
 
-    public Player(String id, String name, int startChips) {
-        this(id, name, startChips, false, true, null);
-    }
-
     public Player(String id, String name, int chips, boolean ready, boolean folded, Hand hand) {
         this.id = id;
         this.name = name;

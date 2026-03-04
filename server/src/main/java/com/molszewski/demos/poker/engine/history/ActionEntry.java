@@ -21,7 +21,7 @@ public class ActionEntry extends HistoryEntry<Action> {
     protected Map<String, String> buildProperties(GameState gameState, Action action) {
         Map<String, String> properties = new HashMap<>();
 
-        Player player = gameState.getPlayerById(action.getPlayerId());
+        Player player = gameState.getPlayerState().getById(action.getPlayerId());
 
         properties.put("playerName", player.getName());
         switch (action) {

@@ -29,7 +29,7 @@ class HistoryTest {
     @Test
     void addActionAndFlowStepTest() {
         GameState state = new GameState(new Deck(new Random(17L)), List.of(
-                new Player("1", "Alice", 100)
+                new Player("1", "Alice", 100, false, true, null)
         ));
         History history = new History();
 

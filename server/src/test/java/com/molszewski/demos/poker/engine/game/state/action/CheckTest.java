@@ -25,7 +25,7 @@ class CheckTest {
     void playerCheckSetsReadyWithoutChangingContribution() throws ActionValidationException {
         GameState gameState = startedThreePlayerGame();
 
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getPlayerState().getCurrentPlayer();
         int contributionBefore = gameState.getPotState().getPlayerContribution(player);
         new Check(player.getId()).apply(gameState, configuration);
 

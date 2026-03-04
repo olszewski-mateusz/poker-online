@@ -65,7 +65,7 @@ class GameResponseTest {
         ));
 
         new Join("1", "Alice").apply(state, configuration);
-        Player player1 = state.getPlayerById("1");
+        Player player1 = state.getPlayerState().getById("1");
         player1.setHand(winningHand);
         state.getHistory().addPotWinner(
                 state,
@@ -102,8 +102,8 @@ class GameResponseTest {
         new Join("1", "Alice").apply(state, configuration);
         new Join("2", "Bob").apply(state, configuration);
         state.setGamePhase(GamePhase.FIRST_BETTING);
-        state.getPotState().addAnte(state.getPlayerById("1"), 5);
-        state.getPotState().addAnte(state.getPlayerById("2"), 7);
+        state.getPotState().addAnte(state.getPlayerState().getById("1"), 5);
+        state.getPotState().addAnte(state.getPlayerState().getById("2"), 7);
 
         GameResponse response = GameResponse.fromParams(
                 GameResponse.GameContext.builder()

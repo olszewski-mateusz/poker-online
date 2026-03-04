@@ -10,6 +10,7 @@ import com.molszewski.demos.poker.engine.action.Ready;
 import com.molszewski.demos.poker.engine.exception.ActionValidationException;
 import com.molszewski.demos.poker.engine.player.Player;
 import com.molszewski.demos.poker.test.UnitTest;
+import com.molszewski.demos.poker.test.TestPlayerState;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -26,7 +27,7 @@ class BetTest {
         int betAmount = 100;
         GameState gameState = startedThreePlayerGame();
 
-        Player player = gameState.getCurrentPlayer();
+        Player player = gameState.getPlayerState().getCurrentPlayer();
         new Bet(player.getId(), betAmount).apply(gameState, configuration);
 
         assertTrue(player.isReady());
@@ -54,13 +55,13 @@ class BetTest {
     @Test
     void betLowerThanCurrentContributionThrows() throws ActionValidationException {
         GameState gameState = startedThreePlayerGame();
-        Player player = gameState.getPlayerById("1");
+        Player player = gameState.getPlayerState().getById("1");
 
         new Bet("1", 50).apply(gameState, configuration);
         gameState.getPotState().resetToNewBettingPhase();
         gameState.setGamePhase(GamePhase.SECOND_BETTING);
-        gameState.getPlayers().forEach(p -> p.setReady(false));
-        gameState.setCurrentPlayer(player);
+        gameState.getPlayerState().getAll().forEach(p -> p.setReady(false));
+        TestPlayerState.setCurrentPlayer(gameState, player);
 
         assertThrows(ActionValidationException.class, () -> new Bet("1", 40).apply(gameState, configuration));
     }
