@@ -20,12 +20,14 @@ import {
 })
 export class PlayersCarouselComponent implements OnDestroy {
   private readonly itemHeightPx: number = 44;
+  private readonly snapAnimationMs: number = 180;
 
   private readonly centeredIndex: WritableSignal<number> = signal(0);
   private readonly dragOffsetPx: WritableSignal<number> = signal(0);
   private readonly pointerState: WritableSignal<{ id: number, y: number } | undefined> = signal(undefined);
 
   private wheelSnapTimeoutId: ReturnType<typeof setTimeout> | undefined;
+  private snapAnimationTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
   players: InputSignal<readonly string[]> = input.required<readonly string[]>();
   centeredPlayer: InputSignal<string | undefined> = input<string>();
@@ -34,6 +36,7 @@ export class PlayersCarouselComponent implements OnDestroy {
 
   protected readonly renderedSlots: readonly number[] = [-3, -2, -1, 0, 1, 2, 3];
   protected readonly isDragging = signal(false);
+  protected readonly isSnapping = signal(false);
 
   constructor() {
     effect(() => {
@@ -65,6 +68,7 @@ export class PlayersCarouselComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.clearWheelSnapTimeout();
+    this.clearSnapAnimationTimeout();
   }
 
   centerOnPlayer(playerName: string): boolean {
@@ -111,6 +115,7 @@ export class PlayersCarouselComponent implements OnDestroy {
     this.pointerState.set({id: event.pointerId, y: event.clientY});
     this.isDragging.set(true);
     this.clearWheelSnapTimeout();
+    this.stopSnapAnimation();
   }
 
   protected onPointerMove(event: PointerEvent): void {
@@ -131,7 +136,7 @@ export class PlayersCarouselComponent implements OnDestroy {
       return;
     }
     this.releasePointer(event);
-    this.snapToNearestItem();
+    this.snapToNearestItem(true);
   }
 
   protected onPointerCancel(event: PointerEvent): void {
@@ -140,7 +145,7 @@ export class PlayersCarouselComponent implements OnDestroy {
       return;
     }
     this.releasePointer(event);
-    this.snapToNearestItem();
+    this.snapToNearestItem(true);
   }
 
   protected onWheel(event: WheelEvent): void {
@@ -149,9 +154,10 @@ export class PlayersCarouselComponent implements OnDestroy {
     }
 
     event.preventDefault();
+    this.stopSnapAnimation();
     this.applyDelta(-event.deltaY);
     this.clearWheelSnapTimeout();
-    this.wheelSnapTimeoutId = setTimeout(() => this.snapToNearestItem(), 120);
+    this.wheelSnapTimeoutId = setTimeout(() => this.snapToNearestItem(true), 120);
   }
 
   protected hasPlayers(): boolean {
@@ -192,10 +198,14 @@ export class PlayersCarouselComponent implements OnDestroy {
     this.centeredIndex.update(index => this.normalizeIndex(index + offset, playersCount));
   }
 
-  private snapToNearestItem(): void {
+  private snapToNearestItem(animate: boolean): void {
     const steps: number = Math.round(this.dragOffsetPx() / this.itemHeightPx);
+    const hadOffset: boolean = this.dragOffsetPx() !== 0;
     if (steps !== 0) {
       this.shiftCenteredBy(-steps);
+    }
+    if (animate && (steps !== 0 || hadOffset)) {
+      this.startSnapAnimation();
     }
     this.dragOffsetPx.set(0);
   }
@@ -204,6 +214,24 @@ export class PlayersCarouselComponent implements OnDestroy {
     if (this.wheelSnapTimeoutId) {
       clearTimeout(this.wheelSnapTimeoutId);
       this.wheelSnapTimeoutId = undefined;
+    }
+  }
+
+  private startSnapAnimation(): void {
+    this.clearSnapAnimationTimeout();
+    this.isSnapping.set(true);
+    this.snapAnimationTimeoutId = setTimeout(() => this.isSnapping.set(false), this.snapAnimationMs);
+  }
+
+  private stopSnapAnimation(): void {
+    this.clearSnapAnimationTimeout();
+    this.isSnapping.set(false);
+  }
+
+  private clearSnapAnimationTimeout(): void {
+    if (this.snapAnimationTimeoutId) {
+      clearTimeout(this.snapAnimationTimeoutId);
+      this.snapAnimationTimeoutId = undefined;
     }
   }
 

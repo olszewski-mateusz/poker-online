@@ -1,5 +1,6 @@
 <div class="viewport poker-panel"
      [class.is-dragging]="isDragging()"
+     [class.animate-snap]="isSnapping() && !isDragging()"
      [style.--item-height.px]="itemHeight()"
      (pointerdown)="onPointerDown($event)"
      (pointermove)="onPointerMove($event)"
