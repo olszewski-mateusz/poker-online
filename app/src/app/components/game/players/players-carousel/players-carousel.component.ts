@@ -143,12 +143,13 @@ export class PlayersCarouselComponent implements OnDestroy {
   }
 
   private applyDelta(deltaY: number): void {
+    const centerSwitchThresholdPx: number = this.itemHeightPx / 2;
     let nextOffset: number = this.dragOffsetPx() + deltaY;
-    while (nextOffset >= this.itemHeightPx) {
+    while (nextOffset >= centerSwitchThresholdPx) {
       nextOffset -= this.itemHeightPx;
       this.shiftCenteredBy(-1);
     }
-    while (nextOffset <= -this.itemHeightPx) {
+    while (nextOffset <= -centerSwitchThresholdPx) {
       nextOffset += this.itemHeightPx;
       this.shiftCenteredBy(1);
     }
