@@ -2,12 +2,12 @@
   <div class="row-container amount-label poker-text"
        [class.mobile]="mobile()"
        [class.desktop]="!mobile()">
-    {{actionLabel()}} amount: {{amount()}}
+    {{context().label}} amount: {{amount()}}
   </div>
 
   @if (mobile()) {
     <div class="row-container">
-      <mat-slider [step]="5" [min]="minValue()" [max]="maxValue()">
+      <mat-slider [step]="5" [min]="context().minValue" [max]="context().maxValue">
         <input [(value)]="amount" matSliderThumb>
       </mat-slider>
     </div>
@@ -23,7 +23,7 @@
       <button class="button-large" mat-button (click)="addToAmount(-50)">-50</button>
       <button class="button-large" mat-button (click)="addToAmount(-5)">-5</button>
 
-      <mat-slider [step]="5" [min]="minValue()" [max]="maxValue()">
+      <mat-slider [step]="5" [min]="context().minValue" [max]="context().maxValue">
         <input [(value)]="amount" matSliderThumb>
       </mat-slider>
 
@@ -38,7 +38,7 @@
           [class.button-large]="!mobile()"
           [class.button-medium]="mobile()"
           [disabled]="actionIllegal()" (click)="sendAction()">
-    {{actionLabel()}}
+    {{context().label}}
   </button>
 
   <button mat-button

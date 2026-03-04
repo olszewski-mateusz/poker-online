@@ -1,10 +1,22 @@
-@if (selectedAmountAction(); as action) {
-  <poker-game-chips-amount-setter
-    [game]="game()"
-    [mobile]="mobile()"
-    [action]="action"
-    (cancelRequest)="closeAmountPanel()"
-  />
+@if (additionalPanelContext(); as context) {
+  @switch (context.type) {
+    @case ('ACTION_CONFIRMATION') {
+      <poker-game-action-confirmation
+        [game]="game()"
+        [mobile]="mobile()"
+        [context]="buildAdditionalConfirmationContext(context.action)"
+        (cancelRequest)="closeAmountPanel()"
+      />
+    }
+    @case ('CHIPS_AMOUNT_SETTER') {
+      <poker-game-chips-amount-setter
+        [game]="game()"
+        [mobile]="mobile()"
+        [context]="buildChipsAmountSetterContext(context.action)"
+        (cancelRequest)="closeAmountPanel()"
+      />
+    }
+  }
 } @else {
   @for (action of availableActions(); track action.type) {
     <button [style.width]="actionWidthByCount(availableActions().length)" class="button-large" mat-button (click)="onActionClick(action)">

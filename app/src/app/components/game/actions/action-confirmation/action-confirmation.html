@@ -1,0 +1,14 @@
+<button mat-button
+        [class.button-large]="!mobile()"
+        [class.button-medium]="mobile()"
+        (click)="sendAction()">
+  Confirm
+</button>
+
+<button mat-button
+        [class.button-large]="!mobile()"
+        [class.button-medium]="mobile()"
+        (click)="cancelRequest.emit()">
+  Cancel
+</button>
+

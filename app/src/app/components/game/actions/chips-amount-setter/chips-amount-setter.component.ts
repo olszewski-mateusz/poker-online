@@ -12,6 +12,7 @@ import {MatButton} from '@angular/material/button';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {ActionType, Game, ValidAction} from '../../../../model';
 import {ApiRestService} from '../../../../services';
+import {ChipsAmountSetterContext} from '../actions.component';
 
 @Component({
   selector: 'poker-game-chips-amount-setter',
@@ -30,38 +31,19 @@ export class ChipsAmountSetterComponent {
 
   game: InputSignal<Game> = input.required<Game>();
   mobile: InputSignal<boolean> = input.required<boolean>();
-  action: InputSignal<ValidAction> = input.required<ValidAction>();
+  context: InputSignal<ChipsAmountSetterContext> = input.required<ChipsAmountSetterContext>();
   cancelRequest: OutputEmitterRef<void> = output<void>();
 
   protected amount: ModelSignal<number> = model<number>(0);
 
-  protected actionLabel = computed(() => {
-    switch (this.action().type) {
-      case ActionType.BET:
-        return "Bet";
-      case ActionType.RAISE:
-        return "Raise";
-      default:
-        return "Unknown";
-    }
-  })
-
-  protected readonly minValue = computed(() => {
-    return +this.action().properties["min"];
-  });
-
-  protected readonly maxValue = computed(() => {
-    return +this.action().properties["max"];
-  });
-
   protected readonly actionIllegal = computed(() => {
-    return this.maxValue() < this.minValue();
+    return this.context().minValue < this.context().maxValue;
   });
 
   constructor() {
     effect(() => {
-      const minValue: number = this.minValue();
-      const maxValue: number = this.maxValue();
+      const minValue: number = this.context().minValue;
+      const maxValue: number = this.context().maxValue;
       const amount: number = this.amount();
       if (amount < minValue) {
         this.amount.set(minValue);
@@ -73,8 +55,8 @@ export class ChipsAmountSetterComponent {
   }
 
   addToAmount(value: number): void {
-    const min: number = this.minValue();
-    const max: number = this.maxValue();
+    const min: number = this.context().minValue;
+    const max: number = this.context().maxValue;
     let amount: number = this.amount() + value;
     amount = Math.max(min, (Math.min(max, amount)));
     this.amount.set(amount);
@@ -82,7 +64,7 @@ export class ChipsAmountSetterComponent {
 
   sendAction(): void {
     const game: Game = this.game();
-    const actionType: ActionType = this.action().type;
+    const actionType: ActionType = this.context().type;
     switch (actionType) {
       case ActionType.BET:
         this.apiRestService.sendBet(game.gameId, game.myId, this.amount()).subscribe();
@@ -92,8 +74,6 @@ export class ChipsAmountSetterComponent {
         this.apiRestService.sendRaise(game.gameId, game.myId, this.amount()).subscribe();
         this.cancelRequest.emit();
         break;
-      default:
-        console.error("Illegal action type " + actionType);
     }
   }
 }
