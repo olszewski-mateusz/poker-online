@@ -8,7 +8,7 @@
 
   position: relative;
   width: 100%;
-  height: calc(var(--item-height) * 5);
+  height: 200px;
   overflow: hidden;
   border-radius: 6px;
   user-select: none;
@@ -22,9 +22,8 @@
 
 .slot {
   position: absolute;
-  left: 50%;
+  width: 100%;
   top: calc(50% - (var(--item-height) / 2));
-  width: calc(100% - 16px);
   height: var(--item-height);
   display: flex;
   align-items: center;
@@ -39,33 +38,26 @@
 
 .player-name {
   width: 100%;
-  height: calc(var(--item-height) - 8px);
-  padding: 0 12px;
-  border-radius: 6px;
+  height: calc(var(--item-height) - 4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background-color: rgba(201, 201, 201, 0.07);
+  background-color: rgb(30, 30, 30);
   color: #c9c9c9;
 }
 
 .slot.centered .player-name {
-  background-color: rgba(255, 183, 135, 0.26);
-  color: #ffe8d8;
+  background-color: rgb(61, 61, 61);
   font-weight: 600;
 }
 
 .center-indicator {
   position: absolute;
-  left: 8px;
-  right: 8px;
+  left: 0;
+  right: 0;
   top: 50%;
   height: var(--item-height);
-  border: 1px solid rgba(255, 183, 135, 0.45);
-  border-radius: 6px;
+  border: 2px solid rgb(0, 0, 0);
   transform: translateY(-50%);
   pointer-events: none;
 }

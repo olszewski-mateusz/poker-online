@@ -4,9 +4,8 @@
      [style.--item-height.px]="itemHeight()"
      (pointerdown)="onPointerDown($event)"
      (pointermove)="onPointerMove($event)"
-     (pointerup)="onPointerUp($event)"
-     (pointercancel)="onPointerCancel($event)"
-     (wheel)="onWheel($event)">
+     (pointerup)="onPointerCancel($event)"
+     (pointercancel)="onPointerCancel($event)">
   @if (hasPlayers()) {
     @for (offset of renderedSlots; track offset) {
       <div class="slot"
