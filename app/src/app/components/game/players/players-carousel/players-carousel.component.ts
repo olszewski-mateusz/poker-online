@@ -18,63 +18,63 @@ import {
   styleUrl: './players-carousel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayersCarouselComponent implements OnDestroy {
-  private readonly itemHeightPx: number = 44;
-  private readonly snapAnimationMs: number = 180;
+export class PlayersCarouselComponent {
+  protected readonly itemHeightPx: number = 80;
 
-  private readonly centeredIndex: WritableSignal<number> = signal(0);
+  private readonly scrollCenterIndex: WritableSignal<number> = signal(0);
+  private readonly selectedPlayerName: WritableSignal<string | undefined> = signal(undefined);
   private readonly dragOffsetPx: WritableSignal<number> = signal(0);
   private readonly pointerState: WritableSignal<{ id: number, y: number } | undefined> = signal(undefined);
-
-  private snapAnimationTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
   players: InputSignal<readonly string[]> = input.required<readonly string[]>();
   centeredPlayer: InputSignal<string | undefined> = input<string>();
 
-  centeredPlayerChange: OutputEmitterRef<string> = output<string>();
-
   protected readonly renderedSlots: readonly number[] = [-3, -2, -1, 0, 1, 2, 3];
   protected readonly isDragging = signal(false);
-  protected readonly isSnapping = signal(false);
+  protected readonly isSnapping = signal(true);
 
   constructor() {
     effect(() => {
       const players: readonly string[] = this.players();
       if (players.length === 0) {
-        this.centeredIndex.set(0);
+        this.scrollCenterIndex.set(0);
+        this.selectedPlayerName.set(undefined);
         this.dragOffsetPx.set(0);
         return;
       }
-      this.centeredIndex.update(currentIndex => this.normalizeIndex(currentIndex, players.length));
-      this.centeredPlayerChange.emit(players[this.centeredIndex()]);
 
-      }, {allowSignalWrites: true});
+      this.scrollCenterIndex.update(currentIndex => this.normalizeIndex(currentIndex, players.length));
+
+      const selectedPlayerName: string | undefined = this.selectedPlayerName();
+      if (selectedPlayerName && !players.includes(selectedPlayerName)) {
+        this.selectedPlayerName.set(undefined);
+      }
+    }, {allowSignalWrites: true});
 
     effect(() => {
       const centeredPlayer: string | undefined = this.centeredPlayer();
       if (centeredPlayer) {
         this.centerOnPlayer(centeredPlayer);
+      } else {
+        this.selectedPlayerName.set(undefined);
       }
     }, {allowSignalWrites: true});
   }
 
-  ngOnDestroy(): void {
-    this.clearSnapAnimationTimeout();
-  }
-
-  centerOnPlayer(playerName: string): boolean {
+  centerOnPlayer(playerName: string) {
     const playerIndex: number = this.players().indexOf(playerName);
-    if (playerIndex < 0) {
-      return false;
-    }
-    const playersCount: number = this.players().length;
-    if (playersCount === 0) {
-      return false;
+
+    const players: readonly string[] = this.players();
+    if (players.length === 0) {
+      return;
     }
 
-    this.centeredIndex.set(this.normalizeIndex(playerIndex, playersCount));
+    const normalizedIndex: number = this.normalizeIndex(playerIndex, players.length);
+    const selectedPlayerName: string = players[normalizedIndex];
+
+    this.scrollCenterIndex.set(normalizedIndex);
+    this.selectedPlayerName.set(selectedPlayerName);
     this.dragOffsetPx.set(0);
-    return true;
   }
 
   protected playerNameForOffset(offsetFromCenter: number): string {
@@ -83,8 +83,13 @@ export class PlayersCarouselComponent implements OnDestroy {
       return '';
     }
 
-    const index: number = this.normalizeIndex(this.centeredIndex() + offsetFromCenter, players.length);
+    const index: number = this.normalizeIndex(this.scrollCenterIndex() + offsetFromCenter, players.length);
     return players[index];
+  }
+
+  protected highlighted(offsetFromCenter: number): boolean {
+    const selectedPlayerName: string | undefined = this.selectedPlayerName();
+    return !!selectedPlayerName && this.playerNameForOffset(offsetFromCenter) === selectedPlayerName;
   }
 
   protected slotTransform(offsetFromCenter: number): string {
@@ -101,7 +106,6 @@ export class PlayersCarouselComponent implements OnDestroy {
     target.setPointerCapture(event.pointerId);
     this.pointerState.set({id: event.pointerId, y: event.clientY});
     this.isDragging.set(true);
-    this.stopSnapAnimation();
   }
 
   protected onPointerMove(event: PointerEvent): void {
@@ -121,25 +125,13 @@ export class PlayersCarouselComponent implements OnDestroy {
     if (pointerState?.id !== event.pointerId) {
       return;
     }
-    this.releasePointer(event);
-    this.snapToNearestItem(true);
-  }
-
-  protected hasPlayers(): boolean {
-    return this.players().length > 0;
-  }
-
-  protected itemHeight(): number {
-    return this.itemHeightPx;
-  }
-
-  private releasePointer(event: PointerEvent): void {
     const target: HTMLElement = event.currentTarget as HTMLElement;
     if (target.hasPointerCapture(event.pointerId)) {
       target.releasePointerCapture(event.pointerId);
     }
     this.pointerState.set(undefined);
     this.isDragging.set(false);
+    this.snapToNearestItem();
   }
 
   private applyDelta(deltaY: number): void {
@@ -161,37 +153,15 @@ export class PlayersCarouselComponent implements OnDestroy {
     if (playersCount === 0) {
       return;
     }
-    this.centeredIndex.update(index => this.normalizeIndex(index + offset, playersCount));
+    this.scrollCenterIndex.update(index => this.normalizeIndex(index + offset, playersCount));
   }
 
-  private snapToNearestItem(animate: boolean): void {
+  private snapToNearestItem(): void {
     const steps: number = Math.round(this.dragOffsetPx() / this.itemHeightPx);
-    const hadOffset: boolean = this.dragOffsetPx() !== 0;
     if (steps !== 0) {
       this.shiftCenteredBy(-steps);
     }
-    if (animate && (steps !== 0 || hadOffset)) {
-      this.startSnapAnimation();
-    }
     this.dragOffsetPx.set(0);
-  }
-
-  private startSnapAnimation(): void {
-    this.clearSnapAnimationTimeout();
-    this.isSnapping.set(true);
-    this.snapAnimationTimeoutId = setTimeout(() => this.isSnapping.set(false), this.snapAnimationMs);
-  }
-
-  private stopSnapAnimation(): void {
-    this.clearSnapAnimationTimeout();
-    this.isSnapping.set(false);
-  }
-
-  private clearSnapAnimationTimeout(): void {
-    if (this.snapAnimationTimeoutId) {
-      clearTimeout(this.snapAnimationTimeoutId);
-      this.snapAnimationTimeoutId = undefined;
-    }
   }
 
   private normalizeIndex(index: number, length: number): number {
