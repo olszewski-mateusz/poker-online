@@ -1,86 +1,89 @@
 import {
   ChangeDetectionStrategy,
-  Component,
+  Component, computed,
   effect,
   input,
   InputSignal,
-  OnDestroy,
   output,
   OutputEmitterRef,
   signal,
   WritableSignal
 } from '@angular/core';
+import {Game, GamePhase, Player} from '../../../../model';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'poker-game-players-carousel',
   standalone: true,
   templateUrl: './players-carousel.component.html',
   styleUrl: './players-carousel.component.scss',
+  imports: [
+    MatIcon
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayersCarouselComponent {
   protected readonly itemHeightPx: number = 80;
 
   private readonly scrollCenterIndex: WritableSignal<number> = signal(0);
-  private readonly selectedPlayerName: WritableSignal<string | undefined> = signal(undefined);
+  private readonly highlightedPlayer: WritableSignal<number | undefined> = signal(undefined);
   private readonly dragOffsetPx: WritableSignal<number> = signal(0);
   private readonly pointerState: WritableSignal<{ id: number, y: number } | undefined> = signal(undefined);
 
-  players: InputSignal<readonly string[]> = input.required<readonly string[]>();
-  centeredPlayer: InputSignal<string | undefined> = input<string>();
+  game: InputSignal<Game> = input.required<Game>();
+
+  players = computed(() => this.game().players)
+  activePlayer = computed(() => this.game().players.find(p => p.index === this.game().currentPlayerIndex))
 
   protected readonly renderedSlots: readonly number[] = [-3, -2, -1, 0, 1, 2, 3];
   protected readonly isDragging = signal(false);
-  protected readonly isSnapping = signal(true);
 
   constructor() {
     effect(() => {
-      const players: readonly string[] = this.players();
+      const players: Player[] = this.players();
       if (players.length === 0) {
         this.scrollCenterIndex.set(0);
-        this.selectedPlayerName.set(undefined);
+        this.highlightedPlayer.set(undefined);
         this.dragOffsetPx.set(0);
         return;
       }
 
       this.scrollCenterIndex.update(currentIndex => this.normalizeIndex(currentIndex, players.length));
 
-      const selectedPlayerName: string | undefined = this.selectedPlayerName();
-      if (selectedPlayerName && !players.includes(selectedPlayerName)) {
-        this.selectedPlayerName.set(undefined);
+      const selectedPlayer: number | undefined = this.highlightedPlayer();
+      if (selectedPlayer && !players.some(p => p.index === selectedPlayer)) {
+        this.highlightedPlayer.set(undefined);
       }
     }, {allowSignalWrites: true});
 
     effect(() => {
-      const centeredPlayer: string | undefined = this.centeredPlayer();
-      if (centeredPlayer) {
-        this.centerOnPlayer(centeredPlayer);
+      const highlightedPlayerInput: Player | undefined = this.activePlayer();
+      if (highlightedPlayerInput) {
+        this.centerOnPlayer(highlightedPlayerInput.index);
       } else {
-        this.selectedPlayerName.set(undefined);
+        this.highlightedPlayer.set(undefined);
       }
     }, {allowSignalWrites: true});
   }
 
-  centerOnPlayer(playerName: string) {
-    const playerIndex: number = this.players().indexOf(playerName);
-
-    const players: readonly string[] = this.players();
+  centerOnPlayer(playerId: number) {
+    const players: Player[] = this.players();
     if (players.length === 0) {
       return;
     }
 
-    const normalizedIndex: number = this.normalizeIndex(playerIndex, players.length);
-    const selectedPlayerName: string = players[normalizedIndex];
+    const normalizedIndex: number = this.normalizeIndex(playerId, players.length);
+    const selectedPlayer: Player = players[normalizedIndex];
 
     this.scrollCenterIndex.set(normalizedIndex);
-    this.selectedPlayerName.set(selectedPlayerName);
+    this.highlightedPlayer.set(selectedPlayer.index);
     this.dragOffsetPx.set(0);
   }
 
-  protected playerNameForOffset(offsetFromCenter: number): string {
-    const players: readonly string[] = this.players();
+  protected getPlayerForOffset(offsetFromCenter: number): Player | undefined {
+    const players: Player[] = this.players();
     if (players.length === 0) {
-      return '';
+      return undefined;
     }
 
     const index: number = this.normalizeIndex(this.scrollCenterIndex() + offsetFromCenter, players.length);
@@ -88,8 +91,8 @@ export class PlayersCarouselComponent {
   }
 
   protected highlighted(offsetFromCenter: number): boolean {
-    const selectedPlayerName: string | undefined = this.selectedPlayerName();
-    return !!selectedPlayerName && this.playerNameForOffset(offsetFromCenter) === selectedPlayerName;
+    const highlightedPlayer: number | undefined = this.highlightedPlayer();
+    return highlightedPlayer !== undefined && this.getPlayerForOffset(offsetFromCenter)?.index === highlightedPlayer;
   }
 
   protected slotTransform(offsetFromCenter: number): string {
@@ -166,5 +169,21 @@ export class PlayersCarouselComponent {
 
   private normalizeIndex(index: number, length: number): number {
     return ((index % length) + length) % length;
+  }
+
+  private shortestCircularDelta(fromIndex: number, toIndex: number, length: number): number {
+    const forward: number = ((toIndex - fromIndex) % length + length) % length;
+    const backward: number = forward - length;
+    return forward;
+    return Math.abs(forward) <= Math.abs(backward) ? forward : backward;
+  }
+
+  showAllInIcon(player: Player): boolean {
+    return !player.folded && player.chips === 0 &&
+      (this.game().phase === GamePhase.FIRST_BETTING || this.game().phase === GamePhase.SECOND_BETTING);
+  }
+
+  showWinnerIcon(player: Player): boolean {
+    return this.game().phase === GamePhase.SHOWDOWN && this.game().winnerIndexes.includes(player.index);
   }
 }

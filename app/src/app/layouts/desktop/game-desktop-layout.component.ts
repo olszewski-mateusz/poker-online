@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, input, InputSignal} from '@angular/core';
 import {
   ActionsComponent,
   GameStateComponent,
@@ -28,6 +28,4 @@ import {Game} from '../../model';
 })
 export class GameDesktopLayoutComponent {
   game: InputSignal<Game> = input.required<Game>();
-  protected players = ["tom", "mike", "greg", "bob"]
-
 }

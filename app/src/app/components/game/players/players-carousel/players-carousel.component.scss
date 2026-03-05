@@ -22,30 +22,48 @@
 .slot {
   position: absolute;
   width: 100%;
-  top: calc(50% - (var(--item-height) / 2));
+  top: calc(50% - (var(--item-height) / 2)); // set to 0 if want to not centering
   height: var(--item-height);
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
   will-change: transform;
+
+  .player {
+    width: 100%;
+    height: calc(var(--item-height) - 4px);
+    display: flex;
+    align-items: center;
+    background-color: rgb(30, 30, 30);
+    color: #c9c9c9;
+    font-size: 20px;
+
+    mat-icon {
+      font-size: 20px;
+      transform: translateY(6px);
+      margin-right: 4px;
+    }
+
+    .status {
+      margin-left: 20px;
+
+      mat-icon {
+        font-size: 32px;
+      }
+    }
+
+    mat-icon.empty-icon {
+      opacity: 0;
+    }
+  }
+
+  .player.highlighted {
+    background-color: rgb(61, 61, 61);
+    font-weight: 600;
+  }
 }
 
 .viewport.animate-snap .slot {
   transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.player-name {
-  width: 100%;
-  height: calc(var(--item-height) - 4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgb(30, 30, 30);
-  color: #c9c9c9;
-}
-
-.slot.highlighted .player-name {
-  background-color: rgb(61, 61, 61);
-  font-weight: 600;
 }

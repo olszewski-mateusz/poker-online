@@ -1,16 +1,44 @@
 <div class="viewport poker-panel"
      [class.is-dragging]="isDragging()"
-     [class.animate-snap]="isSnapping() && !isDragging()"
+     [class.animate-snap]="!isDragging()"
      [style.--item-height.px]="itemHeightPx"
      (pointerdown)="onPointerDown($event)"
      (pointermove)="onPointerMove($event)"
      (pointerup)="onPointerCancel($event)"
      (pointercancel)="onPointerCancel($event)">
   @for (offset of renderedSlots; track offset) {
-    <div class="slot"
-         [class.highlighted]="highlighted(offset)"
-         [style.transform]="slotTransform(offset)">
-      <div class="player-name">{{ playerNameForOffset(offset) }}</div>
-    </div>
+    @if (getPlayerForOffset(offset); as player) {
+      <div class="slot" [style.transform]="slotTransform(offset)">
+        <div class="player" [class.highlighted]="highlighted(offset)">
+          <div class="status">
+            @if (game().currentPlayerIndex === player.index) {
+              <mat-icon inline>chevron_right</mat-icon>
+            } @else if (showAllInIcon(player)) {
+              <mat-icon inline>done_all</mat-icon>
+            } @else if (player.ready) {
+              <mat-icon inline>check_small</mat-icon>
+            } @else if (player.folded) {
+              <mat-icon inline>close</mat-icon>
+            } @else if (showWinnerIcon(player)) {
+              <mat-icon inline>crown</mat-icon>
+            } @else {
+              <mat-icon inline class="empty-icon">check_small</mat-icon>
+            }
+          </div>
+          <div>
+            <span>{{ player.name }}</span>
+          </div>
+
+          <div>
+            <mat-icon inline>paid</mat-icon>
+            <span>{{ player.chips }}</span>
+          </div>
+          <div>
+            <mat-icon inline>poker_chip</mat-icon>
+            <span>{{ player.bet }}</span>
+          </div>
+        </div>
+      </div>
+    }
   }
 </div>
