@@ -24,19 +24,22 @@ import {MatIcon} from '@angular/material/icon';
 })
 export class PlayersCarouselComponent {
   protected readonly itemHeightPx: number = 80;
+  private readonly snapAnimationMs: number = 1000;
 
   private readonly scrollCenterIndex: WritableSignal<number> = signal(0);
   private readonly highlightedPlayer: WritableSignal<number | undefined> = signal(undefined);
   private readonly dragOffsetPx: WritableSignal<number> = signal(0);
   private readonly pointerState: WritableSignal<{ id: number, y: number } | undefined> = signal(undefined);
+  private centerAnimationTimeoutId: ReturnType<typeof setTimeout> | undefined;
+  private snapResetTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
   game: InputSignal<Game> = input.required<Game>();
-
   players = computed(() => this.game().players)
   activePlayer = computed(() => this.game().players.find(p => p.index === this.game().currentPlayerIndex))
 
   protected readonly renderedSlots: readonly number[] = [-3, -2, -1, 0, 1, 2, 3];
   protected readonly isDragging = signal(false);
+  protected readonly animateSnap = signal(false);
 
   constructor() {
     effect(() => {
@@ -59,6 +62,12 @@ export class PlayersCarouselComponent {
     effect(() => {
       const highlightedPlayerInput: Player | undefined = this.activePlayer();
       if (highlightedPlayerInput) {
+        if (this.isDragging()) {
+          return;
+        }
+        if (this.highlightedPlayer() === highlightedPlayerInput.index) {
+          return;
+        }
         this.centerOnPlayer(highlightedPlayerInput.index);
       } else {
         this.highlightedPlayer.set(undefined);
@@ -72,11 +81,40 @@ export class PlayersCarouselComponent {
       return;
     }
 
-    const normalizedIndex: number = this.normalizeIndex(playerId, players.length);
+    const playerIndex: number = players.findIndex(player => player.index === playerId);
+    if (playerIndex < 0) {
+      return;
+    }
+
+    const currentIndex: number = this.scrollCenterIndex();
+    const normalizedIndex: number = this.normalizeIndex(playerIndex, players.length);
+    const moveDelta: number = this.shortestCircularDelta(currentIndex, normalizedIndex, players.length);
     const selectedPlayer: Player = players[normalizedIndex];
 
+    this.clearTimeout(this.centerAnimationTimeoutId);
+    this.centerAnimationTimeoutId = undefined;
+    this.clearTimeout(this.snapResetTimeoutId);
+    this.snapResetTimeoutId = undefined;
+    this.animateSnap.set(false);
+
+    // Keep visual continuity first, then animate back to centered (0px offset).
+    this.dragOffsetPx.set(this.isDragging() ? 0 : moveDelta * this.itemHeightPx);
     this.scrollCenterIndex.set(normalizedIndex);
     this.highlightedPlayer.set(selectedPlayer.index);
+
+    if (!this.isDragging() && moveDelta !== 0) {
+      this.centerAnimationTimeoutId = setTimeout(() => {
+        this.animateSnap.set(true);
+        this.dragOffsetPx.set(0);
+        this.centerAnimationTimeoutId = undefined;
+        this.snapResetTimeoutId = setTimeout(() => {
+          this.animateSnap.set(false);
+          this.snapResetTimeoutId = undefined;
+        }, this.snapAnimationMs);
+      }, 0);
+      return;
+    }
+
     this.dragOffsetPx.set(0);
   }
 
@@ -109,6 +147,11 @@ export class PlayersCarouselComponent {
     target.setPointerCapture(event.pointerId);
     this.pointerState.set({id: event.pointerId, y: event.clientY});
     this.isDragging.set(true);
+    this.clearTimeout(this.centerAnimationTimeoutId);
+    this.centerAnimationTimeoutId = undefined;
+    this.clearTimeout(this.snapResetTimeoutId);
+    this.snapResetTimeoutId = undefined;
+    this.animateSnap.set(false);
   }
 
   protected onPointerMove(event: PointerEvent): void {
@@ -164,7 +207,13 @@ export class PlayersCarouselComponent {
     if (steps !== 0) {
       this.shiftCenteredBy(-steps);
     }
+    this.clearTimeout(this.snapResetTimeoutId);
+    this.animateSnap.set(true);
     this.dragOffsetPx.set(0);
+    this.snapResetTimeoutId = setTimeout(() => {
+      this.animateSnap.set(false);
+      this.snapResetTimeoutId = undefined;
+    }, this.snapAnimationMs);
   }
 
   private normalizeIndex(index: number, length: number): number {
@@ -174,8 +223,13 @@ export class PlayersCarouselComponent {
   private shortestCircularDelta(fromIndex: number, toIndex: number, length: number): number {
     const forward: number = ((toIndex - fromIndex) % length + length) % length;
     const backward: number = forward - length;
-    return forward;
     return Math.abs(forward) <= Math.abs(backward) ? forward : backward;
+  }
+
+  private clearTimeout(timeoutId: ReturnType<typeof setTimeout> | undefined): void {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
   }
 
   showAllInIcon(player: Player): boolean {
