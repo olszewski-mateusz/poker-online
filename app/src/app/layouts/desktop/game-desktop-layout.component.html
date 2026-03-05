@@ -6,6 +6,8 @@
   <div class="middle-column">
     <poker-game-players-carousel
       [game]="this.game()"
+      [vertical]="false"
+      [highlightedOnCenter]="true"
     />
     <poker-game-state [game]="game()" [mobile]="false"/>
     <poker-game-hand [game]="game()" [mobile]="false"/>

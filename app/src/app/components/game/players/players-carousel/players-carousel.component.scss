@@ -1,70 +1,72 @@
-:host {
-  display: block;
-  width: 100%;
-}
-
 .viewport {
   --item-height: 0px; // set dynamically
   --item-count: 0; // set dynamically
 
   position: relative;
-  width: 100%;
-  height: calc( var(--item-height) * var(--item-count) );
   overflow: hidden;
   user-select: none;
   touch-action: none;
   cursor: grab;
-}
 
-.viewport.is-dragging {
-  cursor: grabbing;
-}
-
-.slot {
-  position: absolute;
-  width: 100%;
-  top: calc(50% - (var(--item-height) / 2)); // set to 0 if want to not centering
-  height: var(--item-height);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  will-change: transform;
-
-  .player {
-    width: 100%;
-    height: calc(var(--item-height) - 4px);
+  .slot {
+    position: absolute;
     display: flex;
     align-items: center;
-    background-color: rgb(30, 30, 30);
-    color: #c9c9c9;
-    font-size: 20px;
+    justify-content: center;
+    pointer-events: none;
+    will-change: transform;
+    background-color: #626262; // todo: set from colors.css
+  }
+}
 
-    mat-icon {
-      font-size: 20px;
-      transform: translateY(6px);
-      margin-right: 4px;
-    }
+.viewport.vertical {
+  width: 100%;
+  height: calc( var(--item-height) * var(--item-count)  + 4px);
 
-    .status {
-      margin-left: 20px;
+  .slot {
+    width: 100%;
+    height: var(--item-height);
 
-      mat-icon {
-        font-size: 32px;
-      }
-    }
-
-    mat-icon.empty-icon {
-      opacity: 0;
+    poker-game-players-carousel-properties {
+      width: 100%;
     }
   }
+}
 
-  .player.highlighted {
-    background-color: rgb(61, 61, 61);
-    font-weight: 600;
+.viewport.horizontal {
+  height: 200px;
+  width: calc( var(--item-height) * var(--item-count)  + 4px);
+  width: 100%;
+  .slot {
+    height: 100%;
+    width: var(--item-height);
+
+    poker-game-players-carousel-properties {
+      height: 100%;
+    }
   }
+}
+
+.viewport.vertical.highlighted-center .slot {
+  top: calc(50% - (var(--item-height) / 2));
+}
+
+.viewport.vertical.highlighted-start .slot {
+  top: 2px;
+}
+
+.viewport.horizontal.highlighted-center .slot {
+  left: calc(50% - (var(--item-height) / 2));
+}
+
+.viewport.horizontal.highlighted-start .slot {
+  left: 2px;
 }
 
 .viewport.animate-snap .slot {
   transition: transform 1000ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.viewport.is-dragging {
+  cursor: grabbing;
 }

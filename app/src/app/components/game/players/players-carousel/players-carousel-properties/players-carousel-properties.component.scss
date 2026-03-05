@@ -1,0 +1,37 @@
+.player {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+
+  mat-icon {
+    font-size: 20px;
+    transform: translateY(6px);
+    margin-right: 4px;
+  }
+
+  .status {
+    margin-left: 20px;
+
+    mat-icon {
+      font-size: 32px;
+    }
+  }
+
+  mat-icon.empty-icon {
+    opacity: 0;
+  }
+}
+
+.player.vertical {
+  height: calc(var(--item-height) - 4px);
+}
+
+.player.horizontal {
+  height: 100%;
+  width: calc(var(--item-height) - 4px);
+}
+
+.player.highlighted {
+  background-color: rgb(28, 28, 28); // todo: set from colors.css
+  font-weight: 600;
+}

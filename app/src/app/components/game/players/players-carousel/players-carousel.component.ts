@@ -1,16 +1,15 @@
 import {
   ChangeDetectionStrategy,
-  Component, computed,
+  Component,
+  computed,
   effect,
   input,
   InputSignal,
-  output,
-  OutputEmitterRef,
   signal,
   WritableSignal
 } from '@angular/core';
-import {Game, GamePhase, Player} from '../../../../model';
-import {MatIcon} from '@angular/material/icon';
+import {Game, Player} from '../../../../model';
+import {PlayersCarouselPropertiesComponent} from './players-carousel-properties/players-carousel-properties.component';
 
 @Component({
   selector: 'poker-game-players-carousel',
@@ -18,30 +17,35 @@ import {MatIcon} from '@angular/material/icon';
   templateUrl: './players-carousel.component.html',
   styleUrl: './players-carousel.component.scss',
   imports: [
-    MatIcon
+    PlayersCarouselPropertiesComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayersCarouselComponent {
-  protected readonly itemHeightPx: number = 80;
+  protected readonly itemSideSize: number = 150;
   private readonly snapAnimationMs: number = 1000;
 
   private readonly scrollCenterIndex: WritableSignal<number> = signal(0);
   private readonly highlightedPlayer: WritableSignal<number | undefined> = signal(undefined);
   private readonly dragOffsetPx: WritableSignal<number> = signal(0);
-  private readonly pointerState: WritableSignal<{ id: number, y: number } | undefined> = signal(undefined);
+  private readonly pointerState: WritableSignal<{ id: number, value: number } | undefined> = signal(undefined);
   private centerAnimationTimeoutId: ReturnType<typeof setTimeout> | undefined;
   private snapResetTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
   game: InputSignal<Game> = input.required<Game>();
+  vertical: InputSignal<boolean> = input.required<boolean>();
+  highlightedOnCenter: InputSignal<boolean> = input.required<boolean>();
+
   players = computed(() => this.game().players)
   activePlayer = computed(() => this.game().players.find(p => p.index === this.game().currentPlayerIndex))
 
-  protected readonly renderedSlots: readonly number[] = [-3, -2, -1, 0, 1, 2, 3];
+  protected readonly renderedSlots: readonly number[] = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
   protected readonly isDragging = signal(false);
   protected readonly animateSnap = signal(false);
 
   constructor() {
+
+
     effect(() => {
       const players: Player[] = this.players();
       if (players.length === 0) {
@@ -98,7 +102,7 @@ export class PlayersCarouselComponent {
     this.animateSnap.set(false);
 
     // Keep visual continuity first, then animate back to centered (0px offset).
-    this.dragOffsetPx.set(this.isDragging() ? 0 : moveDelta * this.itemHeightPx);
+    this.dragOffsetPx.set(this.isDragging() ? 0 : moveDelta * this.itemSideSize);
     this.scrollCenterIndex.set(normalizedIndex);
     this.highlightedPlayer.set(selectedPlayer.index);
 
@@ -134,8 +138,13 @@ export class PlayersCarouselComponent {
   }
 
   protected slotTransform(offsetFromCenter: number): string {
-    const translateY: number = offsetFromCenter * this.itemHeightPx + this.dragOffsetPx();
-    return `translateY(${translateY}px)`;
+    const translate: number = offsetFromCenter * this.itemSideSize + this.dragOffsetPx();
+
+    if (this.vertical()) {
+      return `translateY(${translate}px)`;
+    } else {
+      return `translateX(${translate}px)`;
+    }
   }
 
   protected onPointerDown(event: PointerEvent): void {
@@ -145,7 +154,7 @@ export class PlayersCarouselComponent {
 
     const target: HTMLElement = event.currentTarget as HTMLElement;
     target.setPointerCapture(event.pointerId);
-    this.pointerState.set({id: event.pointerId, y: event.clientY});
+    this.pointerState.set({id: event.pointerId, value: this.vertical() ? event.clientY : event.clientX});
     this.isDragging.set(true);
     this.clearTimeout(this.centerAnimationTimeoutId);
     this.centerAnimationTimeoutId = undefined;
@@ -155,19 +164,20 @@ export class PlayersCarouselComponent {
   }
 
   protected onPointerMove(event: PointerEvent): void {
-    const pointerState: { id: number, y: number } | undefined = this.pointerState();
+    const pointerState: { id: number, value: number } | undefined = this.pointerState();
     if (pointerState?.id !== event.pointerId) {
       return;
     }
 
-    const deltaY: number = event.clientY - pointerState.y;
-    this.pointerState.set({id: pointerState.id, y: event.clientY});
+    const clientValue = this.vertical() ? event.clientY : event.clientX;
+    const deltaY: number = clientValue - pointerState.value;
+    this.pointerState.set({id: pointerState.id, value: clientValue});
     this.applyDelta(deltaY);
     event.preventDefault();
   }
 
   protected onPointerCancel(event: PointerEvent): void {
-    const pointerState: { id: number, y: number } | undefined = this.pointerState();
+    const pointerState: { id: number, value: number } | undefined = this.pointerState();
     if (pointerState?.id !== event.pointerId) {
       return;
     }
@@ -180,15 +190,15 @@ export class PlayersCarouselComponent {
     this.snapToNearestItem();
   }
 
-  private applyDelta(deltaY: number): void {
-    const centerSwitchThresholdPx: number = this.itemHeightPx / 2;
-    let nextOffset: number = this.dragOffsetPx() + deltaY;
+  private applyDelta(delta: number): void {
+    const centerSwitchThresholdPx: number = this.itemSideSize / 2;
+    let nextOffset: number = this.dragOffsetPx() + delta;
     while (nextOffset >= centerSwitchThresholdPx) {
-      nextOffset -= this.itemHeightPx;
+      nextOffset -= this.itemSideSize;
       this.shiftCenteredBy(-1);
     }
     while (nextOffset <= -centerSwitchThresholdPx) {
-      nextOffset += this.itemHeightPx;
+      nextOffset += this.itemSideSize;
       this.shiftCenteredBy(1);
     }
     this.dragOffsetPx.set(nextOffset);
@@ -203,7 +213,7 @@ export class PlayersCarouselComponent {
   }
 
   private snapToNearestItem(): void {
-    const steps: number = Math.round(this.dragOffsetPx() / this.itemHeightPx);
+    const steps: number = Math.round(this.dragOffsetPx() / this.itemSideSize);
     if (steps !== 0) {
       this.shiftCenteredBy(-steps);
     }
@@ -230,14 +240,5 @@ export class PlayersCarouselComponent {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
-  }
-
-  showAllInIcon(player: Player): boolean {
-    return !player.folded && player.chips === 0 &&
-      (this.game().phase === GamePhase.FIRST_BETTING || this.game().phase === GamePhase.SECOND_BETTING);
-  }
-
-  showWinnerIcon(player: Player): boolean {
-    return this.game().phase === GamePhase.SHOWDOWN && this.game().winnerIndexes.includes(player.index);
   }
 }

@@ -1,0 +1,32 @@
+<div class="player poker-panel-color poker-text"
+     [class.highlighted]="highlighted()"
+     [class.vertical]="vertical()"
+     [class.horizontal]="!vertical()">
+  <div class="status">
+    @if (game().currentPlayerIndex === player().index) {
+      <mat-icon inline>chevron_right</mat-icon>
+    } @else if (showAllInIcon(player())) {
+      <mat-icon inline>done_all</mat-icon>
+    } @else if (player().ready) {
+      <mat-icon inline>check_small</mat-icon>
+    } @else if (player().folded) {
+      <mat-icon inline>close</mat-icon>
+    } @else if (showWinnerIcon(player())) {
+      <mat-icon inline>crown</mat-icon>
+    } @else {
+      <mat-icon inline class="empty-icon">check_small</mat-icon>
+    }
+  </div>
+  <div>
+    <span>{{ player().name }}</span>
+  </div>
+
+  <div>
+    <mat-icon inline>paid</mat-icon>
+    <span>{{ player().chips }}</span>
+  </div>
+  <div>
+    <mat-icon inline>poker_chip</mat-icon>
+    <span>{{ player().bet }}</span>
+  </div>
+</div>
