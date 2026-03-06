@@ -29,11 +29,11 @@ $outer-margin: 30px;
       flex-direction: column;
       justify-content: space-between;
 
-      poker-game-state, poker-game-hand {
+      poker-game-state, poker-game-hand, poker-game-hand-better {
         flex-basis: 50%;
       }
 
-      poker-game-hand {
+      poker-game-hand, poker-game-hand-better {
         margin-top: 10px;
       }
     }
@@ -62,3 +62,4 @@ $outer-margin: 30px;
     padding: 50px
   }
 }
+

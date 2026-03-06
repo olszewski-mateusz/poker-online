@@ -1,0 +1,32 @@
+<div class="hand-stage"
+     [style.--card-width.px]="layout().cardWidth"
+     [style.--card-height.px]="layout().cardHeight"
+     [style.--card-radius.px]="layout().cardRadius">
+  @for (renderCard of renderCards(); track renderCard.id) {
+    <div class="card-item"
+         [class.face-up]="renderCard.faceUp"
+         [class.flipping]="renderCard.flipping"
+         [class.interactive]="canInteract(renderCard)"
+         [class.from-dealer]="renderCard.movingFromDealer"
+         [class.discarding]="renderCard.discarding"
+         [style.transform]="cardTranslate(renderCard)"
+         [style.z-index]="cardZIndex(renderCard)">
+      <div class="card-flip" (click)="cardClicked(renderCard)">
+        <div class="card-hover">
+          <div class="card-face front-face">
+            <poker-game-card [rank]="renderCard.card.rank"
+                             [suit]="renderCard.card.suit"
+                             [size]="cardsSize()"
+                             [interactive]="false"/>
+          </div>
+          <div class="card-face back-face">
+            <div class="card-back"></div>
+          </div>
+        </div>
+      </div>
+      @if (isCardSelected(renderCard.card)) {
+        <div class="replace-label poker-text" [style.top]="labelY()">x</div>
+      }
+    </div>
+  }
+</div>

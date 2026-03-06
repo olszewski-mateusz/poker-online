@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, computed, input, InputSignal} from '
 import {
   ActionsComponent,
   GameStateComponent,
-  HandComponent,
+  HandBetterComponent,
   HistoryComponent, PlayerPropertiesComponent, PlayersCarouselComponent,
   PlayerSelectionComponent,
   ToolbarComponent
@@ -16,7 +16,7 @@ import {Game} from '../../model';
     ToolbarComponent,
     HistoryComponent,
     GameStateComponent,
-    HandComponent,
+    HandBetterComponent,
     PlayerSelectionComponent,
     PlayerPropertiesComponent,
     ActionsComponent,
@@ -29,3 +29,4 @@ import {Game} from '../../model';
 export class GameDesktopLayoutComponent {
   game: InputSignal<Game> = input.required<Game>();
 }
+

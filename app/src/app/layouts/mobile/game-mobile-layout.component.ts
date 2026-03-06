@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {Game} from '../../model';
 import {
-  ActionsComponent, GameStateComponent, HandComponent, HistoryComponent,
+  ActionsComponent, GameStateComponent, HandBetterComponent, HistoryComponent,
   PlayerPropertiesComponent,
   PlayerSelectionComponent,
   ToolbarComponent
@@ -16,7 +16,7 @@ import {
     PlayerPropertiesComponent,
     PlayerSelectionComponent,
     GameStateComponent,
-    HandComponent,
+    HandBetterComponent,
     HistoryComponent
   ],
   templateUrl: './game-mobile-layout.component.html',
@@ -26,3 +26,4 @@ import {
 export class GameMobileLayoutComponent {
   game: InputSignal<Game> = input.required<Game>();
 }
+
