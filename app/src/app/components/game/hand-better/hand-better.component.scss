@@ -16,7 +16,7 @@
   top: 0;
   width: var(--card-width);
   height: calc(var(--card-height) + 78px);
-  transition: transform 260ms ease, opacity 260ms ease;
+  transition: transform 260ms ease, opacity 260ms ease-out;
   opacity: 1;
   -webkit-user-select: none;
   user-select: none;
@@ -94,6 +94,17 @@
     radial-gradient(circle at 35% 30%, #d9d9d9 0, #8e8e8e 26%, #474747 70%),
     repeating-linear-gradient(130deg, rgba(255, 255, 255, 0.18) 0 4px, rgba(0, 0, 0, 0.18) 4px 8px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+
+  mat-icon {
+    position: relative;
+    left: calc(50% - 32px);
+    top: calc(50% - 32px);
+    text-align: center;
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: rgba(0, 0, 0, 0.5);
+  }
 }
 
 .replace-label {

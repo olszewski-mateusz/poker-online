@@ -1,76 +1,70 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
+  computed,
   effect,
   inject,
   input,
-  InputSignal,
-  Signal,
-  signal,
-  WritableSignal
+  signal
 } from '@angular/core';
-import {ActionType, Card, compareCards, Game, GamePhase} from '../../../model';
-import {CardComponent, CardSize} from '../hand/card/card.component';
+import {ActionType, Card, Game, GamePhase, compareCards} from '../../../model';
+import {CardComponent, CardSize} from '../hand';
 import {ReplaceCardsService} from '../actions';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'poker-game-hand-better',
   standalone: true,
-  imports: [
-    CardComponent
-  ],
+  imports: [CardComponent, MatIcon],
   templateUrl: './hand-better.component.html',
   styleUrl: './hand-better.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HandBetterComponent {
-  private static readonly HAND_SIZE: number = 5;
-  private static readonly DEAL_STAGGER_MS: number = 130;
-  private static readonly DEAL_MOVE_MS: number = 280;
-  private static readonly DISCARD_MOVE_MS: number = 260;
-  private static readonly REARRANGE_MOVE_MS: number = 260;
-  private static readonly FLIP_HALF_MS: number = 120;
+  private static readonly HAND_SIZE = 5;
+  private static readonly DEAL_STAGGER_MS = 130;
+  private static readonly DEAL_MOVE_MS = 280;
+  private static readonly DISCARD_MOVE_MS = 260;
+  private static readonly REARRANGE_MOVE_MS = 260;
+  private static readonly FLIP_HALF_MS = 120;
 
-  private readonly replaceCardsService: ReplaceCardsService = inject(ReplaceCardsService);
-  private readonly destroyRef: DestroyRef = inject(DestroyRef);
+  private readonly replaceCardsService = inject(ReplaceCardsService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  game: InputSignal<Game> = input.required<Game>();
-  mobile: InputSignal<boolean> = input.required<boolean>();
+  game = input.required<Game>();
+  mobile = input.required<boolean>();
 
-  protected readonly cardsInteractive: Signal<boolean> = computed(() => {
-    return this.game().validActions.some(value => value.type === ActionType.REPLACE);
-  });
+  protected readonly cardsInteractive = computed(() =>
+    this.game().validActions.some(value => value.type === ActionType.REPLACE)
+  );
 
-  protected readonly cardsSize: Signal<CardSize> = computed(() => {
-    return this.mobile() ? CardSize.MOBILE_BIG : CardSize.DESKTOP_BIG;
-  });
+  protected readonly cardsSize = computed(() =>
+    this.mobile() ? CardSize.MOBILE_BIG : CardSize.DESKTOP_BIG
+  );
 
-  protected readonly layout: Signal<HandLayout> = computed(() => {
-    return this.mobile() ? MOBILE_LAYOUT : DESKTOP_LAYOUT;
-  });
+  protected readonly layout = computed(() =>
+    this.mobile() ? MOBILE_LAYOUT : DESKTOP_LAYOUT
+  );
 
-  private readonly _renderCards: WritableSignal<RenderCard[]> = signal<RenderCard[]>([]);
-  protected readonly renderCards: Signal<RenderCard[]> = this._renderCards.asReadonly();
-  private readonly myStateSnapshot: Signal<HandStateSnapshot> = computed(() => {
+  private readonly _renderCards = signal<RenderCard[]>([]);
+  protected readonly renderCards = this._renderCards.asReadonly();
+
+  private readonly myStateSnapshot = computed<HandStateSnapshot>(() => {
     const game: Game = this.game();
     const cards: Card[] = game.players.find(value => value.index === game.myIndex)?.cards ?? [];
-    return {
-      phase: game.phase,
-      cards: [...cards].sort(compareCards)
-    };
+    return {phase: game.phase, cards: [...cards].sort(compareCards)};
   });
 
-  private nextCardId: number = 1;
+  private nextCardId = 1;
   private queuedSnapshot: HandStateSnapshot | null = null;
-  private processingQueue: boolean = false;
-  private readonly timeouts: Set<number> = new Set<number>();
-  private destroyed: boolean = false;
-  private lastObservedSnapshotSignature: string = '';
+  private processingQueue = false;
+  private readonly timeouts = new Set<number>();
+  private destroyed = false;
+  private lastObservedSnapshotSignature = '';
   private displayedCards: Card[] = [];
   private displayedPhase: GamePhase | null = null;
-  private animationRunning: boolean = false;
+  private animationRunning = false;
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -84,16 +78,16 @@ export class HandBetterComponent {
       if (signature === this.lastObservedSnapshotSignature) {
         return;
       }
+
       this.lastObservedSnapshotSignature = signature;
       this.enqueueSnapshot(snapshot);
     }, {allowSignalWrites: true});
   }
 
   protected cardClicked(renderCard: RenderCard): void {
-    if (!this.canInteract(renderCard)) {
-      return;
+    if (this.canInteract(renderCard)) {
+      this.replaceCardsService.toggleCard(renderCard.card);
     }
-    this.replaceCardsService.toggleCard(renderCard.card);
   }
 
   protected canInteract(renderCard: RenderCard): boolean {
@@ -110,12 +104,9 @@ export class HandBetterComponent {
   }
 
   protected cardTranslate(renderCard: RenderCard): string {
-    const x: number = renderCard.discarding || renderCard.movingFromDealer
-      ? 0
-      : this.cardSlotX(renderCard.slotIndex);
-    const y: number = renderCard.discarding || renderCard.movingFromDealer
-      ? this.layout().dealerOffsetY
-      : 0;
+    const inDealerArea: boolean = renderCard.discarding || renderCard.movingFromDealer;
+    const x: number = inDealerArea ? 0 : this.cardSlotX(renderCard.slotIndex);
+    const y: number = inDealerArea ? this.layout().dealerOffsetY : 0;
     return `translate(calc(-50% + ${x}px), ${y}px)`;
   }
 
@@ -128,10 +119,7 @@ export class HandBetterComponent {
   }
 
   private enqueueSnapshot(snapshot: HandStateSnapshot): void {
-    this.queuedSnapshot = {
-      phase: snapshot.phase,
-      cards: [...snapshot.cards]
-    };
+    this.queuedSnapshot = {phase: snapshot.phase, cards: [...snapshot.cards]};
     if (!this.processingQueue) {
       void this.processSnapshotQueue();
     }
@@ -141,6 +129,7 @@ export class HandBetterComponent {
     if (this.processingQueue) {
       return;
     }
+
     this.processingQueue = true;
     this.animationRunning = true;
     try {
@@ -169,86 +158,48 @@ export class HandBetterComponent {
       this.replaceCardsService.clearSelection();
     }
 
-    if (targetCards.length === 0) {
-      await this.discardCards(this._renderCards().map(value => value.id));
-      this._renderCards.set([]);
-      this.displayedCards = [];
-      this.displayedPhase = targetSnapshot.phase;
+    if (!targetCards.length) {
+      await this.clearHand();
+      this.markDisplayed(targetSnapshot.phase, []);
       return;
     }
 
-    if (startNewRoundAnimation) {
-      await this.discardCards(this._renderCards().map(value => value.id));
-      this._renderCards.set([]);
-      await this.dealCards(targetCards);
-      this.displayedCards = [...targetCards];
-      this.displayedPhase = targetSnapshot.phase;
-      return;
-    }
-
-    if (this.displayedCards.length === 0) {
-      await this.dealCards(targetCards);
-      this.displayedCards = [...targetCards];
-      this.displayedPhase = targetSnapshot.phase;
-      return;
-    }
-
-    const targetKeys: Set<string> = new Set(targetCards.map(value => this.cardKey(value)));
-    const sharedCardsCount: number = this.displayedCards.filter(value => targetKeys.has(this.cardKey(value))).length;
-
-    if (sharedCardsCount === 0) {
-      await this.discardCards(this._renderCards().map(value => value.id));
-      this._renderCards.set([]);
-      await this.dealCards(targetCards);
-      this.displayedCards = [...targetCards];
-      this.displayedPhase = targetSnapshot.phase;
+    if (startNewRoundAnimation || !this.displayedCards.length || !this.hasSharedCards(targetCards)) {
+      await this.resetAndDeal(targetCards);
+      this.markDisplayed(targetSnapshot.phase, targetCards);
       return;
     }
 
     await this.runReplaceFlow(targetCards);
-    this.displayedCards = [...targetCards];
-    this.displayedPhase = targetSnapshot.phase;
+    this.markDisplayed(targetSnapshot.phase, targetCards);
   }
 
   private async runReplaceFlow(targetCards: Card[]): Promise<void> {
-    const targetIndexes: Map<string, number> = new Map<string, number>(
-      targetCards.map((value, index) => [this.cardKey(value), index])
+    const targetIndexes: Map<string, number> = new Map(
+      targetCards.map((card, index) => [this.cardKey(card), index])
     );
-    const targetKeySet: Set<string> = new Set<string>(targetIndexes.keys());
+    const targetKeys: Set<string> = new Set<string>(targetIndexes.keys());
 
-    const cardsToDiscard: number[] = this._renderCards()
-      .filter(value => !targetKeySet.has(value.key))
-      .map(value => value.id);
-    await this.discardCards(cardsToDiscard);
+    await this.discardCards(this._renderCards().filter(card => !targetKeys.has(card.key)).map(card => card.id));
 
-    this._renderCards.update(values => values.map(value => {
-      const nextIndex: number | undefined = targetIndexes.get(value.key);
-      return {
-        ...value,
-        slotIndex: nextIndex ?? value.slotIndex
-      };
-    }));
+    this._renderCards.update(cards => cards.map(card => ({
+      ...card,
+      slotIndex: targetIndexes.get(card.key) ?? card.slotIndex
+    })));
     await this.sleep(HandBetterComponent.REARRANGE_MOVE_MS);
 
-    const existingKeys: Set<string> = new Set<string>(this._renderCards().map(value => value.key));
-    const replacementCards: Card[] = targetCards.filter(value => !existingKeys.has(this.cardKey(value)));
+    const existingKeys: Set<string> = new Set<string>(this._renderCards().map(card => card.key));
+    const replacementCards: Card[] = targetCards.filter(card => !existingKeys.has(this.cardKey(card)));
+    const dealtIds: number[] = [];
 
     for (const card of replacementCards) {
-      const key: string = this.cardKey(card);
-      const slotIndex: number = targetIndexes.get(key) ?? 0;
-      const renderCard: RenderCard = this.buildRenderCard(card, slotIndex, false, true);
-      this._renderCards.update(values => [...values, renderCard]);
-      await this.sleep(16);
-      this.patchCard(renderCard.id, {movingFromDealer: false});
-      await this.sleep(HandBetterComponent.DEAL_STAGGER_MS);
+      const slotIndex: number = targetIndexes.get(this.cardKey(card)) ?? 0;
+      dealtIds.push(await this.dealOneCard(card, slotIndex));
     }
 
     await this.sleep(HandBetterComponent.DEAL_MOVE_MS);
-    for (const card of replacementCards) {
-      const cardId: number | undefined = this._renderCards().find(value => value.key === this.cardKey(card))?.id;
-      if (cardId !== undefined) {
-        await this.flipCard(cardId);
-      }
+    for (const cardId of dealtIds) {
+      await this.flipCard(cardId);
     }
 
     this.sortRenderCardsBySlot();
@@ -256,21 +207,27 @@ export class HandBetterComponent {
 
   private async dealCards(cards: Card[]): Promise<void> {
     this._renderCards.set([]);
-    for (let i = 0; i < cards.length; i++) {
-      const renderCard: RenderCard = this.buildRenderCard(cards[i], i, false, true);
-      this._renderCards.update(values => [...values, renderCard]);
-      await this.sleep(16);
-      this.patchCard(renderCard.id, {movingFromDealer: false});
-      await this.sleep(HandBetterComponent.DEAL_STAGGER_MS);
+    const dealtIds: number[] = [];
+
+    for (const [index, card] of cards.entries()) {
+      dealtIds.push(await this.dealOneCard(card, index));
     }
 
     await this.sleep(HandBetterComponent.DEAL_MOVE_MS);
-    const cardsInFlipOrder: RenderCard[] = [...this._renderCards()].sort((a, b) => a.slotIndex - b.slotIndex);
-    for (const renderCard of cardsInFlipOrder) {
-      await this.flipCard(renderCard.id);
+    for (const cardId of dealtIds) {
+      await this.flipCard(cardId);
     }
 
     this.sortRenderCardsBySlot();
+  }
+
+  private async dealOneCard(card: Card, slotIndex: number): Promise<number> {
+    const renderCard: RenderCard = this.buildRenderCard(card, slotIndex, false, true);
+    this._renderCards.update(cards => [...cards, renderCard]);
+    await this.sleep(16);
+    this.patchCard(renderCard.id, {movingFromDealer: false});
+    await this.sleep(HandBetterComponent.DEAL_STAGGER_MS);
+    return renderCard.id;
   }
 
   private async flipCard(cardId: number): Promise<void> {
@@ -281,39 +238,57 @@ export class HandBetterComponent {
     this.patchCard(cardId, {flipping: false});
   }
 
+  private async clearHand(): Promise<void> {
+    await this.discardCards(this.renderCardIds());
+    this._renderCards.set([]);
+  }
+
+  private async resetAndDeal(cards: Card[]): Promise<void> {
+    await this.clearHand();
+    await this.dealCards(cards);
+  }
+
   private async discardCards(cardIds: number[]): Promise<void> {
     if (!cardIds.length) {
       return;
     }
+
     const ids: Set<number> = new Set<number>(cardIds);
-    this._renderCards.update(values => values.map(value => {
-      if (!ids.has(value.id)) {
-        return value;
+    this._renderCards.update(cards => cards.map(card => {
+      if (!ids.has(card.id)) {
+        return card;
       }
-      return {
-        ...value,
-        discarding: true,
-        movingFromDealer: false,
-        flipping: false
-      };
+      return {...card, discarding: true, movingFromDealer: false, flipping: false};
     }));
+
     await this.sleep(HandBetterComponent.DISCARD_MOVE_MS);
-    this._renderCards.update(values => values.filter(value => !ids.has(value.id)));
+    this._renderCards.update(cards => cards.filter(card => !ids.has(card.id)));
+  }
+
+  private hasSharedCards(targetCards: Card[]): boolean {
+    const targetKeys: Set<string> = new Set<string>(targetCards.map(card => this.cardKey(card)));
+    return this.displayedCards.some(card => targetKeys.has(this.cardKey(card)));
+  }
+
+  private renderCardIds(): number[] {
+    return this._renderCards().map(card => card.id);
+  }
+
+  private markDisplayed(phase: GamePhase, cards: Card[]): void {
+    this.displayedCards = [...cards];
+    this.displayedPhase = phase;
   }
 
   private sortRenderCardsBySlot(): void {
-    this._renderCards.update(values => [...values].sort((a, b) => a.slotIndex - b.slotIndex));
+    this._renderCards.update(cards => [...cards].sort((a, b) => a.slotIndex - b.slotIndex));
   }
 
   private patchCard(cardId: number, patch: Partial<RenderCard>): void {
-    this._renderCards.update(values => values.map(value => {
-      if (value.id !== cardId) {
-        return value;
+    this._renderCards.update(cards => cards.map(card => {
+      if (card.id !== cardId) {
+        return card;
       }
-      return {
-        ...value,
-        ...patch
-      };
+      return {...card, ...patch};
     }));
   }
 
@@ -338,21 +313,18 @@ export class HandBetterComponent {
   }
 
   private isNewRoundStart(targetPhase: GamePhase, targetCards: Card[]): boolean {
-    const previousPhase: GamePhase | null = this.displayedPhase;
-    if (!previousPhase) {
+    if (!this.displayedPhase || !targetCards.length || !this.displayedCards.length) {
       return false;
     }
-    if (targetCards.length === 0 || this.displayedCards.length === 0) {
-      return false;
-    }
-    const newRoundStartsAfter: GamePhase[] = [GamePhase.SHOWDOWN, GamePhase.FINISHED];
-    return targetPhase === GamePhase.FIRST_BETTING && newRoundStartsAfter.includes(previousPhase);
+    return targetPhase === GamePhase.FIRST_BETTING
+      && [GamePhase.SHOWDOWN, GamePhase.FINISHED].includes(this.displayedPhase);
   }
 
   private sameCards(a: Card[], b: Card[]): boolean {
     if (a.length !== b.length) {
       return false;
     }
+
     for (let i = 0; i < a.length; i++) {
       if (a[i].rank !== b[i].rank || a[i].suit !== b[i].suit) {
         return false;
@@ -362,11 +334,7 @@ export class HandBetterComponent {
   }
 
   private snapshotSignature(snapshot: HandStateSnapshot): string {
-    return `${snapshot.phase}|${this.cardsSignature(snapshot.cards)}`;
-  }
-
-  private cardsSignature(cards: Card[]): string {
-    return cards.map(value => this.cardKey(value)).join('|');
+    return `${snapshot.phase}|${snapshot.cards.map(card => this.cardKey(card)).join('|')}`;
   }
 
   private cardKey(card: Card): string {
@@ -377,6 +345,7 @@ export class HandBetterComponent {
     if (this.destroyed) {
       return Promise.resolve();
     }
+
     return new Promise<void>(resolve => {
       const handle: number = window.setTimeout(() => {
         this.timeouts.delete(handle);
@@ -397,7 +366,7 @@ export class HandBetterComponent {
 type HandStateSnapshot = {
   cards: Card[]
   phase: GamePhase
-}
+};
 
 type RenderCard = {
   id: number
@@ -408,7 +377,7 @@ type RenderCard = {
   movingFromDealer: boolean
   discarding: boolean
   flipping: boolean
-}
+};
 
 type HandLayout = {
   cardWidth: number
@@ -416,14 +385,14 @@ type HandLayout = {
   cardRadius: number
   gap: number
   dealerOffsetY: number
-}
+};
 
 const DESKTOP_LAYOUT: HandLayout = {
   cardWidth: 100,
   cardHeight: 140,
   cardRadius: 10,
   gap: 20,
-  dealerOffsetY: 160
+  dealerOffsetY: 200
 };
 
 const MOBILE_LAYOUT: HandLayout = {
@@ -433,9 +402,3 @@ const MOBILE_LAYOUT: HandLayout = {
   gap: 8,
   dealerOffsetY: 110
 };
-
-
-
-
-
-
