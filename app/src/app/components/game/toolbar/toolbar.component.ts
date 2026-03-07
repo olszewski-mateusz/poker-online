@@ -4,6 +4,7 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {buildMyPlayerSignal, Game, Player} from '../../../model';
 import {RouterService} from '../../../services/router.service';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 
 @Component({
   selector: 'poker-game-toolbar',
@@ -12,7 +13,10 @@ import {RouterService} from '../../../services/router.service';
     MatToolbar,
     MatIconButton,
     MatIcon,
-    MatButton
+    MatButton,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem
   ],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss',

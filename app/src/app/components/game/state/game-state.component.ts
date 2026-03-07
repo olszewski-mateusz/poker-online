@@ -1,12 +1,14 @@
 import {ChangeDetectionStrategy, Component, computed, input, InputSignal, Signal} from '@angular/core';
 import {Game, GamePhase, Player} from '../../../model';
 import {MatIcon} from '@angular/material/icon';
+import {MatButton} from '@angular/material/button';
 
 @Component({
   selector: 'poker-game-state',
   standalone: true,
   imports: [
-    MatIcon
+    MatIcon,
+    MatButton
   ],
   templateUrl: './game-state.component.html',
   styleUrl: './game-state.component.scss',
@@ -33,11 +35,13 @@ export class GameStateComponent {
   });
 
   private translateGamePhase(phase: GamePhase): string {
+    const currentPlayer = this.currentPlayer();
+    const playerName = currentPlayer?.name ?? 'unknown';
     switch (phase) {
       case GamePhase.NOT_STARTED: return 'Game not started';
-      case GamePhase.FIRST_BETTING: return 'First Bet';
-      case GamePhase.DRAWING: return 'Draw';
-      case GamePhase.SECOND_BETTING: return 'Second Bet';
+      case GamePhase.FIRST_BETTING: return `First Bet - ${playerName}`;
+      case GamePhase.DRAWING: return `Draw - ${playerName}`;
+      case GamePhase.SECOND_BETTING: return `Second Bet - ${playerName}`;
       case GamePhase.SHOWDOWN: return 'Showdown';
       case GamePhase.FOLDOUT: return 'Foldout';
       case GamePhase.FINISHED: return 'Game finished';

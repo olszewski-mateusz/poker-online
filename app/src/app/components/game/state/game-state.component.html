@@ -7,15 +7,11 @@
   </div>
 
   <div class="property">
-    <mat-icon inline>trophy</mat-icon>
     <span>Pot: </span>
-    {{potReward()}}
+    <strong>{{potReward()}}</strong>
+    <mat-icon inline>poker_chip</mat-icon>
   </div>
 
-  <div class="property">
-    <mat-icon inline>account_circle</mat-icon>
-    <span>Turn: {{currentPlayer()?.name ?? '-'}}</span>
-  </div>
-
+  <button class="button-medium" mat-button>Showdown details</button>
 </div>
 

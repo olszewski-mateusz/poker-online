@@ -20,6 +20,7 @@
   }
 
   .property {
+    text-align: center;
     font-size: 14px;
     line-height: 14px;
 
@@ -33,6 +34,8 @@
 
 .desktop.poker-panel {
   padding: 20px;
+  align-items: center;
+  align-content: center;
 
   .phase {
     font-size: 32px;
@@ -42,12 +45,21 @@
   }
 
   .property {
-    font-size: 18px;
+    text-align: center;
+    font-size: 30px;
+
+    strong {
+      font-weight: 500;
+    }
 
     mat-icon {
-      font-size: 22px;
-      transform: translateY(4px);
-      margin-right: 8px;
+      font-size: 30px;
+      transform: translateY(0px);
     }
+  }
+
+  button {
+    margin-top: 20px;
+
   }
 }
