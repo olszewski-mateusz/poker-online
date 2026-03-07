@@ -8,7 +8,7 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    flex-basis: 50%;
+    flex-basis: max(50%, 400px);
   }
 }
 

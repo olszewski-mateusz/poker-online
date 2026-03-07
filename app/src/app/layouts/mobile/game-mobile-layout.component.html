@@ -1,9 +1,10 @@
 <poker-game-toolbar [game]="game()" [mobile]="true"/>
 
-<div class="row">
-  <poker-game-player-selection [game]="game()" [mobile]="true"/>
-  <poker-game-player-properties [game]="game()" [mobile]="true"/>
-</div>
+<poker-game-players-carousel
+  [game]="this.game()"
+  [vertical]="false"
+  [highlightedOnCenter]="true"
+/>
 
 <poker-game-state [game]="game()" [mobile]="true"/>
 

@@ -50,7 +50,7 @@ export class PlayersCarouselComponent {
       if (vertical) {
         this.itemSideSize = 80;
       } else {
-        this.itemSideSize = 150;
+        this.itemSideSize = 120;
       }
     });
 

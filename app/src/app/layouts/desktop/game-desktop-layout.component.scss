@@ -47,11 +47,8 @@ $outer-margin: 30px;
 
       margin-right: $outer-margin;
 
-      poker-game-player-selection {
+      poker-game-players-carousel {
         flex-grow: 1;
-      }
-
-      poker-game-player-properties {
         flex-basis: 200px;
       }
     }

@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/c
 import {Game} from '../../model';
 import {
   ActionsComponent, GameStateComponent, HandBetterComponent, HistoryComponent,
-  PlayerPropertiesComponent,
+  PlayerPropertiesComponent, PlayersCarouselComponent,
   PlayerSelectionComponent,
   ToolbarComponent
 } from '../../components/game';
@@ -17,7 +17,8 @@ import {
     PlayerSelectionComponent,
     GameStateComponent,
     HandBetterComponent,
-    HistoryComponent
+    HistoryComponent,
+    PlayersCarouselComponent
   ],
   templateUrl: './game-mobile-layout.component.html',
   styleUrl: './game-mobile-layout.component.scss',

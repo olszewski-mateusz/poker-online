@@ -148,7 +148,7 @@ export class ActionsComponent {
   protected actionWidthByCount(size: number) {
     let value;
     if (size === 1) {
-      value = 80
+      value = 100
     } else if (size === 4) {
       value = 50;
     } else if (size === 3) {

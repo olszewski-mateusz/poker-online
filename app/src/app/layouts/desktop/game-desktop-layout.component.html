@@ -4,18 +4,16 @@
   <poker-game-history class="left-column" [game]="game()" [mobile]="false"/>
 
   <div class="middle-column">
-    <poker-game-players-carousel
-      [game]="this.game()"
-      [vertical]="true"
-      [highlightedOnCenter]="false"
-    />
     <poker-game-state [game]="game()" [mobile]="false"/>
     <poker-game-hand-better [game]="game()" [mobile]="false"/>
   </div>
 
   <div class="right-column">
-    <poker-game-player-selection [game]="game()" [mobile]="false"/>
-    <poker-game-player-properties [game]="game()" [mobile]="false"/>
+    <poker-game-players-carousel
+      [game]="this.game()"
+      [vertical]="true"
+      [highlightedOnCenter]="false"
+    />
   </div>
 
 </div>

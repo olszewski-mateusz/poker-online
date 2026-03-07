@@ -4,14 +4,10 @@
   flex-grow: 1;
   justify-content: flex-start;
 
-  .row {
+  poker-game-players-carousel {
     display: flex;
-    flex-basis: 130px;
+    flex-basis: 110px;
     margin-bottom: 10px;
-
-    poker-game-player-selection, poker-game-player-properties {
-      flex-basis: 50%;
-    }
   }
 
   poker-game-state {

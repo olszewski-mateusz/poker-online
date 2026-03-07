@@ -34,7 +34,6 @@
 }
 
 .viewport.horizontal {
-  height: 200px;
   width: calc( var(--item-height) * var(--item-count)  + 4px);
   width: 100%;
   .slot {
