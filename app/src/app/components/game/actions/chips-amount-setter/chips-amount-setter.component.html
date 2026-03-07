@@ -2,33 +2,34 @@
   <div class="row-container amount-label poker-text"
        [class.mobile]="mobile()"
        [class.desktop]="!mobile()">
-    {{context().label}} amount: {{amount()}}
+    <span>{{context().label}}: {{amount()}}</span>
+    <mat-icon inline>poker_chip</mat-icon>
   </div>
 
   @if (mobile()) {
     <div class="row-container">
       <mat-slider [step]="5" [min]="context().minValue" [max]="context().maxValue">
-        <input [(value)]="amount" matSliderThumb>
+        <input [(value)]="amount" matSliderThumb (input)="sliderAmount.set($any($event.target).valueAsNumber)">
       </mat-slider>
     </div>
 
     <div class="row-container margin-bottom">
-      <button class="button-medium" mat-button (click)="addToAmount(-50)">-50</button>
-      <button class="button-medium" mat-button (click)="addToAmount(-5)">-5</button>
-      <button class="button-medium" mat-button (click)="addToAmount(5)">+5</button>
-      <button class="button-medium" mat-button (click)="addToAmount(50)">+50</button>
+      <button class="button-medium" mat-button (click)="addToAmount(-10)">-10</button>
+      <button class="button-medium" mat-button (click)="addToAmount(-1)">-1</button>
+      <button class="button-medium" mat-button (click)="addToAmount(1)">+1</button>
+      <button class="button-medium" mat-button (click)="addToAmount(10)">+10</button>
     </div>
   } @else {
     <div class="row-container">
-      <button class="button-large" mat-button (click)="addToAmount(-50)">-50</button>
-      <button class="button-large" mat-button (click)="addToAmount(-5)">-5</button>
+      <button class="button-large" mat-button (click)="addToAmount(-10)">-10</button>
+      <button class="button-large" mat-button (click)="addToAmount(-1)">-1</button>
 
       <mat-slider [step]="5" [min]="context().minValue" [max]="context().maxValue">
-        <input [(value)]="amount" matSliderThumb>
+        <input [(value)]="amount" matSliderThumb (input)="sliderAmount.set($any($event.target).valueAsNumber)">
       </mat-slider>
 
-      <button class="button-large" mat-button (click)="addToAmount(5)">+5</button>
-      <button class="button-large" mat-button (click)="addToAmount(50)">+50</button>
+      <button class="button-large" mat-button (click)="addToAmount(1)">+1</button>
+      <button class="button-large" mat-button (click)="addToAmount(10)">+10</button>
     </div>
   }
 }
@@ -38,7 +39,7 @@
           [class.button-large]="!mobile()"
           [class.button-medium]="mobile()"
           [disabled]="actionIllegal()" (click)="sendAction()">
-    {{context().label}}
+    Confirm
   </button>
 
   <button mat-button

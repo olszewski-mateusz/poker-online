@@ -35,10 +35,11 @@ export class GameStateComponent {
   private translateGamePhase(phase: GamePhase): string {
     switch (phase) {
       case GamePhase.NOT_STARTED: return 'Game not started';
-      case GamePhase.FIRST_BETTING: return 'First betting phase';
-      case GamePhase.DRAWING: return 'Drawing phase';
-      case GamePhase.SECOND_BETTING: return 'Second betting phase';
-      case GamePhase.SHOWDOWN: return 'Showdown phase';
+      case GamePhase.FIRST_BETTING: return 'First Bet';
+      case GamePhase.DRAWING: return 'Draw';
+      case GamePhase.SECOND_BETTING: return 'Second Bet';
+      case GamePhase.SHOWDOWN: return 'Showdown';
+      case GamePhase.FOLDOUT: return 'Foldout';
       case GamePhase.FINISHED: return 'Game finished';
     }
   }

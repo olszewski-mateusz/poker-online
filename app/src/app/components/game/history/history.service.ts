@@ -96,6 +96,8 @@ export class HistoryService {
         return 'Second betting phase starts';
       case GamePhase.SHOWDOWN:
         return 'Showdown phase starts';
+      case GamePhase.FOLDOUT:
+        return 'Foldout phase starts';
       case GamePhase.FINISHED:
         return 'There is only one player left with chips';
       default:
@@ -110,6 +112,6 @@ export class HistoryService {
     const handType = properties["handType"];
     const showdown = properties["showdown"];
 
-    return `Player ${winners} wins ${chips} chips from ${type} with ${handType} hand.`;
+    return `${winners} wins ${chips} chips from ${type.toLowerCase()} pot with ${handType.toLowerCase()} hand.`;
   }
 }

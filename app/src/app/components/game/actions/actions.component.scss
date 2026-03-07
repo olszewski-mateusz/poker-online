@@ -2,10 +2,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
 
-  button {
-    max-width: 400px;
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-basis: 50%;
   }
 }
 

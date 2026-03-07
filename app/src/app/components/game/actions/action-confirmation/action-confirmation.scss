@@ -1,5 +1,17 @@
 :host {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   justify-items: center;
+
+  .title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  .actions {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+  }
 }

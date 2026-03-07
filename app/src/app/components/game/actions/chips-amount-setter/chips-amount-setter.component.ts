@@ -6,13 +6,16 @@ import {
   model,
   ModelSignal,
   output,
-  OutputEmitterRef
+  OutputEmitterRef, signal
 } from '@angular/core';
+import {toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {MatButton} from '@angular/material/button';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {ActionType, Game, ValidAction} from '../../../../model';
 import {ApiRestService} from '../../../../services';
 import {ChipsAmountSetterContext} from '../actions.component';
+import {MatIcon} from '@angular/material/icon';
+import {debounceTime, distinctUntilChanged} from 'rxjs';
 
 @Component({
   selector: 'poker-game-chips-amount-setter',
@@ -20,7 +23,8 @@ import {ChipsAmountSetterContext} from '../actions.component';
   imports: [
     MatButton,
     MatSlider,
-    MatSliderThumb
+    MatSliderThumb,
+    MatIcon
   ],
   templateUrl: './chips-amount-setter.component.html',
   styleUrl: './chips-amount-setter.component.scss',
@@ -35,12 +39,27 @@ export class ChipsAmountSetterComponent {
   cancelRequest: OutputEmitterRef<void> = output<void>();
 
   protected amount: ModelSignal<number> = model<number>(0);
+  protected sliderAmount = signal<number>(this.amount());
+  protected readonly bufferedSliderAmount = toSignal(
+    toObservable(this.sliderAmount).pipe(
+      distinctUntilChanged(),
+      debounceTime(50)
+    ),
+    {initialValue: -1}
+  );
 
   protected readonly actionIllegal = computed(() => {
-    return this.context().minValue < this.context().maxValue;
+    return this.context().minValue > this.context().maxValue;
   });
 
   constructor() {
+    effect(() => {
+      const buffer = this.bufferedSliderAmount();
+      if (buffer !== -1) {
+        this.amount.set(buffer);
+      }
+    }, {allowSignalWrites: true});
+
     effect(() => {
       const minValue: number = this.context().minValue;
       const maxValue: number = this.context().maxValue;
@@ -51,6 +70,10 @@ export class ChipsAmountSetterComponent {
       if (amount > maxValue) {
         this.amount.set(maxValue);
       }
+    }, {allowSignalWrites: true});
+
+    effect(() => {
+      this.sliderAmount.set(this.amount());
     }, {allowSignalWrites: true});
   }
 
