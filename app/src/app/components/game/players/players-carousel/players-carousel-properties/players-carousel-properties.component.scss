@@ -10,11 +10,14 @@
   }
 
   .status {
-    margin-left: 20px;
-
     mat-icon {
       font-size: 32px;
     }
+  }
+
+  .chips {
+    font-weight: 400;
+    font-size: 15px;
   }
 
   mat-icon.empty-icon {
@@ -24,11 +27,31 @@
 
 .player.vertical {
   height: calc(var(--item-height) - 4px);
+
+  .status {
+    margin-left: 20px;
+  }
 }
 
 .player.horizontal {
+  flex-direction: column;
   height: 100%;
   width: calc(var(--item-height) - 4px);
+
+  .status {
+    margin-bottom: 30px;
+  }
+
+  .bet {
+    margin-top: 4px;
+    mat-icon {
+      font-size: 24px;
+    }
+  }
+
+  .chips {
+    margin-top: 20px;
+  }
 }
 
 .player.highlighted {

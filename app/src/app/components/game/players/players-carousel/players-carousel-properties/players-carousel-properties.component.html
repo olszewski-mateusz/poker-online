@@ -4,7 +4,12 @@
      [class.horizontal]="!vertical()">
   <div class="status">
     @if (game().currentPlayerIndex === player().index) {
-      <mat-icon inline>chevron_right</mat-icon>
+      @if (vertical()) {
+        <mat-icon inline>chevron_right</mat-icon>
+      } @else {
+        <mat-icon inline>keyboard_arrow_down</mat-icon>
+      }
+
     } @else if (showAllInIcon(player())) {
       <mat-icon inline>done_all</mat-icon>
     } @else if (player().ready) {
@@ -21,12 +26,13 @@
     <span>{{ player().name }}</span>
   </div>
 
-  <div>
-    <mat-icon inline>paid</mat-icon>
-    <span>{{ player().chips }}</span>
-  </div>
-  <div>
-    <mat-icon inline>poker_chip</mat-icon>
+  <div class="bet">
+    <mat-icon inline>mode_heat</mat-icon>
     <span>{{ player().bet }}</span>
   </div>
+  <div class="chips">
+    <mat-icon inline>poker_chip</mat-icon>
+    <span>{{ player().chips }}</span>
+  </div>
+
 </div>
