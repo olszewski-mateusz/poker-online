@@ -22,7 +22,7 @@ import {PlayersCarouselPropertiesComponent} from './players-carousel-properties/
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayersCarouselComponent {
-  protected readonly itemSideSize: number = 150;
+  protected itemSideSize: number = 150;
   private readonly snapAnimationMs: number = 1000;
 
   private readonly scrollCenterIndex: WritableSignal<number> = signal(0);
@@ -44,6 +44,15 @@ export class PlayersCarouselComponent {
   protected readonly animateSnap = signal(false);
 
   constructor() {
+
+    effect(() => {
+      const vertical = this.vertical();
+      if (vertical) {
+        this.itemSideSize = 80;
+      } else {
+        this.itemSideSize = 150;
+      }
+    });
 
 
     effect(() => {

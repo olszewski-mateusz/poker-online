@@ -5,7 +5,6 @@
 
   mat-icon {
     font-size: 20px;
-    transform: translateY(6px);
     margin-right: 4px;
   }
 
@@ -27,9 +26,32 @@
 
 .player.vertical {
   height: calc(var(--item-height) - 4px);
-
+  align-items: center;
   .status {
     margin-left: 20px;
+    transform: translateY(2px);
+  }
+
+  .name {
+    width: 30%;
+  }
+
+  .bet {
+    width: 30%;
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      transform: translateY(4px);
+    }
+  }
+
+  .chips {
+    margin-left: 20px;
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      transform: translateY(6px);
+    }
   }
 }
 
