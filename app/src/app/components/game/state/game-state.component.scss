@@ -37,6 +37,9 @@
   align-items: center;
   align-content: center;
 
+  display: flex;
+  flex-direction: column;
+
   .phase {
     font-size: 32px;
     line-height: 32px;
@@ -44,23 +47,43 @@
     margin-bottom: 20px;
   }
 
-  .property {
+  .pot {
     text-align: center;
     font-size: 30px;
+    width: fit-content;
 
-    strong {
-      font-weight: 500;
+    display: flex;
+
+    .pot-border {
+      border: 3px gray solid;
+      padding: 5px 15px 15px;
+      border-radius: 30px;
+
+      strong {
+        font-weight: 500;
+      }
+
+      mat-icon {
+        font-size: 30px;
+        line-height: 30px;
+        transform: translateY(4px);
+      }
     }
 
-    mat-icon {
-      font-size: 30px;
-      line-height: 30px;
-      transform: translateY(4px);
+    .pot-info {
+      transform: translateY(6px);
+      margin-left: 4px;
+      mat-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 30px;
+        margin-right: 2px;
+        transform: translate(-2.5px, -2.5px);
+      }
     }
   }
 
-  button {
+  .showdown-button {
     margin-top: 20px;
-
   }
 }

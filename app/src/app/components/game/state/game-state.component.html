@@ -6,12 +6,20 @@
     {{translatedGamePhase()}}
   </div>
 
-  <div class="property">
-    <span>Pot: </span>
-    <strong>{{animatedPotReward()}}</strong>
-    <mat-icon inline>poker_chip</mat-icon>
+  <div class="pot">
+    <div class="pot-border">
+      <span>Pot: </span>
+      <strong>{{animatedPotReward()}}</strong>
+      <mat-icon inline>poker_chip</mat-icon>
+    </div>
+    <button class="pot-info" mat-icon-button>
+      <mat-icon class="poker-text">info</mat-icon>
+    </button>
   </div>
 
-  <button class="button-medium" mat-button>Showdown details</button>
+
+  @if (game().phase === "SHOWDOWN") {
+    <button class="button-medium showdown-button" mat-button>Showdown details</button>
+  }
 </div>
 
