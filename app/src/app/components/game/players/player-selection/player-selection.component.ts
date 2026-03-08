@@ -39,6 +39,6 @@ export class PlayerSelectionComponent {
   }
 
   showWinnerIcon(player: Player): boolean {
-    return this.game().phase === GamePhase.SHOWDOWN && this.game().winnerIndexes.includes(player.index);
+    return this.game().phase === GamePhase.SHOWDOWN && this.game().pot.mainPot.winnerIndexes.includes(player.index);
   }
 }

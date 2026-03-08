@@ -37,7 +37,7 @@ export class PlayerPropertiesComponent {
     let selectedPlayerIndex: number | undefined = this.playerSelectionService.selectedPlayerIndex();
     if (!selectedPlayerIndex) {
       if (game.phase === GamePhase.SHOWDOWN) {
-        selectedPlayerIndex = game.winnerIndexes[0];
+        // selectedPlayerIndex = getPrimaryWinnerIndex(game); todo: remove
       } else {
         selectedPlayerIndex = game.currentPlayerIndex;
       }

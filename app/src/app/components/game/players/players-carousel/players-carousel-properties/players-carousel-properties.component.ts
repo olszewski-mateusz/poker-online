@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
-import {MatIcon} from '@angular/material/icon';
 import {Game, GamePhase, Player} from '../../../../../model';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'poker-game-players-carousel-properties',
@@ -24,6 +24,14 @@ export class PlayersCarouselPropertiesComponent {
   }
 
   showWinnerIcon(player: Player): boolean {
-    return this.game().phase === GamePhase.SHOWDOWN && this.game().winnerIndexes.includes(player.index);
+    return this.game().phase === GamePhase.SHOWDOWN && this.getWinnerIndexes(this.game()).includes(player.index);
+  }
+
+  private getWinnerIndexes(game: Game): number[] {
+    const allWinners: number[] = [
+      ...(game.pot?.mainPot?.winnerIndexes ?? []),
+      ...((game.pot?.sidePots ?? []).flatMap((sidePot) => sidePot.winnerIndexes ?? []))
+    ];
+    return [...new Set(allWinners)];
   }
 }

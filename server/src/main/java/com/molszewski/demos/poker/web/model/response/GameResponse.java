@@ -16,7 +16,7 @@ public record GameResponse(
         Integer myIndex,
         GamePhase phase,
         Integer currentPlayerIndex,
-        List<Integer> winnerIndexes,
+        PotResponse pot,
         List<PlayerResponse> players,
         List<HistoryEntryResponse> history,
         int cardsInDeck,
@@ -32,17 +32,13 @@ public record GameResponse(
 
         Integer currentPlayerIndex = playerState.getCurrentPlayerIndex();
 
-        List<Integer> winnerIndexes = playerState.getWinners().stream()
-                .map(player -> playerState.getIndex(player.getId()))
-                .toList();
-
         return GameResponse.builder()
                 .gameId(context.gameId)
                 .myId(context.myId)
                 .myIndex(playerState.getIndex(context.myId))
                 .phase(context.state.getGamePhase())
                 .currentPlayerIndex(currentPlayerIndex)
-                .winnerIndexes(winnerIndexes)
+                .pot(PotResponse.fromGameState(context.state))
                 .players(players.stream()
                         .map(player -> {
                             boolean hideCards = !(isShowdown || player.getId().equals(context.myId));

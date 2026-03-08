@@ -6,8 +6,8 @@ import lombok.Getter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Getter
 public class PotState {
+    @Getter
     private int lastFullRaise = 0;
     private final List<Integer> smallAllInCaps = new ArrayList<>();
     private final Map<String, Integer> contributions =  new HashMap<>();

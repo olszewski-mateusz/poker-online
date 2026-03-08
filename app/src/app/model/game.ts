@@ -9,12 +9,29 @@ export type Game = {
   validActions: ValidAction[]
   phase: GamePhase
   currentPlayerIndex?: number
-  winnerIndexes: number[]
+  pot: Pot
   myId: string
   myIndex: number
   gameId: string
   cardsInDeck: number
   discardedCards: number
+}
+
+export type Pot = {
+  chips: number
+  mainPot: MainPot
+  sidePots: SidePot[]
+}
+
+export type MainPot = {
+  chips: number
+  winnerIndexes: number[]
+}
+
+export type SidePot = {
+  chips: number
+  eligibleIndexes: number[]
+  winnerIndexes: number[]
 }
 
 export function buildMyPlayerSignal(gameSignal: Signal<Game>): Signal<Player | undefined> {

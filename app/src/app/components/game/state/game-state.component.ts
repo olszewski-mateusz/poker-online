@@ -26,11 +26,7 @@ export class GameStateComponent {
   });
 
   potReward: Signal<number> = computed(() => {
-    return this.game().players
-      .map(p => p.bet ?? 0)
-      .reduce((previousValue, currentValue) => {
-        return previousValue + currentValue;
-      }, 0)
+    return this.game().pot?.chips ?? 0;
   });
 
   translatedGamePhase: Signal<string> = computed(() => {
