@@ -1,0 +1,54 @@
+<div class="showdown-dialog" [class.mobile]="mobile" [class.desktop]="!mobile">
+  <h2 mat-dialog-title class="title poker-text-light">Showdown</h2>
+
+  <mat-dialog-content class="content">
+    @if (pots().length === 0) {
+      <div class="empty">No pot data available.</div>
+    }
+
+    @for (pot of pots(); track pot.label) {
+      <section class="pot-card" [class.main-pot]="pot.main">
+        <div class="pot-header">
+          <span class="pot-label">{{pot.label}}</span>
+          <span class="pot-chips">
+            <strong>{{pot.chips}}</strong>
+            <mat-icon inline>poker_chip</mat-icon>
+          </span>
+        </div>
+
+        @if (pot.winners.length === 0) {
+          <div class="empty">No winner data available.</div>
+        } @else {
+          <div class="winner-list">
+            @for (winner of pot.winners; track winner.index) {
+              <div class="winner-card">
+                <div class="winner-header">
+                  <span class="winner-name">{{winner.name}}</span>
+                  <span class="winner-chips">+{{winner.chipsWon}} <mat-icon inline>poker_chip</mat-icon></span>
+                </div>
+
+                @if (winner.hand) {
+                  <div class="winner-hand poker-text-light">{{winner.hand}}</div>
+                }
+
+                <div class="winner-cards">
+                  @if (winner.cards.length === 0) {
+                    <span class="empty">No cards</span>
+                  } @else {
+                    @for (card of winner.cards; track $index) {
+                      <poker-game-card [size]="cardSize" [rank]="card.rank" [suit]="card.suit"/>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center">
+    <button mat-button class="button-medium ready-button" (click)="readyForNextRound()">Ready for next round</button>
+  </mat-dialog-actions>
+</div>

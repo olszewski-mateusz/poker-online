@@ -3,9 +3,9 @@ import {
   ActionStepType,
   ActionType,
   Game,
-  GamePhase,
+  GamePhase, HandType,
   HistoryEntry,
-  HistoryEntryCategory
+  HistoryEntryCategory, translateHandType
 } from '../../../model';
 
 @Injectable({
@@ -109,9 +109,9 @@ export class HistoryService {
     const type = properties["potType"];
     const chips = properties["potChips"];
     const winners = properties["winners"];
-    const handType = properties["handType"];
+    const handType: HandType = properties["handType"] as HandType;
     const showdown = properties["showdown"];
 
-    return `${winners} wins ${chips} chips from ${type.toLowerCase()} pot with ${handType.toLowerCase()} hand.`;
+    return `${winners} wins ${chips} chips from ${type.toLowerCase()} pot with ${translateHandType(handType)} hand.`;
   }
 }

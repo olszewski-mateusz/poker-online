@@ -123,3 +123,13 @@ poker-game-history {
     background: $poker-scrollbar-thumb-hover;
   }
 }
+
+.poker-showdown-backdrop.cdk-overlay-backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.poker-showdown-dialog-panel .mat-mdc-dialog-surface {
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}

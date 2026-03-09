@@ -1,9 +1,11 @@
 import {ChangeDetectionStrategy, Component, input, InputSignal} from '@angular/core';
 import {Game} from '../../model';
 import {
-  ActionsComponent, GameStateComponent, HandBetterComponent, HistoryComponent,
-  PlayerPropertiesComponent, PlayersCarouselComponent,
-  PlayerSelectionComponent,
+  ActionsComponent,
+  GameStateComponent,
+  HandBetterComponent,
+  HistoryComponent,
+  PlayersCarouselComponent,
   ToolbarComponent
 } from '../../components/game';
 
@@ -13,8 +15,6 @@ import {
   imports: [
     ToolbarComponent,
     ActionsComponent,
-    PlayerPropertiesComponent,
-    PlayerSelectionComponent,
     GameStateComponent,
     HandBetterComponent,
     HistoryComponent,

@@ -1,0 +1,156 @@
+@import "../../../../colors";
+
+:host {
+  display: block;
+}
+
+.showdown-dialog {
+  width: 100%;
+}
+
+.title {
+  margin: 0;
+  padding: 14px 20px;
+  font-size: 30px;
+  font-weight: 600;
+  border-bottom: 1px solid lighten($poker-panel, 12);
+}
+
+.content {
+  display: grid;
+  gap: 12px;
+  padding: 16px 20px;
+  max-height: 72vh;
+  overflow: auto;
+}
+
+.pot-card {
+  border: 1px solid lighten($poker-panel, 12);
+  border-radius: 8px;
+  background: lighten($poker-panel, 2);
+  padding: 12px;
+}
+
+.main-pot {
+  border-color: $poker-color-accent;
+  background: lighten($poker-panel, 4);
+}
+
+.main-pot .pot-label {
+  font-size: 28px;
+}
+
+.main-pot .pot-chips {
+  font-size: 24px;
+}
+
+.pot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.pot-label {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.pot-chips {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 21px;
+}
+
+.winner-list {
+  display: grid;
+  gap: 8px;
+}
+
+.winner-card {
+  border: 1px solid lighten($poker-panel, 18);
+  border-radius: 6px;
+  background: lighten($poker-panel, 6);
+  padding: 8px 10px;
+}
+
+.winner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+}
+
+.winner-name {
+  font-weight: 500;
+}
+
+.winner-chips {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.winner-hand {
+  margin-top: 4px;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.winner-cards {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.empty {
+  color: $poker-text;
+  opacity: 0.85;
+  font-size: 14px;
+}
+
+mat-dialog-actions {
+  border-top: 1px solid lighten($poker-panel, 12);
+  padding: 14px 20px 18px;
+}
+
+.ready-button {
+  font-size: 24px !important;
+}
+
+.mobile .title {
+  font-size: 24px;
+  padding: 12px 14px;
+}
+
+.mobile .content {
+  padding: 12px;
+  max-height: 70vh;
+}
+
+.mobile .pot-label {
+  font-size: 18px;
+}
+
+.mobile .pot-chips {
+  font-size: 18px;
+}
+
+.mobile .main-pot .pot-label {
+  font-size: 22px;
+}
+
+.mobile .main-pot .pot-chips {
+  font-size: 20px;
+}
+
+.mobile .winner-header {
+  font-size: 16px;
+}
+
+.mobile .ready-button {
+  font-size: 20px !important;
+}
