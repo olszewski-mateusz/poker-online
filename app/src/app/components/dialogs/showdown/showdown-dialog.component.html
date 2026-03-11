@@ -3,7 +3,7 @@
 
   <mat-dialog-content class="content">
     @if (pots().length === 0) {
-      <div class="empty">No pot data available.</div>
+      <div class="empty">No pots.</div>
     }
 
     @for (pot of pots(); track pot.label) {
@@ -11,7 +11,7 @@
         <div class="pot-header">
           <span class="pot-label">{{pot.label}}</span>
           <span class="pot-chips">
-            <strong>{{pot.chips}}</strong>
+            <span>{{pot.chips}}</span>
             <mat-icon inline>poker_chip</mat-icon>
           </span>
         </div>

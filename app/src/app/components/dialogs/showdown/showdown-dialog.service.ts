@@ -26,9 +26,6 @@ export class ShowdownDialogService {
       return;
     }
 
-    if (this.showdownDialogRef) {
-      this.closeShowdownDialog();
-    }
 
     if (!this.showdownDialogRef) {
       const data: ShowdownDialogData = {game, mobile};

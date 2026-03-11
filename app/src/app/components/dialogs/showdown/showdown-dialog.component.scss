@@ -10,100 +10,86 @@
 
 .title {
   margin: 0;
-  padding: 14px 20px;
-  font-size: 30px;
   font-weight: 600;
   border-bottom: 1px solid lighten($poker-panel, 12);
 }
 
-.content {
+mat-dialog-content {
   display: grid;
   gap: 12px;
-  padding: 16px 20px;
-  max-height: 72vh;
   overflow: auto;
-}
 
-.pot-card {
-  border: 1px solid lighten($poker-panel, 12);
-  border-radius: 8px;
-  background: lighten($poker-panel, 2);
-  padding: 12px;
-}
+  .pot-card {
+    border: 1px solid lighten($poker-panel, 12);
+    border-radius: 8px;
+    background: lighten($poker-panel, 2);
+    padding: 12px;
 
-.main-pot {
-  border-color: $poker-color-accent;
-  background: lighten($poker-panel, 4);
-}
+    .pot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
 
-.main-pot .pot-label {
-  font-size: 28px;
-}
+    .pot-label {
+      font-weight: 500;
+    }
 
-.main-pot .pot-chips {
-  font-size: 24px;
-}
+    .pot-chips {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+  }
 
-.pot-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
+  .main-pot {
+    border-color: $poker-color-accent;
+    background: lighten($poker-panel, 4);
+  }
 
-.pot-label {
-  font-size: 22px;
-  font-weight: 600;
-}
+  .winner-list {
+    display: grid;
+    gap: 8px;
 
-.pot-chips {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-  font-size: 21px;
-}
+    .winner-card {
+      border: 1px solid lighten($poker-panel, 18);
+      border-radius: 6px;
+      background: lighten($poker-panel, 6);
+      padding: 8px 10px;
 
-.winner-list {
-  display: grid;
-  gap: 8px;
-}
+      .winner-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
 
-.winner-card {
-  border: 1px solid lighten($poker-panel, 18);
-  border-radius: 6px;
-  background: lighten($poker-panel, 6);
-  padding: 8px 10px;
-}
+        .winner-name {
+          font-weight: 500;
+        }
 
-.winner-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font-size: 18px;
-}
+        .winner-chips {
+          display: flex;
+          align-items: center;
+          gap: 3px;
+        }
+      }
 
-.winner-name {
-  font-weight: 500;
-}
+      .winner-hand {
+        margin-top: 4px;
+        font-size: 14px;
+        text-transform: capitalize;
+      }
 
-.winner-chips {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
+      .winner-cards {
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+    }
+  }
 
-.winner-hand {
-  margin-top: 4px;
-  font-size: 14px;
-  text-transform: capitalize;
-}
-
-.winner-cards {
-  margin-top: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
 }
 
 .empty {
@@ -117,40 +103,58 @@ mat-dialog-actions {
   padding: 14px 20px 18px;
 }
 
-.ready-button {
-  font-size: 24px !important;
+.desktop {
+  .title {
+    font-size: 30px;
+    padding: 14px 20px;
+  }
+
+  mat-dialog-content {
+    padding: 16px 20px;
+    max-height: 72vh;
+
+    .pot-label {
+      font-size: 22px;
+    }
+
+    .pot-chips {
+      font-size: 21px;
+    }
+
+    .winner-header {
+      font-size: 18px;
+    }
+  }
+
+  .ready-button {
+    font-size: 24px !important;
+  }
 }
 
-.mobile .title {
-  font-size: 24px;
-  padding: 12px 14px;
-}
+.mobile {
+  .title {
+    font-size: 24px;
+    padding: 12px 14px;
+  }
 
-.mobile .content {
-  padding: 12px;
-  max-height: 70vh;
-}
+  mat-dialog-content {
+    padding: 12px;
+    max-height: 70vh;
 
-.mobile .pot-label {
-  font-size: 18px;
-}
+    .pot-label {
+      font-size: 18px;
+    }
 
-.mobile .pot-chips {
-  font-size: 18px;
-}
+    .pot-chips {
+      font-size: 18px;
+    }
 
-.mobile .main-pot .pot-label {
-  font-size: 22px;
-}
+    .winner-header {
+      font-size: 16px;
+    }
+  }
 
-.mobile .main-pot .pot-chips {
-  font-size: 20px;
-}
-
-.mobile .winner-header {
-  font-size: 16px;
-}
-
-.mobile .ready-button {
-  font-size: 20px !important;
+  .ready-button {
+    font-size: 20px !important;
+  }
 }
