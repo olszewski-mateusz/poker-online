@@ -37,12 +37,19 @@ public record PotResponse(
         PlayerState playerState = gameState.getPlayerState();
         List<Pot> pots = gameState.getPotState().calculatePots(playerState.getAll());
 
-        Pot mainPot = pots.stream().filter(pot -> PotType.MAIN.equals(pot.type())).findFirst().orElseThrow();
-
-        MainPot mainPotResponse = MainPot.builder()
-                .chips(mainPot.getAmount())
-                .winnerIndexes(playerToIndexes(playerState, playerState.getPotWinners(mainPot.eligible())))
-                .build();
+        Pot mainPot = pots.stream().filter(pot -> PotType.MAIN.equals(pot.type())).findFirst().orElse(null);
+        MainPot mainPotResponse;
+        if (mainPot == null) {
+            mainPotResponse = MainPot.builder()
+                    .chips(0)
+                    .winnerIndexes(List.of())
+                    .build();
+        } else {
+            mainPotResponse = MainPot.builder()
+                    .chips(mainPot.getAmount())
+                    .winnerIndexes(playerToIndexes(playerState, playerState.getPotWinners(mainPot.eligible())))
+                    .build();
+        }
 
         List<Pot> sidePots = pots.stream().filter(pot -> PotType.SIDE.equals(pot.type())).toList();
 

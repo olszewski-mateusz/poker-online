@@ -132,6 +132,10 @@ public class PotState {
                 }
             }
 
+            if (potContributions.isEmpty()) {
+                continue;
+            }
+
             Pot pot = new Pot(
                     pots.isEmpty() ? PotType.MAIN : PotType.SIDE,
                     potContributions,
