@@ -133,3 +133,11 @@ poker-game-history {
   border-radius: 10px;
   overflow: hidden;
 }
+
+.poker-showdown-better-dialog-panel .mat-mdc-dialog-surface {
+  padding: 0;
+  border-radius: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}

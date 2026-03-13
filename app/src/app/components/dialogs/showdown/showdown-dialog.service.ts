@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Game, GamePhase} from '../../../model';
-import {ShowdownDialogComponent, ShowdownDialogData} from '../index';
+import {ShowdownBetterComponent, ShowdownBetterDialogData} from '../index';
 
 @Injectable({
   providedIn: 'root'
@@ -9,42 +9,36 @@ import {ShowdownDialogComponent, ShowdownDialogData} from '../index';
 export class ShowdownDialogService {
   private readonly dialog: MatDialog = inject(MatDialog);
 
-  private showdownDismissed = false;
-  private showdownDialogRef?: MatDialogRef<ShowdownDialogComponent, string | undefined>;
+  private showdownDialogRef?: MatDialogRef<ShowdownBetterComponent>;
 
   public sync(game: Game, mobile: boolean): void {
     const showdownPhase = game.phase === GamePhase.SHOWDOWN;
 
     if (!showdownPhase) {
-      this.showdownDismissed = false;
       this.closeShowdownDialog();
       return;
     }
-
-    if (this.showdownDismissed) {
-      this.closeShowdownDialog();
-      return;
-    }
-
 
     if (!this.showdownDialogRef) {
-      const data: ShowdownDialogData = {game, mobile};
-      this.showdownDialogRef = this.dialog.open(ShowdownDialogComponent, {
+      const data: ShowdownBetterDialogData = {game, mobile};
+      this.showdownDialogRef = this.dialog.open(ShowdownBetterComponent, {
         data,
         disableClose: true,
-        hasBackdrop: true,
+        hasBackdrop: false,
         autoFocus: false,
         restoreFocus: false,
-        width: mobile ? '96vw' : '78vw',
-        maxWidth: mobile ? '620px' : '980px',
-        panelClass: 'poker-showdown-dialog-panel',
-        backdropClass: 'poker-showdown-backdrop'
+        width: '100vw',
+        maxWidth: '100vw',
+        height: mobile ? 'calc(100dvh - 56px)' : 'calc(100dvh - 64px)',
+        maxHeight: mobile ? 'calc(100dvh - 56px)' : 'calc(100dvh - 64px)',
+        position: {
+          left: '0',
+          top: mobile ? '56px' : '64px'
+        },
+        panelClass: 'poker-showdown-better-dialog-panel'
       });
 
-      this.showdownDialogRef.afterClosed().subscribe((result) => {
-        if (result === 'ready') {
-          this.showdownDismissed = true;
-        }
+      this.showdownDialogRef.afterClosed().subscribe(() => {
         this.showdownDialogRef = undefined;
       });
       return;

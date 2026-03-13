@@ -1,0 +1,105 @@
+<div class="showdown-better-dialog" [class.mobile]="mobile" [class.desktop]="!mobile">
+  <h2 mat-dialog-title class="title poker-text-light">Showdown</h2>
+
+  <mat-dialog-content class="content">
+    <div class="sections-wrapper">
+      <section class="section players-section">
+        <header class="section-header">
+          <span class="section-title">Players</span>
+        </header>
+
+        <div class="player-list">
+          @for (player of players(); track player.index) {
+            <article class="player-item" [class.highlighted]="isPlayerHighlighted(player.index)">
+              <div class="player-main-row">
+                <span class="player-name">{{player.name}}</span>
+                <span class="player-chips">
+                  <span>{{player.currentChips}}</span>
+                  <mat-icon inline>poker_chip</mat-icon>
+                </span>
+              </div>
+
+              <div class="player-cards">
+                @if (player.cards.length === 0) {
+                  <span class="empty">No cards</span>
+                } @else {
+                  @for (card of player.cards; track $index; let cardIndex = $index) {
+                    <div class="flip-card" [class.revealed]="isCardRevealed(player.index, cardIndex)">
+                      <div class="flip-card-inner">
+                        <div class="flip-face flip-back">
+                          <div class="back-pattern"></div>
+                        </div>
+                        <div class="flip-face flip-front">
+                          <poker-game-card [size]="cardSize" [rank]="card.rank" [suit]="card.suit"/>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+
+              <div class="player-hand" [class.revealed]="handTypesRevealed()">
+                @if (handTypesRevealed()) {
+                  {{player.hand ?? 'No hand data'}}
+                } @else {
+                  Hidden hand
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+
+      <section class="section pots-section">
+        <header class="section-header">
+          <span class="section-title">Pots</span>
+        </header>
+
+        <div class="pot-list">
+          @if (pots().length === 0) {
+            <div class="empty">No pots</div>
+          }
+
+          @for (pot of pots(); track pot.name; let potIndex = $index) {
+            <article class="pot-item" [class.active]="activePotIndex() === potIndex" [class.revealed]="isPotRevealed(potIndex)">
+              <div class="pot-main-row">
+                <div class="pot-info">
+                  <span class="pot-name">{{pot.name}}</span>
+                  <span class="pot-type">{{pot.type}}</span>
+                </div>
+                <span class="pot-chips">
+                  <span>{{pot.chips}}</span>
+                  <mat-icon inline>poker_chip</mat-icon>
+                </span>
+              </div>
+
+              @if (!isPotRevealed(potIndex)) {
+                <div class="hidden-winners">Winners hidden</div>
+              } @else if (pot.winners.length === 0) {
+                <div class="hidden-winners">No winners</div>
+              } @else {
+                <div class="winner-list">
+                  @for (winner of pot.winners; track winner.index; let winnerIndex = $index) {
+                    <div class="winner-row" [style.--winner-delay.ms]="winnerIndex * 95">
+                      <span class="winner-name">{{winner.name}}</span>
+                      <span class="winner-chips">
+                        <span>+{{winner.chipsWon}}</span>
+                        <mat-icon inline>poker_chip</mat-icon>
+                      </span>
+                    </div>
+                  }
+                </div>
+              }
+            </article>
+          }
+        </div>
+      </section>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center">
+    <button mat-button class="button-medium ready-button" [disabled]="readyButtonDisabled()" (click)="readyForNextRound()">
+      {{readyButtonLabel()}}
+    </button>
+  </mat-dialog-actions>
+</div>
