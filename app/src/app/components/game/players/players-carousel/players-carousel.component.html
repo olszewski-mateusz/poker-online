@@ -5,7 +5,7 @@
      [class.highlighted-start]="!highlightedOnCenter()"
      [class.vertical]="vertical()"
      [class.horizontal]="!vertical()"
-     [style.--item-height.px]="itemSideSize"
+     [style.--item-height.px]="itemSideSize()"
      [style.--item-count]="players().length"
      (pointerdown)="onPointerDown($event)"
      (pointermove)="onPointerMove($event)"

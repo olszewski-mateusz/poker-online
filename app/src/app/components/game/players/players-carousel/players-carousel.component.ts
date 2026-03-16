@@ -22,7 +22,7 @@ import {PlayersCarouselPropertiesComponent} from './players-carousel-properties/
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayersCarouselComponent {
-  protected itemSideSize: number = 150;
+  protected itemSideSize: WritableSignal<number> = signal<number>(150);
   private readonly snapAnimationMs: number = 1000;
 
   private readonly scrollCenterIndex: WritableSignal<number> = signal(0);
@@ -48,11 +48,12 @@ export class PlayersCarouselComponent {
     effect(() => {
       const vertical = this.vertical();
       if (vertical) {
-        this.itemSideSize = 80;
+        this.itemSideSize.set(80);
       } else {
-        this.itemSideSize = 120;
+        this.itemSideSize.set(120);
       }
-    });
+
+    }, {allowSignalWrites: true});
 
 
     effect(() => {
@@ -111,7 +112,7 @@ export class PlayersCarouselComponent {
     this.animateSnap.set(false);
 
     // Keep visual continuity first, then animate back to centered (0px offset).
-    this.dragOffsetPx.set(this.isDragging() ? 0 : moveDelta * this.itemSideSize);
+    this.dragOffsetPx.set(this.isDragging() ? 0 : moveDelta * this.itemSideSize());
     this.scrollCenterIndex.set(normalizedIndex);
     this.highlightedPlayer.set(selectedPlayer.index);
 
@@ -147,7 +148,7 @@ export class PlayersCarouselComponent {
   }
 
   protected slotTransform(offsetFromCenter: number): string {
-    const translate: number = offsetFromCenter * this.itemSideSize + this.dragOffsetPx();
+    const translate: number = offsetFromCenter * this.itemSideSize() + this.dragOffsetPx();
 
     if (this.vertical()) {
       return `translateY(${translate}px)`;
@@ -200,14 +201,14 @@ export class PlayersCarouselComponent {
   }
 
   private applyDelta(delta: number): void {
-    const centerSwitchThresholdPx: number = this.itemSideSize / 2;
+    const centerSwitchThresholdPx: number = this.itemSideSize() / 2;
     let nextOffset: number = this.dragOffsetPx() + delta;
     while (nextOffset >= centerSwitchThresholdPx) {
-      nextOffset -= this.itemSideSize;
+      nextOffset -= this.itemSideSize();
       this.shiftCenteredBy(-1);
     }
     while (nextOffset <= -centerSwitchThresholdPx) {
-      nextOffset += this.itemSideSize;
+      nextOffset += this.itemSideSize();
       this.shiftCenteredBy(1);
     }
     this.dragOffsetPx.set(nextOffset);
@@ -222,7 +223,7 @@ export class PlayersCarouselComponent {
   }
 
   private snapToNearestItem(): void {
-    const steps: number = Math.round(this.dragOffsetPx() / this.itemSideSize);
+    const steps: number = Math.round(this.dragOffsetPx() / this.itemSideSize());
     if (steps !== 0) {
       this.shiftCenteredBy(-steps);
     }
