@@ -42,7 +42,7 @@
                 @if (handTypesRevealed()) {
                   {{player.hand ?? 'No hand data'}}
                 } @else {
-                  Hidden hand
+                  <span></span>
                 }
               </div>
             </article>
@@ -65,7 +65,6 @@
               <div class="pot-main-row">
                 <div class="pot-info">
                   <span class="pot-name">{{pot.name}}</span>
-                  <span class="pot-type">{{pot.type}}</span>
                 </div>
                 <span class="pot-chips">
                   <span>{{pot.chips}}</span>
@@ -74,7 +73,7 @@
               </div>
 
               @if (!isPotRevealed(potIndex)) {
-                <div class="hidden-winners">Winners hidden</div>
+                <div class="hidden-winners">-</div>
               } @else if (pot.winners.length === 0) {
                 <div class="hidden-winners">No winners</div>
               } @else {
