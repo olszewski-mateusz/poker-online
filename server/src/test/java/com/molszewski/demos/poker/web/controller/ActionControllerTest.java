@@ -62,8 +62,9 @@ class ActionControllerTest {
     @Test
     @DisplayName("Join action bad request")
     void joinBadRequestTest() {
+        String errorMessage = "join action failed";
         String playerId = "player-id";
-        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException()));
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException(errorMessage)));
         when(gameService.generatePlayerId()).thenReturn(playerId);
 
         String displayName = "display-name";
@@ -72,7 +73,9 @@ class ActionControllerTest {
                 .bodyValue(joinRequest)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isBadRequest();
+                .expectStatus().isBadRequest()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals(errorMessage, actionResponse.errorMessage()));
 
         verify(gameService, times(1)).handleCommand(eq("test"), argThat(
                 command -> command instanceof JoinCommand joinCommand &&

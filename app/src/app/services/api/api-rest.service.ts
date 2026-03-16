@@ -110,7 +110,7 @@ export class ApiRestService {
 
     if (errorResponse && typeof errorResponse === 'object') {
       const response = errorResponse as Record<string, unknown>;
-      const candidateFields: Array<keyof typeof response> = ['message', 'error', 'detail', 'title'];
+      const candidateFields: Array<keyof typeof response> = ['errorMessage', 'message', 'error', 'detail', 'title'];
 
       for (const field of candidateFields) {
         const value = response[field];

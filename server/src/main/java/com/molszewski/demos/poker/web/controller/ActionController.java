@@ -23,7 +23,7 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand(gameService.generatePlayerId()))
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/ready")
@@ -31,7 +31,7 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand())
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/check")
@@ -39,7 +39,7 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand())
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/call")
@@ -47,7 +47,7 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand())
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/bet")
@@ -55,7 +55,7 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand())
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/all-in")
@@ -63,7 +63,7 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand())
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/fold")
@@ -71,7 +71,7 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand())
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/raise")
@@ -79,7 +79,7 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand())
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/replace")
@@ -87,10 +87,18 @@ public class ActionController {
         logRequest(gameId, request);
         return gameService.handleCommand(gameId, request.toCommand())
                 .map(ResponseEntity::ok)
-                .onErrorReturn(ResponseEntity.badRequest().build());
+                .onErrorResume(this::badRequestWithMessage);
     }
 
     private <T> void logRequest(String gameId, T request) {
         log.debug("Game: {} Request: {}", gameId, request);
+    }
+
+    private Mono<ResponseEntity<ActionResponse>> badRequestWithMessage(Throwable throwable) {
+        String message = throwable.getMessage();
+        if (message == null || message.isBlank()) {
+            message = "Bad request";
+        }
+        return Mono.just(ResponseEntity.badRequest().body(ActionResponse.error(message)));
     }
 }
