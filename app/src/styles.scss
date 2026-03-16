@@ -141,3 +141,9 @@ poker-game-history {
   width: 100%;
   height: 100%;
 }
+
+.mat-mdc-snack-bar-container.poker-error-snackbar {
+  --mdc-snackbar-container-color: #9b1c1c;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffd6d6;
+}
