@@ -1,0 +1,49 @@
+<div class="foldout-better-dialog" [class.mobile]="mobile" [class.desktop]="!mobile">
+  <h2 mat-dialog-title class="title poker-text-light">Foldout</h2>
+
+  <mat-dialog-content class="content">
+    <section class="winner-section">
+      <header class="section-header">
+        <span class="section-title">Winner</span>
+      </header>
+
+      @if (!winner()) {
+        <div class="empty">Winner data is not available</div>
+      } @else {
+        <article class="winner-item" [class.revealed]="winnerRevealed()">
+          <div class="winner-name">{{winner()!.name}}</div>
+
+          <div class="winner-total">
+            <span class="label">Won from pot</span>
+            <span class="chips">
+              <span>+{{winner()!.chipsWon}}</span>
+              <mat-icon inline>poker_chip</mat-icon>
+            </span>
+          </div>
+
+          <div class="winner-total">
+            <span class="label">Combined pots</span>
+            <span class="chips">
+              <span>{{totalPotChips()}}</span>
+              <mat-icon inline>poker_chip</mat-icon>
+            </span>
+          </div>
+
+          <div class="winner-current-chips">
+            <span class="label">Current chips</span>
+            <span class="chips current">
+              <span>{{winner()!.currentChips}}</span>
+              <mat-icon inline>poker_chip</mat-icon>
+            </span>
+          </div>
+        </article>
+      }
+    </section>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center">
+    <button mat-button class="button-medium ready-button" [disabled]="readyButtonDisabled()" (click)="readyForNextRound()">
+      {{readyButtonLabel()}}
+    </button>
+  </mat-dialog-actions>
+</div>
