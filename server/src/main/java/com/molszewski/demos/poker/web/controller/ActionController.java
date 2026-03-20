@@ -26,6 +26,14 @@ public class ActionController {
                 .onErrorResume(this::badRequestWithMessage);
     }
 
+    @PostMapping("/aijoin")
+    public Mono<ResponseEntity<ActionResponse>> aiJoin(@PathVariable String gameId, @RequestBody @Valid AiJoinRequest request) {
+        logRequest(gameId, request);
+        return gameService.handleCommand(gameId, request.toCommand(gameService.generatePlayerId()))
+                .map(ResponseEntity::ok)
+                .onErrorResume(this::badRequestWithMessage);
+    }
+
     @PostMapping("/ready")
     public Mono<ResponseEntity<ActionResponse>> ready(@PathVariable String gameId, @RequestBody ReadyRequest request) {
         logRequest(gameId, request);

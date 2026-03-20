@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class GameService {
     private final GameSetupRepository gameSetupRepository;
     private final CommandRepository commandRepository;
+    private final MonitoringService monitoringService;
 
     public Mono<NewGameResponse> createGame() {
         return gameSetupRepository.save(GameSetup.init(generateId(), new Random()))
@@ -35,6 +36,7 @@ public class GameService {
     }
 
     public Mono<ActionResponse> handleCommand(String gameId, Command newCommand) {
+        monitoringService.keepAlive(gameId);
         return gameSetupRepository.findById(gameId)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Game not found")))
                 .flatMap(gameSetup -> commandRepository.readAll(gameId)
@@ -54,6 +56,9 @@ public class GameService {
     }
 
     public Flux<GameResponse> subscribeToGameChanges(String gameId, String myId) {
+        monitoringService.keepAlive(gameId);
+        log.info("subscribeToGameChanges for game {}", gameId);
+
         final AtomicReference<StreamOffset<String>> currentOffset = new AtomicReference<>(StreamOffset.fromStart(commandRepository.getStreamKey(gameId)));
 
         return gameSetupRepository.findById(gameId)

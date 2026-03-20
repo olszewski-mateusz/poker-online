@@ -44,6 +44,9 @@ public class ActionEntry extends HistoryEntry<Action> {
             case Join join -> {
                 properties.put("actionType", ActionType.JOIN.toString());
             }
+            case AiJoin join -> {
+                properties.put("actionType", ActionType.AI_JOIN.toString());
+            }
             case Raise raise -> {
                 properties.put("actionType", ActionType.RAISE.toString());
                 properties.put("raiseAmount", String.valueOf(raise.getAmount()));
