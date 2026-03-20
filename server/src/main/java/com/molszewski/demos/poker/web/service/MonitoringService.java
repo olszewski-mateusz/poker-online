@@ -71,8 +71,10 @@ public class MonitoringService {
                                 if (player != null && aiState.isPlayerAi(player.getId())) {
                                     AiConfiguration configuration = aiState.getAi(player);
                                     return aiService.sendRequestToAi(gameId, player.getId(), configuration, game)
-                                            .doOnError(throwable ->  log.error("Error sending request to AI", throwable))
-                                            .onErrorReturn(Void.TYPE.cast("void"));
+                                            .onErrorResume(throwable -> {
+                                                log.error("Error sending request to AI", throwable);
+                                                return Mono.empty();
+                                            });
                                 }
 
                                 return Mono.empty();

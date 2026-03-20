@@ -36,9 +36,9 @@ public class GameService {
     }
 
     public Mono<ActionResponse> handleCommand(String gameId, Command newCommand) {
-        monitoringService.keepAlive(gameId);
         return gameSetupRepository.findById(gameId)
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Game not found")))
+                .doOnNext(gameSetup -> monitoringService.keepAlive(gameId))
                 .flatMap(gameSetup -> commandRepository.readAll(gameId)
                         .map(Record::getValue)
                         .collectList()
@@ -56,12 +56,12 @@ public class GameService {
     }
 
     public Flux<GameResponse> subscribeToGameChanges(String gameId, String myId) {
-        monitoringService.keepAlive(gameId);
         log.info("subscribeToGameChanges for game {}", gameId);
 
         final AtomicReference<StreamOffset<String>> currentOffset = new AtomicReference<>(StreamOffset.fromStart(commandRepository.getStreamKey(gameId)));
 
         return gameSetupRepository.findById(gameId)
+                .doOnNext(gameSetup -> monitoringService.keepAlive(gameId))
                 .map(GameSetup::toGame)
                 .flatMapMany(game -> {
                     return Mono.defer(() -> commandRepository.readFromOffsetWithBlock(currentOffset.get()).collectList()
