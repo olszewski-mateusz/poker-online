@@ -73,6 +73,7 @@ export enum ActionType {
   CHECK = 'CHECK',
   FOLD = 'FOLD',
   JOIN = 'JOIN',
+  AI_JOIN = 'AI_JOIN',
   RAISE = 'RAISE',
   READY = 'READY',
   REPLACE = 'REPLACE'

@@ -65,16 +65,17 @@ public class MonitoringService {
                                 List<Command> commands = objectRecords.stream().map(Record::getValue).toList();
                                 log.info("Game {} new commands: {}", gameId, commands);
                                 game.applyActions(commands.stream().map(Command::toAction));
-
-                                Player player = game.getGameState().getPlayerState().getCurrentPlayer();
                                 AiState aiState = game.getGameState().getAiState();
-                                if (player != null && aiState.isPlayerAi(player.getId())) {
-                                    AiConfiguration configuration = aiState.getAi(player);
-                                    return aiService.sendRequestToAi(gameId, player.getId(), configuration, game)
-                                            .onErrorResume(throwable -> {
-                                                log.error("Error sending request to AI", throwable);
-                                                return Mono.empty();
-                                            });
+                                List<Player> players = game.getGameState().getPlayerState().getAll();
+                                for (Player player : players) {
+                                    if (aiState.isPlayerAi(player.getId())) {
+                                        AiConfiguration configuration = aiState.getAi(player);
+                                        return aiService.sendRequestToAi(gameId, player.getId(), configuration, game)
+                                                .onErrorResume(throwable -> {
+                                                    log.error("Error sending request to AI", throwable);
+                                                    return Mono.empty();
+                                                });
+                                    }
                                 }
 
                                 return Mono.empty();

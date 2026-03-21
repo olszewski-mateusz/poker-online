@@ -43,6 +43,8 @@ export class HistoryService {
     switch (properties["actionType"]) {
       case ActionType.JOIN:
         return `${playerName} joins`;
+      case ActionType.AI_JOIN:
+        return `${playerName} joins as AI`;
       case ActionType.ALL_IN:
         return `${playerName} goes all in!`;
       case ActionType.BET: {

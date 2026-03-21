@@ -35,6 +35,15 @@ export class ApiRestService {
     );
   }
 
+  sendAiJoin(gameId: string, displayName: string): Observable<string> {
+    return this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/aijoin`, {
+      displayName: displayName
+    }).pipe(
+      map(response => response.myId),
+      this.showErrorInSnackbar()
+    );
+  }
+
   sendReady(gameId: string, playerId: string, ready: boolean): Observable<never> {
     return <Observable<never>> this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/ready`,{
       playerId: playerId,

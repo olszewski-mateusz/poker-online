@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>Add AI player</h2>
+
+<mat-dialog-content>
+  <mat-form-field class="name-field">
+    <mat-label>Display name</mat-label>
+    <input
+      matInput
+      #playerNameInput="ngModel"
+      required
+      minlength="3"
+      maxlength="32"
+      pattern="[\S\s]+[\S]+"
+      placeholder="AI player name"
+      [(ngModel)]="playerName"
+      (keydown.enter)="confirmBtn._elementRef.nativeElement.click()"
+    />
+
+    @if (playerName.length > 0) {
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        aria-label="Clear name"
+        (click)="clearName()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      aria-label="Randomize"
+      (click)="randomizeName()">
+      <mat-icon>casino</mat-icon>
+    </button>
+
+    @if (playerNameInput.invalid && (playerNameInput.dirty || playerNameInput.touched)) {
+      <mat-error>
+        @if (playerNameInput.errors?.['required']) {
+          Name is required
+        } @else if (playerNameInput.errors?.['minlength']) {
+          Name must have at least 3 characters
+        } @else if (playerNameInput.errors?.['maxlength']) {
+          Name cannot have more than 32 characters
+        } @else if (playerNameInput.errors?.['pattern']) {
+          Name cannot be blank
+        }
+      </mat-error>
+    }
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close type="button">Cancel</button>
+  <button
+    mat-button
+    type="button"
+    #confirmBtn
+    [disabled]="playerNameInput.invalid"
+    [mat-dialog-close]="playerName.trim()"
+  >
+    Confirm
+  </button>
+</mat-dialog-actions>
