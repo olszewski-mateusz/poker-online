@@ -1,20 +1,123 @@
-from typing import Any, Literal
+from enum import Enum
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-Aggressivity = Literal["LOW", "MEDIUM", "HIGH"]
-ActionType = Literal[
-    "ALL_IN",
-    "BET",
-    "CALL",
-    "CHECK",
-    "FOLD",
-    "JOIN",
-    "AI_JOIN",
-    "RAISE",
-    "READY",
-    "REPLACE",
-]
+
+class Aggressivity(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+
+
+class ActionType(str, Enum):
+    ALL_IN = "ALL_IN"
+    BET = "BET"
+    CALL = "CALL"
+    CHECK = "CHECK"
+    FOLD = "FOLD"
+    JOIN = "JOIN"
+    AI_JOIN = "AI_JOIN"
+    RAISE = "RAISE"
+    READY = "READY"
+    REPLACE = "REPLACE"
+
+
+class GamePhase(str, Enum):
+    NOT_STARTED = "NOT_STARTED"
+    FIRST_BETTING = "FIRST_BETTING"
+    DRAWING = "DRAWING"
+    SECOND_BETTING = "SECOND_BETTING"
+    SHOWDOWN = "SHOWDOWN"
+    FOLDOUT = "FOLDOUT"
+    FINISHED = "FINISHED"
+
+
+class Rank(str, Enum):
+    TWO = "TWO"
+    THREE = "THREE"
+    FOUR = "FOUR"
+    FIVE = "FIVE"
+    SIX = "SIX"
+    SEVEN = "SEVEN"
+    EIGHT = "EIGHT"
+    NINE = "NINE"
+    TEN = "TEN"
+    JACK = "JACK"
+    QUEEN = "QUEEN"
+    KING = "KING"
+    ACE = "ACE"
+
+
+class Suit(str, Enum):
+    HEARTS = "HEARTS"
+    DIAMONDS = "DIAMONDS"
+    CLUBS = "CLUBS"
+    SPADES = "SPADES"
+
+
+class HandType(str, Enum):
+    HIGH_CARD = "HIGH_CARD"
+    PAIR = "PAIR"
+    TWO_PAIR = "TWO_PAIR"
+    THREE_OF_A_KIND = "THREE_OF_A_KIND"
+    STRAIGHT = "STRAIGHT"
+    FLUSH = "FLUSH"
+    FULL_HOUSE = "FULL_HOUSE"
+    FOUR_OF_A_KIND = "FOUR_OF_A_KIND"
+    STRAIGHT_FLUSH = "STRAIGHT_FLUSH"
+
+
+class Card(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    rank: Rank
+    suit: Suit
+
+
+class Player(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    index: int
+    name: str
+    chips: int
+    bet: int
+    ready: bool
+    folded: bool
+    cards: list[Card] | None = None
+    handType: HandType | None = None
+
+
+class MainPot(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    chips: int
+    winnerIndexes: list[int] = Field(default_factory=list)
+
+
+class SidePot(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    chips: int
+    eligibleIndexes: list[int] = Field(default_factory=list)
+    winnerIndexes: list[int] = Field(default_factory=list)
+
+
+class Pot(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    chips: int
+    mainPot: MainPot
+    sidePots: list[SidePot] = Field(default_factory=list)
+
+
+class GameConfiguration(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    minPlayersToStart: int | None = None
+    startChips: int | None = None
+    ante: int | None = None
+    minOpenBet: int | None = None
 
 
 class AiConfiguration(BaseModel):
@@ -35,12 +138,16 @@ class GameResponse(BaseModel):
 
     gameId: str
     myId: str
-    validActions: list[ValidAction] = Field(default_factory=list)
-    phase: str | None = None
+    myIndex: int | None = None
+    phase: GamePhase | None = None
     currentPlayerIndex: int | None = None
-    players: list[dict[str, Any]] | None = None
-    history: list[dict[str, Any]] | None = None
-    configuration: dict[str, Any] | None = None
+    pot: Pot | None = None
+    players: list[Player] = Field(default_factory=list)
+    history: list[dict[str, Any]] = Field(default_factory=list)
+    cardsInDeck: int | None = None
+    discardedCards: int | None = None
+    configuration: GameConfiguration | None = None
+    validActions: list[ValidAction] = Field(default_factory=list)
 
 
 class AiRequest(BaseModel):

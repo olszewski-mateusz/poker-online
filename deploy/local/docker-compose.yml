@@ -23,6 +23,8 @@ services:
     container_name: 'poker-ai-server'
     environment:
       POKER_SERVER_URL: 'http://poker-server:8080'
+      AI_ACTION_DELAY_MIN_SECONDS: '2.0'
+      AI_ACTION_DELAY_MAX_SECONDS: '3.0'
     ports:
       - '8081:8081'
     networks:

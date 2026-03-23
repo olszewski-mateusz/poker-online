@@ -1,4 +1,5 @@
 import logging
+from random import Random
 from contextlib import asynccontextmanager
 
 import httpx
@@ -24,10 +25,16 @@ async def lifespan(app: FastAPI):
     configure_logging(settings.log_level)
 
     timeout = httpx.Timeout(settings.request_timeout_seconds)
-    async with httpx.AsyncClient(base_url=settings.poker_server_url, timeout=timeout) as http_client:
+    random_source = Random(settings.ai_decision_seed)
+    async with httpx.AsyncClient(
+        base_url=settings.poker_server_url,
+        timeout=timeout,
+    ) as http_client:
         app.state.ai_processor = AiRequestProcessor(
-            decision_service=DecisionService(),
+            decision_service=DecisionService(random_source=random_source),
             poker_server_client=PokerServerClient(http_client=http_client),
+            min_delay_seconds=settings.ai_action_delay_min_seconds,
+            max_delay_seconds=settings.ai_action_delay_max_seconds,
         )
         yield
 

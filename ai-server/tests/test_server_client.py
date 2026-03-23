@@ -4,7 +4,7 @@ import httpx
 import pytest
 import respx
 
-from app.services.decision_service import PlannedAction
+from app.services.action_models import PlannedAction
 from app.services.server_client import PokerServerClient
 
 
