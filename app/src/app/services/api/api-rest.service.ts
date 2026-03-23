@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {map, MonoTypeOperatorFunction, Observable, tap} from 'rxjs';
-import {Card} from '../../model';
+import {Card, NewGame} from '../../model';
 import {environment} from '../../../environments/environment';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
@@ -13,10 +13,9 @@ export class ApiRestService {
   private readonly snackBar: MatSnackBar = inject(MatSnackBar);
   private readonly serverHost: string = environment.serverHost;
 
-  createGame(): Observable<string> {
-    return this.httpClient.post<{gameId: string}>(`${this.serverHost}/game`, undefined)
+  createGame(): Observable<NewGame> {
+    return this.httpClient.post<NewGame>(`${this.serverHost}/game`, undefined)
       .pipe(
-        map(response => response.gameId),
         this.showErrorInSnackbar()
       );
   }
@@ -35,9 +34,10 @@ export class ApiRestService {
     );
   }
 
-  sendAiJoin(gameId: string, displayName: string): Observable<string> {
+  sendAiJoin(gameId: string, displayName: string, adminSecret: string | null): Observable<string> {
     return this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/aijoin`, {
-      displayName: displayName
+      displayName: displayName,
+      adminSecret: adminSecret
     }).pipe(
       map(response => response.myId),
       this.showErrorInSnackbar()

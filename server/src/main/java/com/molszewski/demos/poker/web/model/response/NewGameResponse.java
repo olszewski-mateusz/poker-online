@@ -1,4 +1,4 @@
 package com.molszewski.demos.poker.web.model.response;
 
-public record NewGameResponse(String gameId) {
+public record NewGameResponse(String gameId, String adminSecret) {
 }

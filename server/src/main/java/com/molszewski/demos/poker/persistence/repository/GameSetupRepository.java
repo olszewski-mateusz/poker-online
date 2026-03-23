@@ -17,9 +17,9 @@ public class GameSetupRepository {
     @Value("${poker.redis.expire-duration}")
     private Duration expireDuration;
 
-    public Mono<String> save(final GameSetup gameSetup) {
+    public Mono<GameSetup> save(final GameSetup gameSetup) {
         return redisGameTemplate.opsForValue().set(getGameKey(gameSetup.id()), gameSetup, expireDuration)
-                .thenReturn(gameSetup.id());
+                .thenReturn(gameSetup);
     }
 
     public Mono<GameSetup> findById(final String gameId) {

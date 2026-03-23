@@ -29,9 +29,15 @@ public class ActionController {
     @PostMapping("/aijoin")
     public Mono<ResponseEntity<ActionResponse>> aiJoin(@PathVariable String gameId, @RequestBody @Valid AiJoinRequest request) {
         logRequest(gameId, request);
-        return gameService.handleCommand(gameId, request.toCommand(gameService.generatePlayerId()))
-                .map(ResponseEntity::ok)
-                .onErrorResume(this::badRequestWithMessage);
+        return gameService.hasAdminAccess(gameId, request.adminSecret()).flatMap(success -> {
+            if (success) {
+                return gameService.handleCommand(gameId, request.toCommand(gameService.generatePlayerId()))
+                        .map(ResponseEntity::ok)
+                        .onErrorResume(this::badRequestWithMessage);
+            } else {
+                return Mono.error(new IllegalArgumentException("Action forbidden"));
+            }
+        });
     }
 
     @PostMapping("/ready")

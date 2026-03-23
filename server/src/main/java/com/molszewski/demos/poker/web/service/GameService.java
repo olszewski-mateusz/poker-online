@@ -32,7 +32,13 @@ public class GameService {
 
     public Mono<NewGameResponse> createGame() {
         return gameSetupRepository.save(GameSetup.init(generateId(), new Random()))
-                .map(NewGameResponse::new);
+                .map(setup -> new NewGameResponse(setup.id(), setup.adminSecret()));
+    }
+
+    public Mono<Boolean> hasAdminAccess(String gameId, String adminSecret) {
+        return gameSetupRepository.findById(gameId)
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("Game not found")))
+                .map(setup -> setup.adminSecret().equals(adminSecret));
     }
 
     public Mono<ActionResponse> handleCommand(String gameId, Command newCommand) {

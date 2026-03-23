@@ -12,6 +12,7 @@ import java.util.Random;
 public record GameSetup(
         String id,
         long seed,
+        String adminSecret,
         GameConfiguration configuration
 ) {
     public static GameSetup init(String gameId, Random random) {
@@ -19,6 +20,7 @@ public record GameSetup(
                 .id(gameId)
                 .configuration(GameConfiguration.defaultConfiguration())
                 .seed(random.nextLong())
+                .adminSecret(String.valueOf(random.nextLong()))
                 .build();
     }
 

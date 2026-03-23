@@ -20,7 +20,8 @@ export class GameConnectorService {
 
   createNewGame(): Observable<boolean> {
     return this.apiRestService.createGame().pipe(
-      mergeMap((gameId) => this.routerService.navigateToGamePage(gameId))
+      tap(newGame => localStorage.setItem(`admin-secret:${newGame.gameId}`, newGame.adminSecret)),
+      mergeMap((newGame) => this.routerService.navigateToGamePage(newGame.gameId))
     )
   }
 

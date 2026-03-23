@@ -78,6 +78,10 @@ mat-slider {
   --mat-slider-focus-state-layer-color: #{$poker-slider-ripple-focus};
 }
 
+.mat-mdc-menu-content {
+  background-color: $poker-panel;
+}
+
 .poker-panel {
   background-color: $poker-panel;
   color: $poker-text;

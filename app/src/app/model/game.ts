@@ -17,6 +17,11 @@ export type Game = {
   discardedCards: number
 }
 
+export type NewGame = {
+  gameId: string
+  adminSecret: string
+}
+
 export type Pot = {
   chips: number
   mainPot: MainPot

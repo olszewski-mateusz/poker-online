@@ -6,9 +6,6 @@ import {MatError, MatFormField, MatLabel, MatSuffix} from '@angular/material/for
 import {MatIcon} from '@angular/material/icon';
 import {MatInput} from '@angular/material/input';
 
-const AI_ADJECTIVES: string[] = ['Bold', 'Lucky', 'Swift', 'Sharp', 'Calm', 'Fierce', 'Clever', 'Steady'];
-const AI_ANIMALS: string[] = ['Fox', 'Wolf', 'Tiger', 'Falcon', 'Shark', 'Lynx', 'Raven', 'Panther'];
-
 @Component({
   selector: 'poker-dialog-ai-player-name',
   standalone: true,
@@ -43,8 +40,8 @@ export class AiPlayerNameDialogComponent {
   }
 
   private generateRandomName(): string {
-    const adjective = AI_ADJECTIVES[Math.floor(Math.random() * AI_ADJECTIVES.length)];
-    const animal = AI_ANIMALS[Math.floor(Math.random() * AI_ANIMALS.length)];
-    return `AI ${adjective} ${animal}`;
+    return AI_NAMES[Math.floor(Math.random() * AI_NAMES.length)];
   }
 }
+
+const AI_NAMES: string[] = ['Ace', 'Maverick', 'Shadow', 'Blaze', 'Viper', 'Titan', 'Rogue', 'Falcon', 'Ghost', 'Hunter', 'Cobra', 'Phoenix', 'Bullet', 'Wolf', 'Diesel', 'Kingpin', 'Razor', 'Knight', 'Bandit', 'Jet'];

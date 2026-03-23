@@ -36,9 +36,12 @@
       }
 
       <div class="end">
-        <button mat-button [matMenuTriggerFor]="menu">
-          <mat-icon>settings</mat-icon>
-        </button>
+        @if (adminAccess()) {
+          <button mat-button [matMenuTriggerFor]="menu">
+            <mat-icon>settings</mat-icon>
+            <span>Admin</span>
+          </button>
+        }
         @if (mobile()) {
           <button mat-icon-button (click)="leave()">
             <mat-icon>logout</mat-icon>
@@ -52,9 +55,18 @@
       </div>
 
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="addAiPlayer()">Add AI player</button>
-      <button mat-menu-item>Remove player</button>
-      <button mat-menu-item>Reset game</button>
+      <button mat-menu-item (click)="addAiPlayer()">
+        <mat-icon>add</mat-icon>
+        <span>Add AI player</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>close</mat-icon>
+        <span>Remove player</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>replay</mat-icon>
+        <span>Reset game</span>
+      </button>
     </mat-menu>
   }
 </mat-toolbar>

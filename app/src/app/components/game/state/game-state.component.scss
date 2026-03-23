@@ -66,24 +66,8 @@
       mat-icon {
         font-size: 30px;
         line-height: 30px;
-        transform: translateY(4px);
+        transform: translateY(5px);
       }
     }
-
-    .pot-info {
-      transform: translateY(6px);
-      margin-left: 4px;
-      mat-icon {
-        width: 30px;
-        height: 30px;
-        font-size: 30px;
-        margin-right: 2px;
-        transform: translate(-2.5px, -2.5px);
-      }
-    }
-  }
-
-  .showdown-button {
-    margin-top: 20px;
   }
 }
