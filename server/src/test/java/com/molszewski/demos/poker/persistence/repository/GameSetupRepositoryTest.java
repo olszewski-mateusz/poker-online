@@ -52,7 +52,7 @@ class GameSetupRepositoryTest {
         GameSetup gameSetup = GameSetup.builder().id(gameId).seed(17).build();
 
         StepVerifier.create(gameSetupRepository.save(gameSetup))
-                .assertNext(id -> assertEquals(gameId, id))
+                .assertNext(saved -> assertEquals(gameId, saved.id()))
                 .verifyComplete();
 
         StepVerifier.create(redisCommandTemplate.hasKey(streamId))
@@ -74,7 +74,7 @@ class GameSetupRepositoryTest {
         GameSetup gameSetup = GameSetup.builder().id(gameId).seed(17).build();
 
         StepVerifier.create(gameSetupRepository.save(gameSetup).delayElement(Duration.ofMillis(500)))
-                .assertNext(id -> assertEquals(gameId, id))
+                .assertNext(saved -> assertEquals(gameId, saved.id()))
                 .verifyComplete();
 
         StepVerifier.create(redisCommandTemplate.hasKey(streamId))

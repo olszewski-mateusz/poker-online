@@ -59,14 +59,28 @@
         <mat-icon>add</mat-icon>
         <span>Add AI player</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item [matMenuTriggerFor]="removePlayerMenu">
         <mat-icon>close</mat-icon>
         <span>Remove player</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item (click)="resetGame()">
         <mat-icon>replay</mat-icon>
         <span>Reset game</span>
       </button>
+    </mat-menu>
+
+    <mat-menu #removePlayerMenu="matMenu">
+      @for (player of removablePlayers(); track player.index) {
+        <button mat-menu-item (click)="removePlayer(player.index)">
+          <mat-icon>person_remove</mat-icon>
+          <span>{{player.name}}</span>
+        </button>
+      } @empty {
+        <button mat-menu-item disabled>
+          <mat-icon>person_off</mat-icon>
+          <span>No players to remove</span>
+        </button>
+      }
     </mat-menu>
   }
 </mat-toolbar>

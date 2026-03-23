@@ -36,7 +36,7 @@ class GameControllerTest {
     @DisplayName("Create game success")
     void createSuccessTest() {
         String gameId = "test";
-        when(gameService.createGame()).thenReturn(Mono.just(new NewGameResponse(gameId)));
+        when(gameService.createGame()).thenReturn(Mono.just(new NewGameResponse(gameId, "admin-secret")));
 
         webClient.post().uri("/api/game")
                 .accept(MediaType.APPLICATION_JSON)

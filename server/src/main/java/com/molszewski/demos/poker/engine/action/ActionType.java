@@ -10,6 +10,8 @@ public enum ActionType {
     FOLD,
     JOIN,
     AI_JOIN,
+    REMOVE_PLAYER,
+    RESET_GAME,
     RAISE,
     READY,
     REPLACE;

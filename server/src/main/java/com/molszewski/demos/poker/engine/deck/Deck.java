@@ -28,6 +28,17 @@ public class Deck {
         this.random = random;
     }
 
+    public void reset() {
+        this.cards = new ArrayList<>();
+        this.discards = new ArrayList<>();
+        for (Rank rank : Rank.values()) {
+            for (Suit suit : Suit.values()) {
+                cards.add(new Card(rank, suit));
+            }
+        }
+        Collections.shuffle(cards, random);
+    }
+
     public Card pop() {
         if (cards.isEmpty()) {
             moveDiscardsToDeck();

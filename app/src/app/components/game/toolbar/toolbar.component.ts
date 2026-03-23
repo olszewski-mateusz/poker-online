@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   input,
@@ -45,6 +46,10 @@ export class ToolbarComponent {
   game: InputSignal<Game> = input.required<Game>();
   mobile: InputSignal<boolean> = input.required<boolean>();
   myPlayer: Signal<Player | undefined> = buildMyPlayerSignal(this.game);
+  removablePlayers: Signal<Player[]> = computed(() => {
+    const game = this.game();
+    return game.players.filter(player => player.index !== game.myIndex);
+  });
 
   protected adminAccess: WritableSignal<boolean> = signal<boolean>(false);
   protected adminSecret: WritableSignal<string | null> = signal<string | null>(null);
@@ -74,5 +79,15 @@ export class ToolbarComponent {
       filter((displayName: string) => displayName.length > 0),
       mergeMap((displayName: string) => this.apiRestService.sendAiJoin(gameId, `${displayName} (AI)`, this.adminSecret()))
     ).subscribe();
+  }
+
+  removePlayer(playerIndex: number): void {
+    const game = this.game();
+    this.apiRestService.sendRemovePlayer(game.gameId, playerIndex, game.myId, this.adminSecret()).subscribe();
+  }
+
+  resetGame(): void {
+    const game = this.game();
+    this.apiRestService.sendResetGame(game.gameId, game.myId, this.adminSecret()).subscribe();
   }
 }

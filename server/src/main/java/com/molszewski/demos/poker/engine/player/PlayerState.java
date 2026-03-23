@@ -199,4 +199,50 @@ public class PlayerState {
                 .filter(player -> !player.isFolded() && player.getChips() == 0)
                 .forEach(player -> player.setReady(true));
     }
+
+    public Player removeById(String playerId, GamePhase phase) {
+        int removedIndex = getIndex(playerId);
+        Player removed = getById(playerId);
+        boolean wasCurrent = currentPlayer != null && currentPlayer.getId().equals(playerId);
+
+        players.remove(removed);
+
+        if (!wasCurrent) {
+            return removed;
+        }
+
+        this.currentPlayer = findNextEligibleAfterRemoved(removedIndex, phase);
+        return removed;
+    }
+
+    public void resetForLobby(int startChips) {
+        players.forEach(player -> player.resetToLobby(startChips));
+        clearCurrentPlayer();
+    }
+
+    @Nullable
+    private Player findNextEligibleAfterRemoved(int removedIndex, GamePhase phase) {
+        if (players.isEmpty()) {
+            return null;
+        }
+
+        int startIndex = removedIndex % players.size();
+        for (int i = 0; i < players.size(); i++) {
+            int currentIndex = (startIndex + i) % players.size();
+            Player candidate = players.get(currentIndex);
+            if (isEligibleToActInPhase(candidate, phase)) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private boolean isEligibleToActInPhase(Player player, GamePhase phase) {
+        return switch (phase) {
+            case FIRST_BETTING, SECOND_BETTING -> !player.isFolded() && player.getChips() > 0 && !player.isReady();
+            case DRAWING -> !player.isFolded() && !player.isReady();
+            default -> true;
+        };
+    }
 }

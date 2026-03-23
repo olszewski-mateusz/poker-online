@@ -37,7 +37,35 @@ public class ActionController {
             } else {
                 return Mono.error(new IllegalArgumentException("Action forbidden"));
             }
-        });
+        }).onErrorResume(this::badRequestWithMessage);
+    }
+
+    @PostMapping("/remove-player")
+    public Mono<ResponseEntity<ActionResponse>> removePlayer(@PathVariable String gameId, @RequestBody @Valid RemovePlayerRequest request) {
+        logRequest(gameId, request);
+        return gameService.hasAdminAccess(gameId, request.adminSecret()).flatMap(success -> {
+            if (!success) {
+                return Mono.error(new IllegalArgumentException("Action forbidden"));
+            }
+
+            return gameService.handleCommand(gameId, request.toCommand())
+                    .map(ResponseEntity::ok)
+                    .onErrorResume(this::badRequestWithMessage);
+        }).onErrorResume(this::badRequestWithMessage);
+    }
+
+    @PostMapping("/reset-game")
+    public Mono<ResponseEntity<ActionResponse>> resetGame(@PathVariable String gameId, @RequestBody @Valid ResetGameRequest request) {
+        logRequest(gameId, request);
+        return gameService.hasAdminAccess(gameId, request.adminSecret()).flatMap(success -> {
+            if (!success) {
+                return Mono.error(new IllegalArgumentException("Action forbidden"));
+            }
+
+            return Mono.defer(() -> gameService.handleCommand(gameId, request.toCommand()))
+                    .map(ResponseEntity::ok)
+                    .onErrorResume(this::badRequestWithMessage);
+        }).onErrorResume(this::badRequestWithMessage);
     }
 
     @PostMapping("/ready")

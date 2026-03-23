@@ -47,6 +47,13 @@ public class ActionEntry extends HistoryEntry<Action> {
             case AiJoin join -> {
                 properties.put("actionType", ActionType.AI_JOIN.toString());
             }
+            case RemovePlayer removePlayer -> {
+                properties.put("actionType", ActionType.REMOVE_PLAYER.toString());
+                properties.put("playerName", removePlayer.getTargetPlayer(gameState).getName());
+            }
+            case ResetGame resetGame -> {
+                properties.put("actionType", ActionType.RESET_GAME.toString());
+            }
             case Raise raise -> {
                 properties.put("actionType", ActionType.RAISE.toString());
                 properties.put("raiseAmount", String.valueOf(raise.getAmount()));

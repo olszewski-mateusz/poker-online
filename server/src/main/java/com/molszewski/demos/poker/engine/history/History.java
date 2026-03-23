@@ -34,4 +34,8 @@ public class History {
     public void onPhaseChanged(GameState state, GamePhase newPhase) {
         this.entries.add(new PhaseChangeEntry(state, newPhase));
     }
+
+    public void clear() {
+        this.entries.clear();
+    }
 }

@@ -45,6 +45,10 @@ export class HistoryService {
         return `${playerName} joins`;
       case ActionType.AI_JOIN:
         return `${playerName} joins as AI`;
+      case ActionType.REMOVE_PLAYER:
+        return `${playerName} is removed from table`;
+      case ActionType.RESET_GAME:
+        return `${playerName} resets game`;
       case ActionType.ALL_IN:
         return `${playerName} goes all in!`;
       case ActionType.BET: {

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamOffset;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
@@ -49,6 +50,7 @@ class CommandRepositoryTest {
         String playerId = "1";
         String gameId = "sendCommandTest";
         String streamId = "stream:" + gameId;
+        Duration expireDuration = (Duration) ReflectionTestUtils.getField(commandRepository, "expireDuration");
 
         assertTrue(redis.isRunning());
 
@@ -62,7 +64,7 @@ class CommandRepositoryTest {
                 .verify();
 
         StepVerifier.create(redisCommandTemplate.getExpire(streamId))
-                .assertNext(duration -> assertThat(duration).isCloseTo(Duration.ofHours(2), maxLatency))
+                .assertNext(duration -> assertThat(duration).isCloseTo(expireDuration, maxLatency))
                 .verifyComplete();
     }
 

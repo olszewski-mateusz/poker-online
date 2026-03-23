@@ -102,6 +102,8 @@ class GameResponseTest {
         new Join("1", "Alice").apply(state, configuration);
         new Join("2", "Bob").apply(state, configuration);
         state.setGamePhase(GamePhase.FIRST_BETTING);
+        state.getPlayerState().getById("1").setFolded(false);
+        state.getPlayerState().getById("2").setFolded(false);
         state.getPotState().addAnte(state.getPlayerState().getById("1"), 5);
         state.getPotState().addAnte(state.getPlayerState().getById("2"), 7);
 

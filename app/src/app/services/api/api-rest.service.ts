@@ -44,6 +44,21 @@ export class ApiRestService {
     );
   }
 
+  sendRemovePlayer(gameId: string, playerIndex: number, requesterPlayerId: string, adminSecret: string | null): Observable<never> {
+    return <Observable<never>> this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/remove-player`, {
+      playerIndex: playerIndex,
+      requesterPlayerId: requesterPlayerId,
+      adminSecret: adminSecret
+    }).pipe(this.showErrorInSnackbar());
+  }
+
+  sendResetGame(gameId: string, requesterPlayerId: string, adminSecret: string | null): Observable<never> {
+    return <Observable<never>> this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/reset-game`, {
+      requesterPlayerId: requesterPlayerId,
+      adminSecret: adminSecret
+    }).pipe(this.showErrorInSnackbar());
+  }
+
   sendReady(gameId: string, playerId: string, ready: boolean): Observable<never> {
     return <Observable<never>> this.httpClient.post<{myId: string}>(`${this.serverHost}/game/${gameId}/action/ready`,{
       playerId: playerId,
@@ -136,4 +151,3 @@ export class ApiRestService {
     return fallbackMessage;
   }
 }
-

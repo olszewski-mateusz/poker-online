@@ -53,4 +53,11 @@ public class Player {
         return new Player(id, name, chips, ready, folded, hand);
     }
 
+    public void resetToLobby(int startChips) {
+        this.chips = startChips;
+        this.ready = false;
+        this.folded = true;
+        this.hand = null;
+    }
+
 }

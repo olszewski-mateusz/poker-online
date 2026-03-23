@@ -85,6 +85,157 @@ class ActionControllerTest {
     }
 
     @Test
+    @DisplayName("Remove player action success")
+    void removePlayerSuccessTest() {
+        String myId = "player-1";
+        String requesterId = "player-1";
+        String adminSecret = "admin-secret";
+
+        when(gameService.hasAdminAccess("test", adminSecret)).thenReturn(Mono.just(true));
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
+
+        RemovePlayerRequest removePlayerRequest = new RemovePlayerRequest(1, requesterId, adminSecret);
+        webClient.post().uri("/api/game/test/action/remove-player")
+                .bodyValue(removePlayerRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals(myId, actionResponse.myId()));
+
+        verify(gameService, times(1)).handleCommand(eq("test"), argThat(
+                command -> command instanceof RemovePlayerCommand removePlayerCommand &&
+                        removePlayerCommand.getPlayerId().equals(requesterId) &&
+                        removePlayerCommand.getPlayerIndex() == 1
+        ));
+    }
+
+    @Test
+    @DisplayName("Remove player action forbidden for invalid admin")
+    void removePlayerInvalidAdminTest() {
+        String adminSecret = "wrong-secret";
+        RemovePlayerRequest removePlayerRequest = new RemovePlayerRequest(1, "requester-id", adminSecret);
+        when(gameService.hasAdminAccess("test", adminSecret)).thenReturn(Mono.just(false));
+
+        webClient.post().uri("/api/game/test/action/remove-player")
+                .bodyValue(removePlayerRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals("Action forbidden", actionResponse.errorMessage()));
+
+        verify(gameService, never()).handleCommand(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("Remove player action rejects removing yourself")
+    void removePlayerSelfRemovalTest() {
+        String requesterId = "player-1";
+        String adminSecret = "admin-secret";
+
+        when(gameService.hasAdminAccess("test", adminSecret)).thenReturn(Mono.just(true));
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException("Cannot remove yourself")));
+
+        RemovePlayerRequest removePlayerRequest = new RemovePlayerRequest(0, requesterId, adminSecret);
+        webClient.post().uri("/api/game/test/action/remove-player")
+                .bodyValue(removePlayerRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals("Cannot remove yourself", actionResponse.errorMessage()));
+
+        verify(gameService, times(1)).handleCommand(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("Remove player action invalid index")
+    void removePlayerInvalidIndexTest() {
+        String requesterId = "player-1";
+        String adminSecret = "admin-secret";
+
+        when(gameService.hasAdminAccess("test", adminSecret)).thenReturn(Mono.just(true));
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.error(new IllegalArgumentException("Invalid player index")));
+
+        RemovePlayerRequest removePlayerRequest = new RemovePlayerRequest(15, requesterId, adminSecret);
+        webClient.post().uri("/api/game/test/action/remove-player")
+                .bodyValue(removePlayerRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals("Invalid player index", actionResponse.errorMessage()));
+
+        verify(gameService, times(1)).handleCommand(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("Reset game action success")
+    void resetGameSuccessTest() {
+        String myId = "player-1";
+        String adminSecret = "admin-secret";
+
+        when(gameService.hasAdminAccess("test", adminSecret)).thenReturn(Mono.just(true));
+        when(gameService.handleCommand(eq("test"), any())).thenReturn(Mono.just(new ActionResponse(myId)));
+
+        ResetGameRequest resetGameRequest = new ResetGameRequest(myId, adminSecret);
+        webClient.post().uri("/api/game/test/action/reset-game")
+                .bodyValue(resetGameRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals(myId, actionResponse.myId()));
+
+        verify(gameService, times(1)).handleCommand(eq("test"), argThat(
+                command -> command instanceof ResetGameCommand resetGameCommand &&
+                        resetGameCommand.getPlayerId().equals(myId)
+        ));
+    }
+
+    @Test
+    @DisplayName("Reset game action forbidden for invalid admin")
+    void resetGameInvalidAdminTest() {
+        String adminSecret = "wrong-secret";
+        ResetGameRequest resetGameRequest = new ResetGameRequest("player-id", adminSecret);
+
+        when(gameService.hasAdminAccess("test", adminSecret)).thenReturn(Mono.just(false));
+
+        webClient.post().uri("/api/game/test/action/reset-game")
+                .bodyValue(resetGameRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals("Action forbidden", actionResponse.errorMessage()));
+
+        verify(gameService, never()).handleCommand(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("Reset game action requester missing in game")
+    void resetGameRequesterMissingTest() {
+        String requesterId = "player-id";
+        String adminSecret = "admin-secret";
+        ResetGameRequest resetGameRequest = new ResetGameRequest(requesterId, adminSecret);
+
+        when(gameService.hasAdminAccess("test", adminSecret)).thenReturn(Mono.just(true));
+        when(gameService.handleCommand(eq("test"), any()))
+                .thenReturn(Mono.error(new IllegalArgumentException("Player with id player-id not found")));
+
+        webClient.post().uri("/api/game/test/action/reset-game")
+                .bodyValue(resetGameRequest)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ActionResponse.class)
+                .value(actionResponse -> assertEquals("Player with id player-id not found", actionResponse.errorMessage()));
+
+        verify(gameService, times(1)).handleCommand(anyString(), any());
+    }
+
+    @Test
     @DisplayName("Ready action success")
     void readySuccessTest() {
         String myId = "player";

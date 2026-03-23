@@ -21,10 +21,14 @@ public class AiState {
     }
 
     public void removeAi(Player player) {
-        if (!configurations.containsKey(player.getId())) {
-            throw new IllegalArgumentException(String.format("Ai configuration for player %s doesn't exist",  player.getId()));
+        removeAi(player.getId());
+    }
+
+    public void removeAi(String playerId) {
+        if (!configurations.containsKey(playerId)) {
+            throw new IllegalArgumentException(String.format("Ai configuration for player %s doesn't exist",  playerId));
         }
-        configurations.remove(player.getId());
+        configurations.remove(playerId);
     }
 
     public AiConfiguration getAi(Player player) {

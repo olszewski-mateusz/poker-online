@@ -79,6 +79,8 @@ export enum ActionType {
   FOLD = 'FOLD',
   JOIN = 'JOIN',
   AI_JOIN = 'AI_JOIN',
+  REMOVE_PLAYER = 'REMOVE_PLAYER',
+  RESET_GAME = 'RESET_GAME',
   RAISE = 'RAISE',
   READY = 'READY',
   REPLACE = 'REPLACE'
