@@ -27,9 +27,10 @@ The game consists of the following phases:
 
 ## Architecture
 
-Poker is a full-stack application composed of three main components:
+Poker is a full-stack application composed of four main components:
 
 - **Server** (Spring Framework)
+- **AI Server** (FastAPI)
 - **Web App** (Angular, served by Nginx)
 - **Database** (Redis)
 
@@ -103,11 +104,24 @@ The UI was developed with **Angular Material** and supports **responsive design*
 
 The built application files are served to users via **Nginx**.
 
+### AI Server
+
+The AI microservice is built with **FastAPI** and receives AI game snapshots from the main server via:
+
+```
+POST /ai
+```
+
+It acknowledges with `200 OK` immediately and sends one legal AI action back to the main server in the background.
+
 ## Installation & Deployment
 
 ### Prerequisites
 - **Java 21+**
 - **Node.js 18.19+**
+- **Python 3.13+**
+- **just** (for AI server scripts)
+- **uv** (for Python dependency management)
 - **Docker**
 
 ### 1. Clone the Repository
@@ -127,9 +141,21 @@ cd server && ./mvnw package
 cd app && npm run build-image-dev
 ```
 
+#### AI Server
+```sh
+cd ai-server && just build-image
+```
+
 ### 3. Run the project with Docker Compose on localhost
 ```sh
 cd deploy/local && docker compose up -d
+```
+
+### 4. Run AI server locally without Docker (optional)
+```sh
+cd ai-server
+just install
+just run
 ```
 
 ## AWS deployment diagram

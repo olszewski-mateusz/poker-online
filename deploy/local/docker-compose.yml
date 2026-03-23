@@ -11,8 +11,20 @@ services:
     image: 'io.olszewski.demo.poker/server:latest'
     container_name: 'poker-server'
     env_file: './config/server.env'
+    depends_on:
+      - 'redis'
+      - 'ai-server'
     ports:
       - '8080:8080'
+    networks:
+      - 'poker-network'
+  ai-server:
+    image: 'io.olszewski.demo.poker/ai-server:latest'
+    container_name: 'poker-ai-server'
+    environment:
+      POKER_SERVER_URL: 'http://poker-server:8080'
+    ports:
+      - '8081:8081'
     networks:
       - 'poker-network'
   app:
